@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <meta name="theme-color" content="#0f172a" />
-  <title>Undangan Pernikahan • Martin & Ribka</title>
+  <title>Undangan Pernikahan • Nasrul & Naya</title>
   <style>
     :root{
       --bg:#0b1220;
@@ -55,6 +55,8 @@
       background:linear-gradient(135deg, rgba(252,165,165,.95), rgba(165,180,252,.92));
       box-shadow: 0 18px 40px rgba(0,0,0,.30);
       transition: transform .15s ease, filter .15s ease;
+      text-decoration:none;
+      display:inline-flex; align-items:center; justify-content:center;
     }
     .btn:hover{transform: translateY(-1px); filter:saturate(1.05)}
     .btn:active{transform: translateY(0px) scale(.99)}
@@ -92,10 +94,7 @@
       transition: opacity .35s ease, transform .35s ease;
     }
     .cover.hide{opacity:0; pointer-events:none; transform: translateY(-10px)}
-    .cover-inner{
-      width:min(720px, 92vw);
-      padding:26px;
-    }
+    .cover-inner{width:min(720px, 92vw); padding:26px;}
     .heroBadge{
       display:inline-flex; align-items:center; gap:10px;
       padding:10px 14px;
@@ -129,10 +128,7 @@
     }
 
     /* MAIN HERO */
-    .mainHero{
-      padding-top:120px;
-      text-align:center;
-    }
+    .mainHero{padding-top:120px; text-align:center;}
     .monogram{
       width:74px; height:74px; border-radius:22px;
       display:grid; place-items:center;
@@ -149,17 +145,10 @@
       background: rgba(2,6,23,.35);
       color: rgba(226,232,240,.88);
     }
-    .divider{
-      height:1px;
-      background: linear-gradient(90deg, transparent, rgba(148,163,184,.35), transparent);
-      margin:18px 0;
-    }
+    .divider{height:1px;background: linear-gradient(90deg, transparent, rgba(148,163,184,.35), transparent);margin:18px 0;}
 
     /* PEOPLE */
-    .person{
-      padding:18px;
-      display:flex; gap:16px; align-items:center;
-    }
+    .person{padding:18px; display:flex; gap:16px; align-items:center;}
     .avatar{
       width:72px; height:72px; border-radius:20px;
       background:
@@ -167,25 +156,13 @@
         radial-gradient(28px 28px at 70% 70%, rgba(165,180,252,.55), transparent 60%),
         rgba(148,163,184,.10);
       border:1px solid rgba(148,163,184,.18);
-      flex:0 0 auto;
-      position:relative;
-      overflow:hidden;
+      flex:0 0 auto; overflow:hidden;
     }
     .avatar img{width:100%; height:100%; object-fit:cover; display:block}
     .person .meta small{color:var(--muted); display:block; margin-top:4px}
-    .ig{
-      display:inline-flex; align-items:center; gap:8px;
-      margin-top:10px;
-      padding:8px 12px;
-      border-radius:999px;
-      border:1px solid rgba(148,163,184,.22);
-      text-decoration:none;
-    }
-    .ig:hover{border-color: rgba(252,165,165,.55); box-shadow:0 0 0 6px var(--ring)}
 
     /* EVENT */
     .eventCard{padding:18px}
-    .eventTop{display:flex; justify-content:space-between; gap:12px; align-items:flex-start}
     .tag{
       display:inline-flex; align-items:center; gap:8px;
       padding:8px 12px; border-radius:999px;
@@ -199,10 +176,7 @@
 
     /* COUNTDOWN */
     .countWrap{padding:18px}
-    .count{
-      display:grid; grid-template-columns: repeat(4, minmax(0,1fr));
-      gap:12px;
-    }
+    .count{display:grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap:12px;}
     @media (max-width: 560px){ .count{grid-template-columns: repeat(2, minmax(0,1fr))} }
     .countBox{
       padding:14px; border-radius:18px;
@@ -228,10 +202,7 @@
     textarea{min-height:92px; resize:vertical}
 
     /* GALLERY */
-    .gallery{
-      display:grid; grid-template-columns: repeat(3, minmax(0,1fr));
-      gap:12px;
-    }
+    .gallery{display:grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap:12px;}
     @media (max-width: 860px){ .gallery{grid-template-columns: repeat(2, minmax(0,1fr))} }
     @media (max-width: 520px){ .gallery{grid-template-columns: 1fr} }
     .ph{
@@ -242,44 +213,12 @@
         radial-gradient(180px 120px at 25% 20%, rgba(252,165,165,.26), transparent 60%),
         radial-gradient(180px 120px at 75% 80%, rgba(165,180,252,.26), transparent 60%),
         rgba(148,163,184,.08);
-      overflow:hidden;
-      position:relative;
+      overflow:hidden; position:relative;
     }
     .ph img{width:100%; height:100%; object-fit:cover; display:block}
-    .ph::after{
-      content:"";
-      position:absolute; inset:0;
-      background: linear-gradient(180deg, transparent, rgba(2,6,23,.25));
-      pointer-events:none;
-    }
+    .ph::after{content:"";position:absolute; inset:0;background: linear-gradient(180deg, transparent, rgba(2,6,23,.25));pointer-events:none;}
 
-    /* GIFT */
-    .giftRow{
-      display:flex; gap:12px; align-items:center; justify-content:space-between;
-      padding:14px;
-      border-radius:18px;
-      border:1px solid rgba(148,163,184,.18);
-      background: rgba(2,6,23,.35);
-    }
-    .giftRow .left b{display:block}
-    .giftRow .left small{color:var(--muted)}
-    .copyNote{color: var(--muted); font-size: 13px}
-
-    /* COMMENTS */
-    .comment{
-      padding:14px;
-      border-radius:18px;
-      border:1px solid rgba(148,163,184,.18);
-      background: rgba(2,6,23,.35);
-    }
-    .commentHead{display:flex; gap:10px; align-items:baseline; justify-content:space-between}
-    .commentHead b{font-size: 14px}
-    .commentHead small{color:var(--muted)}
-    .footer{
-      padding:52px 0 72px;
-      text-align:center;
-      color: rgba(226,232,240,.80);
-    }
+    /* TOAST */
     .toast{
       position:fixed; left:50%; bottom:18px; transform:translateX(-50%);
       background: rgba(15,23,42,.86);
@@ -292,6 +231,8 @@
       z-index:80;
     }
     .toast.show{opacity:1; transform:translateX(-50%) translateY(-4px)}
+    .footer{padding:52px 0 72px; text-align:center; color: rgba(226,232,240,.80);}
+    code{font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;}
   </style>
 </head>
 <body>
@@ -305,23 +246,22 @@
         <small id="topTo">Untuk: -</small>
       </div>
     </div>
-
     <div class="pill">
       <button class="btn ghost" id="musicBtn" type="button">♫ Musik</button>
       <a class="btn ghost" href="#rsvp">RSVP</a>
     </div>
   </div>
 
-  <!-- COVER / GATE -->
+  <!-- COVER -->
   <div class="cover" id="cover">
     <div class="card cover-inner">
       <div class="heroBadge">
         <span class="ring"></span>
-        <span class="bigDate">THE WEDDING OF</span>
+        <span class="bigDate">UNDANGAN PERNIKAHAN</span>
       </div>
 
-      <h1 id="coverTitle">Martin &amp; Ribka</h1>
-      <p class="muted" id="coverDate">09 Januari 2026</p>
+      <h1 id="coverTitle">Nasrul &amp; Naya</h1>
+      <p class="muted" id="coverDate">07 Februari 2026</p>
 
       <div class="divider"></div>
 
@@ -339,121 +279,103 @@
     </div>
   </div>
 
-  <!-- AUDIO (opsional) -->
-  <!-- Ganti src ke file musik kamu (mp3) -->
+  <!-- AUDIO (optional) -->
   <audio id="bgm" preload="auto" loop>
     <source src="music.mp3" type="audio/mpeg" />
   </audio>
 
-  <!-- MAIN -->
   <main>
     <section class="section mainHero">
       <div class="container">
-        <div class="monogram"><strong>M &amp; R</strong></div>
-        <h2 id="mainTitle">Martin &amp; Ribka</h2>
-        <p class="muted" id="mainDate">09 Januari 2026</p>
+        <div class="monogram"><strong>N &amp; N</strong></div>
+        <h2 id="mainTitle">Nasrul &amp; Naya</h2>
+        <p class="muted" id="mainDate">07 Februari 2026</p>
 
         <div class="quote card" style="margin-top:22px; padding:20px">
-          <p style="margin:0 0 6px; font-weight:700">“God has made everything beautiful in its time.”</p>
-          <p class="muted" style="margin:0">Ecclesiastes 3:11a</p>
+          <p style="margin:0 0 6px; font-weight:700">
+            “Dan di antara tanda-tanda (kebesaran)-Nya ialah Dia menciptakan pasangan-pasangan untukmu…”
+          </p>
+          <p class="muted" style="margin:0">QS. Ar-Rum: 21</p>
         </div>
       </div>
     </section>
 
     <section class="section" id="mempelai">
       <div class="container">
-        <h2>Pasangan</h2>
-        <p class="muted">Dengan memohon rahmat Tuhan, kami bermaksud menyelenggarakan pernikahan kami.</p>
+        <h2>Mempelai</h2>
+        <p class="muted">Dengan memohon rahmat dan ridha Allah SWT, kami bermaksud menyelenggarakan pernikahan kami.</p>
 
         <div class="grid two" style="margin-top:16px">
           <div class="card person">
             <div class="avatar">
-              <!-- Ganti foto -->
-              <!-- <img src="groom.jpg" alt="Groom" /> -->
+              <!-- <img src="nasrul.jpg" alt="Nasrul" /> -->
             </div>
             <div class="meta">
-              <h3>The Groom</h3>
-              <p style="font-weight:800; margin:0">Martin Feri Agnito Nababan</p>
-              <small>Putra Keempat Bapak Drs. T S Nababan, Apt. &amp; Ibu Christina N Siregar</small>
-              <a class="ig" href="https://instagram.com/agnitonabanan" target="_blank" rel="noopener">
-                Instagram • @agnitonabanan
-              </a>
+              <h3>Mempelai Pria</h3>
+              <p style="font-weight:800; margin:0">Nasrul</p>
+              <small>Putra dari Bapak … &amp; Ibu …</small>
             </div>
           </div>
 
           <div class="card person">
             <div class="avatar">
-              <!-- Ganti foto -->
-              <!-- <img src="bride.jpg" alt="Bride" /> -->
+              <!-- <img src="naya.jpg" alt="Naya" /> -->
             </div>
             <div class="meta">
-              <h3>The Bride</h3>
-              <p style="font-weight:800; margin:0">Ribka Mariana Pasaribu</p>
-              <small>Putri Pertama Bapak Mitdel Pasaribu &amp; Ibu Hotmaida Butar-Butar</small>
-              <a class="ig" href="https://instagram.com/geumribka" target="_blank" rel="noopener">
-                Instagram • @geumribka
-              </a>
+              <h3>Mempelai Wanita</h3>
+              <p style="font-weight:800; margin:0">Naya</p>
+              <small>Putri dari Bapak … &amp; Ibu …</small>
             </div>
           </div>
-        </div>
-
-        <div class="quote card" style="margin-top:18px; padding:20px">
-          <p style="margin:0 0 6px; font-weight:700">
-            “Demikianlah mereka bukan lagi dua, melainkan satu...”
-          </p>
-          <p class="muted" style="margin:0">Matius 19:6</p>
         </div>
       </div>
     </section>
 
     <section class="section" id="acara">
       <div class="container">
-        <h2>Save the Date</h2>
-        <p class="muted">Catat tanggalnya ya. Ditunggu kehadirannya 🙏</p>
+        <h2>Akad &amp; Resepsi</h2>
+        <p class="muted">InsyaAllah akan dilaksanakan pada:</p>
 
         <div class="grid two" style="margin-top:16px">
           <div class="card eventCard">
-            <div class="eventTop">
-              <div>
-                <div class="tag">Pemberkatan</div>
-                <h3 style="margin-top:12px">Jumat, 09 Januari 2026</h3>
-                <div class="timeLine">10.00 WIB</div>
-                <div class="muted" style="margin-top:6px">Gereja Kristen Indonesia Sumut • Siborong-Borong</div>
-              </div>
-            </div>
+            <div class="tag">Akad Nikah</div>
+            <h3 style="margin-top:12px">Sabtu, 07 Februari 2026</h3>
+            <div class="timeLine">09.00 WIB</div>
+            <div class="muted" style="margin-top:6px">Masjid / Aula / Rumah • (Isi lokasi)</div>
             <div class="eventActions">
-              <!-- Ganti link maps -->
               <a class="btn ghost" target="_blank" rel="noopener" href="https://maps.app.goo.gl/">Buka Maps</a>
-              <button class="btn ghost" type="button" data-copy="Gereja Kristen Indonesia Sumut, Siborong-Borong">Salin Alamat</button>
+              <button class="btn ghost" type="button" data-copy="Alamat akad (isi di sini)">Salin Alamat</button>
             </div>
           </div>
 
           <div class="card eventCard">
-            <div class="eventTop">
-              <div>
-                <div class="tag">Resepsi</div>
-                <h3 style="margin-top:12px">Jumat, 09 Januari 2026</h3>
-                <div class="timeLine">12.00 WIB</div>
-                <div class="muted" style="margin-top:6px">Gedung Sopo Godang Siborong-Borong • Tapanuli Utara</div>
-              </div>
-            </div>
+            <div class="tag">Resepsi</div>
+            <h3 style="margin-top:12px">Sabtu, 07 Februari 2026</h3>
+            <div class="timeLine">11.00 WIB - Selesai</div>
+            <div class="muted" style="margin-top:6px">Gedung / Rumah • (Isi lokasi)</div>
             <div class="eventActions">
-              <!-- Ganti link maps -->
               <a class="btn ghost" target="_blank" rel="noopener" href="https://maps.app.goo.gl/">Buka Maps</a>
-              <button class="btn ghost" type="button" data-copy="Gedung Sopo Godang Siborong-Borong, Tapanuli Utara">Salin Alamat</button>
+              <button class="btn ghost" type="button" data-copy="Alamat resepsi (isi di sini)">Salin Alamat</button>
             </div>
           </div>
         </div>
 
         <div class="card countWrap" style="margin-top:18px">
-          <h3 style="margin-bottom:12px">Countdown Timer</h3>
+          <h3 style="margin-bottom:12px">Hitung Mundur</h3>
           <div class="count" id="countdown">
-            <div class="countBox"><b id="d">0</b><small>Days</small></div>
-            <div class="countBox"><b id="h">0</b><small>Hours</small></div>
-            <div class="countBox"><b id="m">0</b><small>Minutes</small></div>
-            <div class="countBox"><b id="s">0</b><small>Seconds</small></div>
+            <div class="countBox"><b id="d">0</b><small>Hari</small></div>
+            <div class="countBox"><b id="h">0</b><small>Jam</small></div>
+            <div class="countBox"><b id="m">0</b><small>Menit</small></div>
+            <div class="countBox"><b id="s">0</b><small>Detik</small></div>
           </div>
-          <p class="muted" style="margin:12px 0 0">Tanggal bisa kamu edit di bagian <code>CONFIG</code> (lihat JS di bawah).</p>
+          <p class="muted" style="margin:12px 0 0">Tanggal countdown udah di-set ke 07 Feb 2026 jam 09.00 WIB.</p>
+        </div>
+
+        <div class="quote card" style="margin-top:18px; padding:20px">
+          <p style="margin:0 0 6px; font-weight:700">
+            “Semoga Allah memberkahimu ketika bahagia dan ketika susah, serta mengumpulkan kalian berdua dalam kebaikan.”
+          </p>
+          <p class="muted" style="margin:0">Doa pernikahan (barakallahu lakuma…)</p>
         </div>
       </div>
     </section>
@@ -461,7 +383,7 @@
     <section class="section" id="rsvp">
       <div class="container">
         <h2>RSVP</h2>
-        <p class="muted">Konfirmasi kehadiran ya biar kami bisa siapin tempat terbaik buat kamu.</p>
+        <p class="muted">Konfirmasi kehadiran ya. Nanti otomatis kebuka WhatsApp buat ngirim pesannya.</p>
 
         <div class="grid two" style="margin-top:16px">
           <div class="card" style="padding:18px">
@@ -487,16 +409,16 @@
                 </select>
               </label>
 
-              <button class="btn" type="submit">Kirim</button>
-              <div class="copyNote" id="rsvpHint">
-                *RSVP ini tersimpan di browser. Kalau mau kirim ke WA, aktifin opsi WA di CONFIG.
+              <button class="btn" type="submit">Kirim via WhatsApp</button>
+              <div class="muted" style="font-size:13px">
+                *Pastikan nomor WA tujuan udah bener di CONFIG.
               </div>
             </form>
           </div>
 
           <div class="card" style="padding:18px">
             <h3 style="margin-bottom:8px">Ucapan &amp; Doa</h3>
-            <p class="muted">Tulis ucapan singkat buat mempelai. (Tersimpan di browser kamu juga.)</p>
+            <p class="muted">Ucapan tersimpan di browser (local). Kalau mau juga dikirim via WA, bisa gue tambah.</p>
 
             <form id="wishForm">
               <input name="wName" placeholder="Nama" required minlength="2" />
@@ -513,61 +435,13 @@
 
     <section class="section" id="gallery">
       <div class="container">
-        <h2>Our Gallery</h2>
-        <p class="muted">Isi dengan foto prewed / couple. Tinggal ganti <code>src</code> gambarnya.</p>
+        <h2>Galeri</h2>
+        <p class="muted">Ganti foto sesuka lu.</p>
 
         <div class="gallery" style="margin-top:16px">
           <div class="ph"><img alt="Foto 1" src="https://images.unsplash.com/photo-1529634897861-1b4f12b7f5b1?auto=format&fit=crop&w=1200&q=60"></div>
           <div class="ph"><img alt="Foto 2" src="https://images.unsplash.com/photo-1523438097201-512ae7d59f8b?auto=format&fit=crop&w=1200&q=60"></div>
           <div class="ph"><img alt="Foto 3" src="https://images.unsplash.com/photo-1523437237164-d442d57cc3c9?auto=format&fit=crop&w=1200&q=60"></div>
-          <div class="ph"><img alt="Foto 4" src="https://images.unsplash.com/photo-1529634806980-85c3dd6d34ac?auto=format&fit=crop&w=1200&q=60"></div>
-          <div class="ph"><img alt="Foto 5" src="https://images.unsplash.com/photo-1529634897861-1b4f12b7f5b1?auto=format&fit=crop&w=1200&q=60"></div>
-          <div class="ph"><img alt="Foto 6" src="https://images.unsplash.com/photo-1523438097201-512ae7d59f8b?auto=format&fit=crop&w=1200&q=60"></div>
-        </div>
-
-        <div class="quote card" style="margin-top:18px; padding:20px">
-          <p style="margin:0 0 8px; font-weight:700">What is Love?</p>
-          <p class="muted" style="margin:0">
-            Love is patient, love is kind... (1 Corinthians 13:4-8)
-          </p>
-        </div>
-      </div>
-    </section>
-
-    <section class="section" id="gift">
-      <div class="container">
-        <h2>Love Gift</h2>
-        <p class="muted">Tanpa mengurangi rasa hormat, bagi yang ingin mengirim hadiah bisa lewat rekening berikut.</p>
-
-        <div class="grid" style="margin-top:16px">
-          <div class="giftRow card" style="box-shadow:none">
-            <div class="left">
-              <b>BCA • 7615526070</b>
-              <small>Martin Nababan</small>
-            </div>
-            <button class="btn ghost" type="button" data-copy="7615526070">Salin</button>
-          </div>
-
-          <div class="giftRow card" style="box-shadow:none">
-            <div class="left">
-              <b>Mandiri • 1290012813420</b>
-              <small>Ribka Mariana Pasaribu</small>
-            </div>
-            <button class="btn ghost" type="button" data-copy="1290012813420">Salin</button>
-          </div>
-
-          <div class="giftRow card" style="box-shadow:none">
-            <div class="left">
-              <b>Alamat Pengiriman Hadiah Fisik</b>
-              <small>Wahana Residence N4/10 Pondok Gede</small>
-            </div>
-            <button class="btn ghost" type="button" data-copy="Wahana Residence N4/10 Pondok Gede">Salin</button>
-          </div>
-        </div>
-
-        <div class="quote card" style="margin-top:18px; padding:20px">
-          <p style="margin:0 0 6px; font-weight:700">“Above all, love each other deeply...”</p>
-          <p class="muted" style="margin:0">(1 Peter 4:8)</p>
         </div>
       </div>
     </section>
@@ -576,11 +450,11 @@
       <div class="container">
         <h2 style="margin-bottom:6px">Terima kasih</h2>
         <p class="muted" style="margin:0">
-          Merupakan kehormatan dan kebahagiaan bagi kami jika Bapak/Ibu/Saudara/i berkenan hadir dan memberikan doa restu.
+          Merupakan kehormatan dan kebahagiaan bagi kami apabila Bapak/Ibu/Saudara/i berkenan hadir dan memberikan doa restu.
         </p>
         <div class="divider"></div>
-        <p style="margin:0; font-weight:800">Martin &amp; Ribka</p>
-        <p class="muted" style="margin:10px 0 0; font-size:13px">Made with love • edit bebas</p>
+        <p style="margin:0; font-weight:800">Nasrul &amp; Naya</p>
+        <p class="muted" style="margin:10px 0 0; font-size:13px">Barakallahu fiikum</p>
       </div>
     </section>
   </main>
@@ -592,16 +466,14 @@
     // CONFIG (EDIT INI)
     // =========================
     const CONFIG = {
-      couple: "Martin & Ribka",
-      dateLabel: "09 Januari 2026",
-      // Tanggal acara utama untuk countdown (format: YYYY-MM-DDTHH:mm:ss+07:00)
-      // WIB: +07:00
-      countdownTo: "2026-01-09T10:00:00+07:00",
+      couple: "Nasrul & Naya",
+      dateLabel: "07 Februari 2026",
+      // Countdown ke jam akad (WIB +07:00)
+      countdownTo: "2026-02-07T09:00:00+07:00",
 
-      // Kalau mau RSVP ngirim ke WhatsApp, isi nomor WA (format internasional tanpa +, contoh: 6281234567890)
-      // Lalu set rsvpToWhatsApp: true
-      waNumber: "6280000000000",
-      rsvpToWhatsApp: false
+      // Nomor WA penerima RSVP (tanpa +)
+      // contoh: 6281234567890
+      waNumber: "6281234567890",
     };
 
     // =========================
@@ -637,9 +509,7 @@
     const cover = $("#cover");
     $("#openBtn").addEventListener("click", async () => {
       cover.classList.add("hide");
-      // try play music
       try { await $("#bgm").play(); $("#musicBtn").textContent = "❚❚ Musik"; } catch(e){}
-      // scroll top to hero
       window.scrollTo({top:0, behavior:"smooth"});
     });
 
@@ -664,7 +534,6 @@
     // =========================
     const ids = { d: $("#d"), h: $("#h"), m: $("#m"), s: $("#s") };
     const target = new Date(CONFIG.countdownTo).getTime();
-
     function tick(){
       const now = Date.now();
       let diff = Math.max(0, target - now);
@@ -695,7 +564,6 @@
           await navigator.clipboard.writeText(text);
           toast("Tersalin ✅");
         } catch(e){
-          // fallback
           const ta = document.createElement("textarea");
           ta.value = text;
           document.body.appendChild(ta);
@@ -708,49 +576,56 @@
     });
 
     // =========================
-    // RSVP (local / optional WA)
+    // RSVP -> WhatsApp
     // =========================
     const rsvpForm = $("#rsvpForm");
-    $("#rsvpHint").textContent = CONFIG.rsvpToWhatsApp
-      ? "*RSVP akan membuka WhatsApp kamu untuk mengirim pesan."
-      : "*RSVP ini tersimpan di browser. Kalau mau kirim ke WA, aktifin opsi WA di CONFIG.";
-
     rsvpForm.addEventListener("submit", (e) => {
       e.preventDefault();
       const fd = new FormData(rsvpForm);
-      const payload = {
-        name: String(fd.get("name")||"").trim(),
-        status: String(fd.get("status")||"").trim(),
-        qty: String(fd.get("qty")||"").trim(),
-        to: toText,
-        ts: Date.now()
-      };
+      const name = String(fd.get("name")||"").trim();
+      const status = String(fd.get("status")||"").trim();
+      const qty = String(fd.get("qty")||"").trim();
 
-      if (payload.name.length < 2) return;
+      if (name.length < 2) return;
 
-      localStorage.setItem("rsvp:last", JSON.stringify(payload));
-      toast("RSVP tersimpan ✅");
+      const msg =
+`RSVP Undangan Pernikahan (${CONFIG.couple})
+Untuk: ${toText}
+Nama: ${name}
+Status: ${status}
+Jumlah: ${qty}
 
-      if (CONFIG.rsvpToWhatsApp && CONFIG.waNumber && CONFIG.waNumber !== "6280000000000"){
-        const msg =
-`RSVP Undangan (${CONFIG.couple})
-Nama: ${payload.name}
-Untuk: ${payload.to}
-Status: ${payload.status}
-Jumlah: ${payload.qty}`;
-        const url = "https://wa.me/" + CONFIG.waNumber + "?text=" + encodeURIComponent(msg);
-        window.open(url, "_blank", "noopener");
+Terima kasih.`;
+
+      // wa.me butuh nomor tanpa +
+      const wa = String(CONFIG.waNumber || "").replace(/\D/g, "");
+      if (!wa){
+        toast("Nomor WA belum di-set");
+        return;
       }
+
+      const url = "https://wa.me/" + wa + "?text=" + encodeURIComponent(msg);
+      window.open(url, "_blank", "noopener");
+      toast("Membuka WhatsApp…");
 
       rsvpForm.reset();
     });
 
     // =========================
-    // Wishes / Comments (localStorage)
+    // Wishes (localStorage)
     // =========================
     const wishKey = "wishes:list";
     const wishList = $("#wishList");
     const wishForm = $("#wishForm");
+
+    function escapeHtml(s){
+      return String(s)
+        .replaceAll("&","&amp;")
+        .replaceAll("<","&lt;")
+        .replaceAll(">","&gt;")
+        .replaceAll('"',"&quot;")
+        .replaceAll("'","&#039;");
+    }
 
     function loadWishes(){
       const items = JSON.parse(localStorage.getItem(wishKey) || "[]");
@@ -761,26 +636,21 @@ Jumlah: ${payload.qty}`;
       }
       items.slice().reverse().forEach(it => {
         const el = document.createElement("div");
-        el.className = "comment";
+        el.className = "card";
+        el.style.padding = "14px";
+        el.style.borderRadius = "18px";
+        el.style.background = "rgba(2,6,23,.35)";
+        el.style.border = "1px solid rgba(148,163,184,.18)";
         const dt = new Date(it.ts || Date.now());
         el.innerHTML = `
-          <div class="commentHead">
-            <b>${escapeHtml(it.name)}</b>
-            <small>${dt.toLocaleString("id-ID")}</small>
+          <div style="display:flex; justify-content:space-between; gap:10px; align-items:baseline">
+            <b style="font-size:14px">${escapeHtml(it.name)}</b>
+            <small class="muted">${dt.toLocaleString("id-ID")}</small>
           </div>
           <div style="margin-top:8px; color: rgba(226,232,240,.92)">${escapeHtml(it.text)}</div>
         `;
         wishList.appendChild(el);
       });
-    }
-
-    function escapeHtml(s){
-      return String(s)
-        .replaceAll("&","&amp;")
-        .replaceAll("<","&lt;")
-        .replaceAll(">","&gt;")
-        .replaceAll('"',"&quot;")
-        .replaceAll("'","&#039;");
     }
 
     wishForm.addEventListener("submit", (e) => {
@@ -800,10 +670,6 @@ Jumlah: ${payload.qty}`;
     });
 
     loadWishes();
-
-    // Optional: auto close cover if user already opened once
-    // localStorage.setItem("inv:opened","1");
-    // if (localStorage.getItem("inv:opened")==="1") cover.classList.add("hide");
   </script>
 </body>
 </html>
