@@ -83,18 +83,65 @@
       .topbar{inset:12px 12px auto 12px}
     }
 
-    /* COVER */
-    .cover{
-      position:fixed; inset:0; z-index:50;
-      display:grid; place-items:center;
-      background:
-        radial-gradient(900px 700px at 20% 10%, rgba(252,165,165,.22), transparent 60%),
-        radial-gradient(900px 700px at 90% 30%, rgba(165,180,252,.22), transparent 55%),
-        linear-gradient(180deg, rgba(2,6,23,.90), rgba(2,6,23,.92));
-      transition: opacity .35s ease, transform .35s ease;
-    }
-    .cover.hide{opacity:0; pointer-events:none; transform: translateY(-10px)}
-    .cover-inner{width:min(720px, 92vw); padding:26px;}
+    /* COVER FOTO FULLSCREEN */
+.cover{
+  position:fixed; inset:0; z-index:50;
+  display:grid; place-items:center;
+  background: #000;
+  transition: opacity .35s ease, transform .35s ease;
+}
+.cover.hide{opacity:0; pointer-events:none; transform: translateY(-10px)}
+
+.coverPhoto{
+  position:absolute; inset:0;
+  background-image: var(--cover-url);
+  background-size: cover;
+  background-position: center;
+  filter: saturate(1.02);
+}
+.coverOverlay{
+  position:absolute; inset:0;
+  background:
+    linear-gradient(180deg, rgba(0,0,0,.35), rgba(0,0,0,.55)),
+    radial-gradient(900px 600px at 50% 15%, rgba(0,0,0,.15), transparent 60%),
+    linear-gradient(180deg, transparent 55%, rgba(2,6,23,.78) 100%);
+}
+
+.coverInner{
+  position:relative;
+  width:min(720px, 92vw);
+  padding: 26px;
+  text-align:center;
+}
+
+.coverKicker{
+  letter-spacing:.28em;
+  text-transform:uppercase;
+  color: rgba(226,232,240,.85);
+  font-size: 13px;
+  margin-bottom: 10px;
+}
+
+.coverNames{
+  margin: 0 0 10px;
+  font-size: clamp(42px, 8vw, 72px);
+  line-height: 1.0;
+  font-weight: 700;
+}
+
+.coverTo{
+  margin-top: 14px;
+  color: rgba(226,232,240,.92);
+  font-size: 16px;
+}
+
+.coverBtn{
+  margin-top: 18px;
+  background: rgba(146, 64, 14, .95); /* coklat */
+  border:1px solid rgba(255,255,255,.18);
+  box-shadow: 0 18px 45px rgba(0,0,0,.35);
+}
+.coverBtn:hover{filter:saturate(1.05)}
     .heroBadge{
       display:inline-flex; align-items:center; gap:10px;
       padding:10px 14px;
@@ -253,31 +300,25 @@
   </div>
 
   <!-- COVER -->
-  <div class="cover" id="cover">
-    <div class="card cover-inner">
-      <div class="heroBadge">
-        <span class="ring"></span>
-        <span class="bigDate">UNDANGAN PERNIKAHAN</span>
-      </div>
+  <div class="cover" id="cover" style="--cover-url:url('cover.jpg');">
+  <div class="coverPhoto"></div>
+  <div class="coverOverlay"></div>
 
-      <h1 id="coverTitle">Nasrul &amp; Naya</h1>
-      <p class="muted" id="coverDate">07 Februari 2026</p>
+  <div class="coverInner">
+    <div class="coverKicker">THE WEDDING OF</div>
 
-      <div class="divider"></div>
+    <div class="coverNames" id="coverTitle">Nasrul &amp; Naya</div>
+    <div class="muted" id="coverDate">07 Februari 2026</div>
 
-      <p class="muted" style="margin-bottom:6px">Kepada Yth.</p>
-      <div class="toName" id="toName">Tamu Undangan</div>
+    <div class="coverTo" id="toName">Bu Yana</div>
 
-      <div style="display:flex; gap:10px; margin-top:18px; flex-wrap:wrap">
-        <button class="btn" id="openBtn" type="button">Buka Undangan</button>
-        <a class="btn ghost" href="#acara" id="skipBtn">Lihat Detail</a>
-      </div>
+    <button class="btn coverBtn" id="openBtn" type="button">Buka Undangan</button>
 
-      <p class="muted" style="margin-top:14px; font-size:13px">
-        *Jika musik tidak otomatis, tap tombol “♫ Musik”.
-      </p>
-    </div>
+    <p class="muted" style="margin-top:14px; font-size:13px">
+      *Jika musik tidak otomatis, tap tombol “♫ Musik”.
+    </p>
   </div>
+</div>
 
   <!-- AUDIO (optional) -->
   <audio id="bgm" preload="auto" loop>
@@ -473,7 +514,7 @@
 
       // Nomor WA penerima RSVP (tanpa +)
       // contoh: 6281234567890
-      waNumber: "6281234567890",
+      waNumber: "62895326859614",
     };
 
     // =========================
