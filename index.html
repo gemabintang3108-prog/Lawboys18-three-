@@ -1,0 +1,809 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="theme-color" content="#0f172a" />
+  <title>Undangan Pernikahan • Martin & Ribka</title>
+  <style>
+    :root{
+      --bg:#0b1220;
+      --card:#0f172a;
+      --muted:#94a3b8;
+      --text:#e2e8f0;
+      --accent:#fca5a5;
+      --accent2:#a5b4fc;
+      --ring: rgba(252,165,165,.35);
+      --shadow: 0 20px 60px rgba(0,0,0,.35);
+      --radius: 22px;
+    }
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{
+      margin:0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, "Noto Sans", "Apple Color Emoji","Segoe UI Emoji";
+      color:var(--text);
+      background:
+        radial-gradient(1200px 800px at 20% -10%, rgba(165,180,252,.20), transparent 60%),
+        radial-gradient(1000px 700px at 100% 0%, rgba(252,165,165,.18), transparent 55%),
+        radial-gradient(900px 900px at 30% 110%, rgba(34,197,94,.10), transparent 55%),
+        var(--bg);
+      overflow-x:hidden;
+    }
+    a{color:inherit}
+    .container{width:min(1040px, 92vw); margin:0 auto;}
+    .topbar{
+      position:fixed; inset:16px 16px auto 16px; z-index:30;
+      display:flex; justify-content:space-between; align-items:center;
+      pointer-events:none;
+    }
+    .pill{
+      pointer-events:auto;
+      display:flex; gap:10px; align-items:center;
+      padding:10px 12px; border-radius:999px;
+      background:rgba(15,23,42,.72);
+      border:1px solid rgba(148,163,184,.22);
+      backdrop-filter: blur(10px);
+      box-shadow: 0 10px 30px rgba(0,0,0,.25);
+    }
+    .pill small{color:var(--muted)}
+    .btn{
+      appearance:none; border:0; cursor:pointer;
+      color:var(--text);
+      padding:12px 16px;
+      border-radius:999px;
+      background:linear-gradient(135deg, rgba(252,165,165,.95), rgba(165,180,252,.92));
+      box-shadow: 0 18px 40px rgba(0,0,0,.30);
+      transition: transform .15s ease, filter .15s ease;
+    }
+    .btn:hover{transform: translateY(-1px); filter:saturate(1.05)}
+    .btn:active{transform: translateY(0px) scale(.99)}
+    .btn.ghost{
+      background:transparent;
+      border:1px solid rgba(148,163,184,.28);
+      box-shadow:none;
+    }
+    .btn.ghost:hover{border-color: rgba(252,165,165,.55); box-shadow: 0 0 0 6px var(--ring)}
+    .section{padding:84px 0}
+    .card{
+      background: rgba(15,23,42,.72);
+      border:1px solid rgba(148,163,184,.18);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(12px);
+    }
+    .grid{display:grid; gap:18px}
+    .grid.two{grid-template-columns: repeat(2, minmax(0,1fr))}
+    .grid.three{grid-template-columns: repeat(3, minmax(0,1fr))}
+    @media (max-width: 860px){
+      .grid.two,.grid.three{grid-template-columns:1fr}
+      .section{padding:64px 0}
+      .topbar{inset:12px 12px auto 12px}
+    }
+
+    /* COVER */
+    .cover{
+      position:fixed; inset:0; z-index:50;
+      display:grid; place-items:center;
+      background:
+        radial-gradient(900px 700px at 20% 10%, rgba(252,165,165,.22), transparent 60%),
+        radial-gradient(900px 700px at 90% 30%, rgba(165,180,252,.22), transparent 55%),
+        linear-gradient(180deg, rgba(2,6,23,.90), rgba(2,6,23,.92));
+      transition: opacity .35s ease, transform .35s ease;
+    }
+    .cover.hide{opacity:0; pointer-events:none; transform: translateY(-10px)}
+    .cover-inner{
+      width:min(720px, 92vw);
+      padding:26px;
+    }
+    .heroBadge{
+      display:inline-flex; align-items:center; gap:10px;
+      padding:10px 14px;
+      border-radius:999px;
+      background: rgba(15,23,42,.55);
+      border:1px solid rgba(148,163,184,.18);
+    }
+    .ring{
+      width:10px; height:10px; border-radius:999px;
+      background: var(--accent);
+      box-shadow: 0 0 0 6px rgba(252,165,165,.16);
+    }
+    h1{margin:14px 0 8px; font-size: clamp(34px, 6vw, 56px); line-height:1.05}
+    h2{margin:0 0 10px; font-size: clamp(24px, 3.6vw, 34px)}
+    h3{margin:0 0 10px}
+    p{margin:0 0 12px; color:rgba(226,232,240,.92)}
+    .muted{color:var(--muted)}
+    .bigDate{
+      font-size: 16px;
+      letter-spacing:.14em;
+      text-transform:uppercase;
+      color: rgba(226,232,240,.78);
+    }
+    .toName{
+      margin-top:10px;
+      display:inline-block;
+      padding:10px 14px;
+      border-radius: 999px;
+      border:1px dashed rgba(148,163,184,.35);
+      color: rgba(226,232,240,.90);
+    }
+
+    /* MAIN HERO */
+    .mainHero{
+      padding-top:120px;
+      text-align:center;
+    }
+    .monogram{
+      width:74px; height:74px; border-radius:22px;
+      display:grid; place-items:center;
+      margin:0 auto 14px;
+      background: linear-gradient(135deg, rgba(252,165,165,.22), rgba(165,180,252,.22));
+      border:1px solid rgba(148,163,184,.18);
+    }
+    .monogram strong{font-size:20px; letter-spacing:.08em}
+    .quote{
+      margin-top:16px;
+      padding:18px;
+      border-radius:18px;
+      border:1px solid rgba(148,163,184,.18);
+      background: rgba(2,6,23,.35);
+      color: rgba(226,232,240,.88);
+    }
+    .divider{
+      height:1px;
+      background: linear-gradient(90deg, transparent, rgba(148,163,184,.35), transparent);
+      margin:18px 0;
+    }
+
+    /* PEOPLE */
+    .person{
+      padding:18px;
+      display:flex; gap:16px; align-items:center;
+    }
+    .avatar{
+      width:72px; height:72px; border-radius:20px;
+      background:
+        radial-gradient(28px 28px at 30% 30%, rgba(252,165,165,.55), transparent 60%),
+        radial-gradient(28px 28px at 70% 70%, rgba(165,180,252,.55), transparent 60%),
+        rgba(148,163,184,.10);
+      border:1px solid rgba(148,163,184,.18);
+      flex:0 0 auto;
+      position:relative;
+      overflow:hidden;
+    }
+    .avatar img{width:100%; height:100%; object-fit:cover; display:block}
+    .person .meta small{color:var(--muted); display:block; margin-top:4px}
+    .ig{
+      display:inline-flex; align-items:center; gap:8px;
+      margin-top:10px;
+      padding:8px 12px;
+      border-radius:999px;
+      border:1px solid rgba(148,163,184,.22);
+      text-decoration:none;
+    }
+    .ig:hover{border-color: rgba(252,165,165,.55); box-shadow:0 0 0 6px var(--ring)}
+
+    /* EVENT */
+    .eventCard{padding:18px}
+    .eventTop{display:flex; justify-content:space-between; gap:12px; align-items:flex-start}
+    .tag{
+      display:inline-flex; align-items:center; gap:8px;
+      padding:8px 12px; border-radius:999px;
+      background: rgba(148,163,184,.10);
+      border:1px solid rgba(148,163,184,.18);
+      color: rgba(226,232,240,.88);
+      font-size: 13px;
+    }
+    .timeLine{margin-top:10px; color:rgba(226,232,240,.92)}
+    .eventActions{margin-top:14px; display:flex; gap:10px; flex-wrap:wrap}
+
+    /* COUNTDOWN */
+    .countWrap{padding:18px}
+    .count{
+      display:grid; grid-template-columns: repeat(4, minmax(0,1fr));
+      gap:12px;
+    }
+    @media (max-width: 560px){ .count{grid-template-columns: repeat(2, minmax(0,1fr))} }
+    .countBox{
+      padding:14px; border-radius:18px;
+      background: rgba(2,6,23,.35);
+      border:1px solid rgba(148,163,184,.18);
+      text-align:center;
+    }
+    .countBox b{font-size: 28px; display:block}
+    .countBox small{color:var(--muted)}
+
+    /* FORM */
+    form{display:grid; gap:10px}
+    input, select, textarea{
+      width:100%;
+      padding:12px 14px;
+      border-radius:14px;
+      border:1px solid rgba(148,163,184,.22);
+      background: rgba(2,6,23,.35);
+      color: var(--text);
+      outline:none;
+    }
+    input:focus, select:focus, textarea:focus{box-shadow:0 0 0 6px var(--ring); border-color: rgba(252,165,165,.55)}
+    textarea{min-height:92px; resize:vertical}
+
+    /* GALLERY */
+    .gallery{
+      display:grid; grid-template-columns: repeat(3, minmax(0,1fr));
+      gap:12px;
+    }
+    @media (max-width: 860px){ .gallery{grid-template-columns: repeat(2, minmax(0,1fr))} }
+    @media (max-width: 520px){ .gallery{grid-template-columns: 1fr} }
+    .ph{
+      aspect-ratio: 4/3;
+      border-radius:18px;
+      border:1px solid rgba(148,163,184,.18);
+      background:
+        radial-gradient(180px 120px at 25% 20%, rgba(252,165,165,.26), transparent 60%),
+        radial-gradient(180px 120px at 75% 80%, rgba(165,180,252,.26), transparent 60%),
+        rgba(148,163,184,.08);
+      overflow:hidden;
+      position:relative;
+    }
+    .ph img{width:100%; height:100%; object-fit:cover; display:block}
+    .ph::after{
+      content:"";
+      position:absolute; inset:0;
+      background: linear-gradient(180deg, transparent, rgba(2,6,23,.25));
+      pointer-events:none;
+    }
+
+    /* GIFT */
+    .giftRow{
+      display:flex; gap:12px; align-items:center; justify-content:space-between;
+      padding:14px;
+      border-radius:18px;
+      border:1px solid rgba(148,163,184,.18);
+      background: rgba(2,6,23,.35);
+    }
+    .giftRow .left b{display:block}
+    .giftRow .left small{color:var(--muted)}
+    .copyNote{color: var(--muted); font-size: 13px}
+
+    /* COMMENTS */
+    .comment{
+      padding:14px;
+      border-radius:18px;
+      border:1px solid rgba(148,163,184,.18);
+      background: rgba(2,6,23,.35);
+    }
+    .commentHead{display:flex; gap:10px; align-items:baseline; justify-content:space-between}
+    .commentHead b{font-size: 14px}
+    .commentHead small{color:var(--muted)}
+    .footer{
+      padding:52px 0 72px;
+      text-align:center;
+      color: rgba(226,232,240,.80);
+    }
+    .toast{
+      position:fixed; left:50%; bottom:18px; transform:translateX(-50%);
+      background: rgba(15,23,42,.86);
+      border:1px solid rgba(148,163,184,.22);
+      padding:10px 12px;
+      border-radius:999px;
+      box-shadow: 0 16px 40px rgba(0,0,0,.35);
+      opacity:0; pointer-events:none;
+      transition: opacity .2s ease, transform .2s ease;
+      z-index:80;
+    }
+    .toast.show{opacity:1; transform:translateX(-50%) translateY(-4px)}
+  </style>
+</head>
+<body>
+
+  <!-- TOP BAR -->
+  <div class="topbar">
+    <div class="pill">
+      <span class="ring"></span>
+      <div>
+        <div style="font-weight:700; letter-spacing:.04em">Undangan</div>
+        <small id="topTo">Untuk: -</small>
+      </div>
+    </div>
+
+    <div class="pill">
+      <button class="btn ghost" id="musicBtn" type="button">♫ Musik</button>
+      <a class="btn ghost" href="#rsvp">RSVP</a>
+    </div>
+  </div>
+
+  <!-- COVER / GATE -->
+  <div class="cover" id="cover">
+    <div class="card cover-inner">
+      <div class="heroBadge">
+        <span class="ring"></span>
+        <span class="bigDate">THE WEDDING OF</span>
+      </div>
+
+      <h1 id="coverTitle">Martin &amp; Ribka</h1>
+      <p class="muted" id="coverDate">09 Januari 2026</p>
+
+      <div class="divider"></div>
+
+      <p class="muted" style="margin-bottom:6px">Kepada Yth.</p>
+      <div class="toName" id="toName">Tamu Undangan</div>
+
+      <div style="display:flex; gap:10px; margin-top:18px; flex-wrap:wrap">
+        <button class="btn" id="openBtn" type="button">Buka Undangan</button>
+        <a class="btn ghost" href="#acara" id="skipBtn">Lihat Detail</a>
+      </div>
+
+      <p class="muted" style="margin-top:14px; font-size:13px">
+        *Jika musik tidak otomatis, tap tombol “♫ Musik”.
+      </p>
+    </div>
+  </div>
+
+  <!-- AUDIO (opsional) -->
+  <!-- Ganti src ke file musik kamu (mp3) -->
+  <audio id="bgm" preload="auto" loop>
+    <source src="music.mp3" type="audio/mpeg" />
+  </audio>
+
+  <!-- MAIN -->
+  <main>
+    <section class="section mainHero">
+      <div class="container">
+        <div class="monogram"><strong>M &amp; R</strong></div>
+        <h2 id="mainTitle">Martin &amp; Ribka</h2>
+        <p class="muted" id="mainDate">09 Januari 2026</p>
+
+        <div class="quote card" style="margin-top:22px; padding:20px">
+          <p style="margin:0 0 6px; font-weight:700">“God has made everything beautiful in its time.”</p>
+          <p class="muted" style="margin:0">Ecclesiastes 3:11a</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="mempelai">
+      <div class="container">
+        <h2>Pasangan</h2>
+        <p class="muted">Dengan memohon rahmat Tuhan, kami bermaksud menyelenggarakan pernikahan kami.</p>
+
+        <div class="grid two" style="margin-top:16px">
+          <div class="card person">
+            <div class="avatar">
+              <!-- Ganti foto -->
+              <!-- <img src="groom.jpg" alt="Groom" /> -->
+            </div>
+            <div class="meta">
+              <h3>The Groom</h3>
+              <p style="font-weight:800; margin:0">Martin Feri Agnito Nababan</p>
+              <small>Putra Keempat Bapak Drs. T S Nababan, Apt. &amp; Ibu Christina N Siregar</small>
+              <a class="ig" href="https://instagram.com/agnitonabanan" target="_blank" rel="noopener">
+                Instagram • @agnitonabanan
+              </a>
+            </div>
+          </div>
+
+          <div class="card person">
+            <div class="avatar">
+              <!-- Ganti foto -->
+              <!-- <img src="bride.jpg" alt="Bride" /> -->
+            </div>
+            <div class="meta">
+              <h3>The Bride</h3>
+              <p style="font-weight:800; margin:0">Ribka Mariana Pasaribu</p>
+              <small>Putri Pertama Bapak Mitdel Pasaribu &amp; Ibu Hotmaida Butar-Butar</small>
+              <a class="ig" href="https://instagram.com/geumribka" target="_blank" rel="noopener">
+                Instagram • @geumribka
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <div class="quote card" style="margin-top:18px; padding:20px">
+          <p style="margin:0 0 6px; font-weight:700">
+            “Demikianlah mereka bukan lagi dua, melainkan satu...”
+          </p>
+          <p class="muted" style="margin:0">Matius 19:6</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="acara">
+      <div class="container">
+        <h2>Save the Date</h2>
+        <p class="muted">Catat tanggalnya ya. Ditunggu kehadirannya 🙏</p>
+
+        <div class="grid two" style="margin-top:16px">
+          <div class="card eventCard">
+            <div class="eventTop">
+              <div>
+                <div class="tag">Pemberkatan</div>
+                <h3 style="margin-top:12px">Jumat, 09 Januari 2026</h3>
+                <div class="timeLine">10.00 WIB</div>
+                <div class="muted" style="margin-top:6px">Gereja Kristen Indonesia Sumut • Siborong-Borong</div>
+              </div>
+            </div>
+            <div class="eventActions">
+              <!-- Ganti link maps -->
+              <a class="btn ghost" target="_blank" rel="noopener" href="https://maps.app.goo.gl/">Buka Maps</a>
+              <button class="btn ghost" type="button" data-copy="Gereja Kristen Indonesia Sumut, Siborong-Borong">Salin Alamat</button>
+            </div>
+          </div>
+
+          <div class="card eventCard">
+            <div class="eventTop">
+              <div>
+                <div class="tag">Resepsi</div>
+                <h3 style="margin-top:12px">Jumat, 09 Januari 2026</h3>
+                <div class="timeLine">12.00 WIB</div>
+                <div class="muted" style="margin-top:6px">Gedung Sopo Godang Siborong-Borong • Tapanuli Utara</div>
+              </div>
+            </div>
+            <div class="eventActions">
+              <!-- Ganti link maps -->
+              <a class="btn ghost" target="_blank" rel="noopener" href="https://maps.app.goo.gl/">Buka Maps</a>
+              <button class="btn ghost" type="button" data-copy="Gedung Sopo Godang Siborong-Borong, Tapanuli Utara">Salin Alamat</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="card countWrap" style="margin-top:18px">
+          <h3 style="margin-bottom:12px">Countdown Timer</h3>
+          <div class="count" id="countdown">
+            <div class="countBox"><b id="d">0</b><small>Days</small></div>
+            <div class="countBox"><b id="h">0</b><small>Hours</small></div>
+            <div class="countBox"><b id="m">0</b><small>Minutes</small></div>
+            <div class="countBox"><b id="s">0</b><small>Seconds</small></div>
+          </div>
+          <p class="muted" style="margin:12px 0 0">Tanggal bisa kamu edit di bagian <code>CONFIG</code> (lihat JS di bawah).</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="rsvp">
+      <div class="container">
+        <h2>RSVP</h2>
+        <p class="muted">Konfirmasi kehadiran ya biar kami bisa siapin tempat terbaik buat kamu.</p>
+
+        <div class="grid two" style="margin-top:16px">
+          <div class="card" style="padding:18px">
+            <form id="rsvpForm">
+              <label>
+                <div class="muted" style="margin:0 0 6px">Nama</div>
+                <input name="name" placeholder="Nama kamu" required minlength="2" />
+              </label>
+
+              <label>
+                <div class="muted" style="margin:0 0 6px">Status Kehadiran</div>
+                <select name="status" required>
+                  <option value="Hadir">Hadir</option>
+                  <option value="Tidak hadir">Tidak hadir</option>
+                  <option value="Masih ragu">Masih ragu</option>
+                </select>
+              </label>
+
+              <label>
+                <div class="muted" style="margin:0 0 6px">Jumlah yang hadir</div>
+                <select name="qty" required>
+                  <option>1</option><option>2</option><option>3</option><option>4</option><option>5</option>
+                </select>
+              </label>
+
+              <button class="btn" type="submit">Kirim</button>
+              <div class="copyNote" id="rsvpHint">
+                *RSVP ini tersimpan di browser. Kalau mau kirim ke WA, aktifin opsi WA di CONFIG.
+              </div>
+            </form>
+          </div>
+
+          <div class="card" style="padding:18px">
+            <h3 style="margin-bottom:8px">Ucapan &amp; Doa</h3>
+            <p class="muted">Tulis ucapan singkat buat mempelai. (Tersimpan di browser kamu juga.)</p>
+
+            <form id="wishForm">
+              <input name="wName" placeholder="Nama" required minlength="2" />
+              <textarea name="wish" placeholder="Ucapan..." required minlength="2"></textarea>
+              <button class="btn ghost" type="submit">Kirim Ucapan</button>
+            </form>
+
+            <div class="divider"></div>
+            <div id="wishList" class="grid" style="gap:10px"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="gallery">
+      <div class="container">
+        <h2>Our Gallery</h2>
+        <p class="muted">Isi dengan foto prewed / couple. Tinggal ganti <code>src</code> gambarnya.</p>
+
+        <div class="gallery" style="margin-top:16px">
+          <div class="ph"><img alt="Foto 1" src="https://images.unsplash.com/photo-1529634897861-1b4f12b7f5b1?auto=format&fit=crop&w=1200&q=60"></div>
+          <div class="ph"><img alt="Foto 2" src="https://images.unsplash.com/photo-1523438097201-512ae7d59f8b?auto=format&fit=crop&w=1200&q=60"></div>
+          <div class="ph"><img alt="Foto 3" src="https://images.unsplash.com/photo-1523437237164-d442d57cc3c9?auto=format&fit=crop&w=1200&q=60"></div>
+          <div class="ph"><img alt="Foto 4" src="https://images.unsplash.com/photo-1529634806980-85c3dd6d34ac?auto=format&fit=crop&w=1200&q=60"></div>
+          <div class="ph"><img alt="Foto 5" src="https://images.unsplash.com/photo-1529634897861-1b4f12b7f5b1?auto=format&fit=crop&w=1200&q=60"></div>
+          <div class="ph"><img alt="Foto 6" src="https://images.unsplash.com/photo-1523438097201-512ae7d59f8b?auto=format&fit=crop&w=1200&q=60"></div>
+        </div>
+
+        <div class="quote card" style="margin-top:18px; padding:20px">
+          <p style="margin:0 0 8px; font-weight:700">What is Love?</p>
+          <p class="muted" style="margin:0">
+            Love is patient, love is kind... (1 Corinthians 13:4-8)
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="gift">
+      <div class="container">
+        <h2>Love Gift</h2>
+        <p class="muted">Tanpa mengurangi rasa hormat, bagi yang ingin mengirim hadiah bisa lewat rekening berikut.</p>
+
+        <div class="grid" style="margin-top:16px">
+          <div class="giftRow card" style="box-shadow:none">
+            <div class="left">
+              <b>BCA • 7615526070</b>
+              <small>Martin Nababan</small>
+            </div>
+            <button class="btn ghost" type="button" data-copy="7615526070">Salin</button>
+          </div>
+
+          <div class="giftRow card" style="box-shadow:none">
+            <div class="left">
+              <b>Mandiri • 1290012813420</b>
+              <small>Ribka Mariana Pasaribu</small>
+            </div>
+            <button class="btn ghost" type="button" data-copy="1290012813420">Salin</button>
+          </div>
+
+          <div class="giftRow card" style="box-shadow:none">
+            <div class="left">
+              <b>Alamat Pengiriman Hadiah Fisik</b>
+              <small>Wahana Residence N4/10 Pondok Gede</small>
+            </div>
+            <button class="btn ghost" type="button" data-copy="Wahana Residence N4/10 Pondok Gede">Salin</button>
+          </div>
+        </div>
+
+        <div class="quote card" style="margin-top:18px; padding:20px">
+          <p style="margin:0 0 6px; font-weight:700">“Above all, love each other deeply...”</p>
+          <p class="muted" style="margin:0">(1 Peter 4:8)</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="footer">
+      <div class="container">
+        <h2 style="margin-bottom:6px">Terima kasih</h2>
+        <p class="muted" style="margin:0">
+          Merupakan kehormatan dan kebahagiaan bagi kami jika Bapak/Ibu/Saudara/i berkenan hadir dan memberikan doa restu.
+        </p>
+        <div class="divider"></div>
+        <p style="margin:0; font-weight:800">Martin &amp; Ribka</p>
+        <p class="muted" style="margin:10px 0 0; font-size:13px">Made with love • edit bebas</p>
+      </div>
+    </section>
+  </main>
+
+  <div class="toast" id="toast">Tersalin ✅</div>
+
+  <script>
+    // =========================
+    // CONFIG (EDIT INI)
+    // =========================
+    const CONFIG = {
+      couple: "Martin & Ribka",
+      dateLabel: "09 Januari 2026",
+      // Tanggal acara utama untuk countdown (format: YYYY-MM-DDTHH:mm:ss+07:00)
+      // WIB: +07:00
+      countdownTo: "2026-01-09T10:00:00+07:00",
+
+      // Kalau mau RSVP ngirim ke WhatsApp, isi nomor WA (format internasional tanpa +, contoh: 6281234567890)
+      // Lalu set rsvpToWhatsApp: true
+      waNumber: "6280000000000",
+      rsvpToWhatsApp: false
+    };
+
+    // =========================
+    // Helpers
+    // =========================
+    const $ = (q, el=document) => el.querySelector(q);
+    const $$ = (q, el=document) => [...el.querySelectorAll(q)];
+    const toast = (msg="Tersalin ✅") => {
+      const t = $("#toast");
+      t.textContent = msg;
+      t.classList.add("show");
+      setTimeout(()=>t.classList.remove("show"), 1400);
+    };
+
+    // =========================
+    // Personalization via ?to=
+    // =========================
+    const params = new URLSearchParams(location.search);
+    const to = params.get("to") ? decodeURIComponent(params.get("to")).replace(/\+/g," ") : "";
+    const toText = to?.trim() || "Tamu Undangan";
+    $("#toName").textContent = toText;
+    $("#topTo").textContent = "Untuk: " + toText;
+
+    // Titles
+    $("#coverTitle").innerHTML = CONFIG.couple.replace("&","&amp;");
+    $("#mainTitle").innerHTML = CONFIG.couple.replace("&","&amp;");
+    $("#coverDate").textContent = CONFIG.dateLabel;
+    $("#mainDate").textContent = CONFIG.dateLabel;
+
+    // =========================
+    // Cover open
+    // =========================
+    const cover = $("#cover");
+    $("#openBtn").addEventListener("click", async () => {
+      cover.classList.add("hide");
+      // try play music
+      try { await $("#bgm").play(); $("#musicBtn").textContent = "❚❚ Musik"; } catch(e){}
+      // scroll top to hero
+      window.scrollTo({top:0, behavior:"smooth"});
+    });
+
+    // =========================
+    // Music toggle
+    // =========================
+    const bgm = $("#bgm");
+    const musicBtn = $("#musicBtn");
+    musicBtn.addEventListener("click", async () => {
+      if (bgm.paused){
+        try { await bgm.play(); musicBtn.textContent = "❚❚ Musik"; toast("Musik ON ♫"); }
+        catch(e){ toast("Browser nolak autoplay 😅"); }
+      } else {
+        bgm.pause();
+        musicBtn.textContent = "♫ Musik";
+        toast("Musik OFF");
+      }
+    });
+
+    // =========================
+    // Countdown
+    // =========================
+    const ids = { d: $("#d"), h: $("#h"), m: $("#m"), s: $("#s") };
+    const target = new Date(CONFIG.countdownTo).getTime();
+
+    function tick(){
+      const now = Date.now();
+      let diff = Math.max(0, target - now);
+
+      const days = Math.floor(diff / (1000*60*60*24));
+      diff -= days * (1000*60*60*24);
+      const hours = Math.floor(diff / (1000*60*60));
+      diff -= hours * (1000*60*60);
+      const mins = Math.floor(diff / (1000*60));
+      diff -= mins * (1000*60);
+      const secs = Math.floor(diff / 1000);
+
+      ids.d.textContent = days;
+      ids.h.textContent = String(hours).padStart(2,"0");
+      ids.m.textContent = String(mins).padStart(2,"0");
+      ids.s.textContent = String(secs).padStart(2,"0");
+    }
+    tick();
+    setInterval(tick, 1000);
+
+    // =========================
+    // Copy buttons
+    // =========================
+    $$("[data-copy]").forEach(btn => {
+      btn.addEventListener("click", async () => {
+        const text = btn.getAttribute("data-copy");
+        try {
+          await navigator.clipboard.writeText(text);
+          toast("Tersalin ✅");
+        } catch(e){
+          // fallback
+          const ta = document.createElement("textarea");
+          ta.value = text;
+          document.body.appendChild(ta);
+          ta.select();
+          document.execCommand("copy");
+          ta.remove();
+          toast("Tersalin ✅");
+        }
+      });
+    });
+
+    // =========================
+    // RSVP (local / optional WA)
+    // =========================
+    const rsvpForm = $("#rsvpForm");
+    $("#rsvpHint").textContent = CONFIG.rsvpToWhatsApp
+      ? "*RSVP akan membuka WhatsApp kamu untuk mengirim pesan."
+      : "*RSVP ini tersimpan di browser. Kalau mau kirim ke WA, aktifin opsi WA di CONFIG.";
+
+    rsvpForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const fd = new FormData(rsvpForm);
+      const payload = {
+        name: String(fd.get("name")||"").trim(),
+        status: String(fd.get("status")||"").trim(),
+        qty: String(fd.get("qty")||"").trim(),
+        to: toText,
+        ts: Date.now()
+      };
+
+      if (payload.name.length < 2) return;
+
+      localStorage.setItem("rsvp:last", JSON.stringify(payload));
+      toast("RSVP tersimpan ✅");
+
+      if (CONFIG.rsvpToWhatsApp && CONFIG.waNumber && CONFIG.waNumber !== "6280000000000"){
+        const msg =
+`RSVP Undangan (${CONFIG.couple})
+Nama: ${payload.name}
+Untuk: ${payload.to}
+Status: ${payload.status}
+Jumlah: ${payload.qty}`;
+        const url = "https://wa.me/" + CONFIG.waNumber + "?text=" + encodeURIComponent(msg);
+        window.open(url, "_blank", "noopener");
+      }
+
+      rsvpForm.reset();
+    });
+
+    // =========================
+    // Wishes / Comments (localStorage)
+    // =========================
+    const wishKey = "wishes:list";
+    const wishList = $("#wishList");
+    const wishForm = $("#wishForm");
+
+    function loadWishes(){
+      const items = JSON.parse(localStorage.getItem(wishKey) || "[]");
+      wishList.innerHTML = "";
+      if (!items.length){
+        wishList.innerHTML = `<p class="muted" style="margin:0">Belum ada ucapan. Jadi yang pertama ya 😄</p>`;
+        return;
+      }
+      items.slice().reverse().forEach(it => {
+        const el = document.createElement("div");
+        el.className = "comment";
+        const dt = new Date(it.ts || Date.now());
+        el.innerHTML = `
+          <div class="commentHead">
+            <b>${escapeHtml(it.name)}</b>
+            <small>${dt.toLocaleString("id-ID")}</small>
+          </div>
+          <div style="margin-top:8px; color: rgba(226,232,240,.92)">${escapeHtml(it.text)}</div>
+        `;
+        wishList.appendChild(el);
+      });
+    }
+
+    function escapeHtml(s){
+      return String(s)
+        .replaceAll("&","&amp;")
+        .replaceAll("<","&lt;")
+        .replaceAll(">","&gt;")
+        .replaceAll('"',"&quot;")
+        .replaceAll("'","&#039;");
+    }
+
+    wishForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const fd = new FormData(wishForm);
+      const name = String(fd.get("wName")||"").trim();
+      const text = String(fd.get("wish")||"").trim();
+      if (name.length < 2 || text.length < 2) return;
+
+      const items = JSON.parse(localStorage.getItem(wishKey) || "[]");
+      items.push({ name, text, ts: Date.now() });
+      localStorage.setItem(wishKey, JSON.stringify(items));
+
+      toast("Ucapan terkirim ✅");
+      wishForm.reset();
+      loadWishes();
+    });
+
+    loadWishes();
+
+    // Optional: auto close cover if user already opened once
+    // localStorage.setItem("inv:opened","1");
+    // if (localStorage.getItem("inv:opened")==="1") cover.classList.add("hide");
+  </script>
+</body>
+</html>
