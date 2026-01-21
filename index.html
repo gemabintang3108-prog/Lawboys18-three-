@@ -1,0 +1,746 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="theme-color" content="#b89052" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&family=Great+Vibes&display=swap" rel="stylesheet">
+  <title>Undangan Pernikahan • Nasrul &amp; Naya</title>
+  <style>
+    :root{
+      --paper-bg: url("https://files.catbox.moe/erya9u.jpg");
+      --paper: rgba(255, 248, 235, .94);
+      --paper2: rgba(255, 255, 255, .88);
+      --ink: #3b2f24;
+      --ink2:#4a3523;
+      --muted:#6b5a48;
+      --gold:#b89052;
+      --gold2:#9b7b4a;
+      --radius: 22px;
+      --shadow: 0 18px 45px rgba(0,0,0,.18);
+      --ring: rgba(184,144,82,.30);
+    }
+
+    *{ box-sizing:border-box; }
+    html{ scroll-behavior:smooth; }
+    body{
+      margin:0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, "Noto Sans";
+      color: var(--ink);
+      background: #f6f1e6;
+      overflow-x:hidden;
+    }
+    body.opened{
+      background-image: var(--paper-bg);
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      background-attachment: fixed;
+    }
+
+    a{ color:inherit; }
+    .container{ width:min(1040px, 92vw); margin:0 auto; }
+
+    /* TOP BAR */
+    .topbar{
+      position:fixed; inset:14px 14px auto 14px; z-index:30;
+      display:flex; justify-content:space-between; align-items:center;
+      pointer-events:none;
+    }
+    .pill{
+      pointer-events:auto;
+      display:flex; gap:10px; align-items:center;
+      padding:10px 12px; border-radius:999px;
+      background: rgba(255,248,235,.92);
+      border: 1px solid rgba(185,144,82,.35);
+      box-shadow: 0 10px 30px rgba(0,0,0,.10);
+    }
+    .pill small{ color: var(--muted); }
+    .ringDot{
+      width:10px; height:10px; border-radius:999px;
+      background: var(--gold);
+      box-shadow: 0 0 0 6px rgba(184,144,82,.14);
+      flex:0 0 auto;
+    }
+
+    /* BUTTONS */
+    .btn{
+      appearance:none; border:0; cursor:pointer;
+      padding:12px 16px;
+      border-radius:999px;
+      background: var(--gold2);
+      color: #fff;
+      box-shadow: 0 14px 30px rgba(0,0,0,.14);
+      transition: transform .12s ease, filter .12s ease;
+      text-decoration:none;
+      display:inline-flex; align-items:center; justify-content:center;
+      gap:10px;
+    }
+    .btn:hover{ transform: translateY(-1px); filter:saturate(1.03); }
+    .btn:active{ transform: translateY(0) scale(.99); }
+
+    .btn.ghost{
+      background: rgba(255,255,255,.65);
+      color: var(--ink2);
+      border: 1px solid rgba(185,144,82,.45);
+      box-shadow:none;
+    }
+    .btn.ghost:hover{ box-shadow: 0 0 0 6px var(--ring); }
+
+    /* SECTIONS */
+    .section{ padding:78px 0; }
+    @media (max-width: 860px){ .section{ padding:62px 0; } }
+
+    /* CARDS */
+    .card{
+      background: var(--paper);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+
+    h1,h2,h3{ margin:0 0 10px; color: var(--ink2); }
+    h2{ font-size: clamp(24px, 3.6vw, 34px); }
+    p{ margin:0 0 12px; color: var(--ink); }
+    .muted{ color: var(--muted); }
+
+    /* COVER */
+    .cover{
+      position:fixed; inset:0; z-index:60;
+      display:grid; place-items:center;
+      background:#f6f1e6;
+      overflow:hidden;
+      transition: opacity .35s ease, transform .35s ease;
+    }
+    .cover.hide{ opacity:0; pointer-events:none; transform: translateY(-10px); }
+
+    .paperBg{
+      position:absolute; inset:0;
+      background-image: var(--paper-bg);
+      background-size: cover;
+      background-position:center;
+      filter:saturate(1.02);
+    }
+    .paperShade{
+      position:absolute; inset:0;
+      background: radial-gradient(900px 700px at 50% 10%, rgba(255,255,255,.55), transparent 60%);
+    }
+
+    .coverInner{
+      position:relative;
+      width:min(520px, 92vw);
+      text-align:center;
+      padding: 18px 16px;
+      z-index:2;
+    }
+
+    .coverPhotoBox{
+      width: 190px; height: 190px;
+      margin: 0 auto 16px;
+      border-radius: 999px;
+      overflow: hidden;
+      border: 6px solid rgba(255,255,255,.90);
+      box-shadow: 0 18px 40px rgba(0,0,0,.22);
+      background: rgba(0,0,0,.06);
+    }
+    .coverPhotoBox img{ width:100%; height:100%; object-fit:cover; display:block; }
+
+    .kicker2{ font-size: 16px; color: rgba(30,41,59,.78); margin: 0 0 6px; }
+
+    .names2{
+      font-family: "Great Vibes", cursive;
+      font-size: 56px;
+      line-height: 1.02;
+      font-weight: 400;
+      margin: 6px 0 10px;
+      background: linear-gradient(180deg, #c9a46a, #9b7b4a, #7a5a32);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .date2{ font-size: 18px; color: rgba(30,41,59,.76); margin: 0 0 16px; }
+
+    .to2{ margin: 10px 0 10px; color: rgba(30,41,59,.75); }
+    .toName2{
+      display:inline-block;
+      padding: 10px 14px;
+      border-radius: 999px;
+      border: 1px dashed rgba(120, 86, 54, .45);
+      color: rgba(30,41,59,.88);
+      background: rgba(255,255,255,.60);
+    }
+
+    .mailIcon{ width:18px; height:18px; display:inline-block; }
+
+    /* MAIN HERO */
+    main{
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity .45s ease, transform .45s ease;
+    }
+    body.opened main{ opacity:1; transform: translateY(0); }
+
+    .mainHero{ padding-top:120px; text-align:center; }
+
+    .monogram{
+      width:74px; height:74px; border-radius:22px;
+      display:grid; place-items:center;
+      margin:0 auto 14px;
+      background: rgba(255,255,255,.70);
+      border: 1px solid rgba(185,144,82,.25);
+      box-shadow: 0 12px 26px rgba(0,0,0,.10);
+    }
+    .monogram strong{ font-size:20px; letter-spacing:.08em; color: var(--ink2); }
+
+    /* Countdown top style (Save the Date) */
+    .countWrap2{ margin: 18px auto 0; width: min(520px, 92vw); }
+    .count2{ display:grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: 10px; }
+    .countTile{
+      background: rgba(155,128,90,.95);
+      border: 1px solid rgba(120,86,54,.25);
+      border-radius: 16px;
+      padding: 12px 10px;
+      text-align:center;
+      box-shadow: 0 12px 26px rgba(0,0,0,.12);
+    }
+    .countTile b{ display:block; font-size:22px; line-height:1.1; color:#fff; }
+    .countTile small{ display:block; margin-top:4px; color: rgba(255,255,255,.92); }
+    @media (max-width: 520px){ .count2{ grid-template-columns: repeat(2, minmax(0,1fr)); } }
+
+    /* Quote card */
+    .quote{
+      margin-top:22px;
+      padding: 18px 18px;
+      border-radius: 18px;
+      background: rgba(255,255,255,.78);
+      border-left: 4px solid var(--gold);
+      box-shadow: 0 14px 30px rgba(0,0,0,.10);
+      text-align:left;
+    }
+    .quote b{ color: var(--ink2); }
+    .quote .muted{ margin-top:6px; }
+
+    /* PEOPLE */
+    .person{ padding:18px; display:flex; gap:16px; align-items:center; background: rgba(255,255,255,.85); }
+    .avatar{
+      width:72px; height:72px; border-radius:20px;
+      border: 1px solid rgba(185,144,82,.25);
+      flex:0 0 auto; overflow:hidden;
+      background: rgba(255,255,255,.65);
+    }
+    .avatar img{ width:100%; height:100%; object-fit:cover; display:block; }
+    .person .meta small{ color: var(--muted); display:block; margin-top:4px; }
+
+    /* EVENT */
+    .eventCard{ padding:18px; }
+    .tag{
+      display:inline-flex; align-items:center; gap:8px;
+      padding:8px 12px; border-radius:999px;
+      background: rgba(255,255,255,.65);
+      border: 1px solid rgba(185,144,82,.30);
+      color: var(--ink2);
+      font-size: 13px;
+      font-weight: 600;
+    }
+    .timeLine{ margin-top:10px; color: var(--ink2); font-weight: 700; }
+    .eventActions{ margin-top:14px; display:flex; gap:10px; flex-wrap:wrap; }
+
+    /* GRID */
+    .grid{ display:grid; gap:18px; }
+    .grid.two{ grid-template-columns: repeat(2, minmax(0,1fr)); }
+    @media (max-width: 860px){ .grid.two{ grid-template-columns:1fr; } }
+
+    /* FORMS (light) */
+    form{ display:grid; gap:10px; }
+    input, select, textarea{
+      width:100%;
+      padding:12px 14px;
+      border-radius:14px;
+      border:1px solid rgba(185,144,82,.25);
+      background: rgba(255,255,255,.86);
+      color: var(--ink);
+      outline:none;
+    }
+    input:focus, select:focus, textarea:focus{
+      box-shadow:0 0 0 6px var(--ring);
+      border-color: rgba(185,144,82,.55);
+    }
+    textarea{ min-height:92px; resize:vertical; }
+
+    /* Gallery simple */
+    .gallery{ display:grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap:12px; }
+    @media (max-width: 860px){ .gallery{ grid-template-columns: repeat(2, minmax(0,1fr)); } }
+    @media (max-width: 520px){ .gallery{ grid-template-columns: 1fr; } }
+    .ph{
+      aspect-ratio: 4/3;
+      border-radius:18px;
+      border: 1px solid rgba(185,144,82,.25);
+      background: rgba(255,255,255,.72);
+      overflow:hidden;
+      box-shadow: 0 12px 26px rgba(0,0,0,.08);
+    }
+    .ph img{ width:100%; height:100%; object-fit:cover; display:block; }
+
+    /* TOAST */
+    .toast{
+      position:fixed; left:50%; bottom:18px; transform:translateX(-50%);
+      background: rgba(255,248,235,.95);
+      border:1px solid rgba(185,144,82,.35);
+      padding:10px 12px;
+      border-radius:999px;
+      box-shadow: 0 16px 40px rgba(0,0,0,.12);
+      opacity:0; pointer-events:none;
+      transition: opacity .2s ease, transform .2s ease;
+      z-index:80;
+      color: var(--ink2);
+    }
+    .toast.show{ opacity:1; transform:translateX(-50%) translateY(-4px); }
+
+    .footer{ padding:52px 0 72px; text-align:center; color: var(--muted); }
+
+  </style>
+</head>
+<body>
+
+  <!-- TOP BAR -->
+  <div class="topbar" aria-hidden="false">
+    <div class="pill">
+      <span class="ringDot"></span>
+      <div>
+        <div style="font-weight:800; letter-spacing:.04em; color:var(--ink2)">Undangan</div>
+        <small id="topTo">Untuk: -</small>
+      </div>
+    </div>
+    <div class="pill">
+      <button class="btn ghost" id="musicBtn" type="button">♫ Musik</button>
+      <a class="btn ghost" href="#rsvp">RSVP</a>
+    </div>
+  </div>
+
+  <!-- COVER -->
+  <div class="cover" id="cover" style="--paper-bg: var(--paper-bg);">
+    <div class="paperBg"></div>
+    <div class="paperShade"></div>
+
+    <div class="coverInner">
+      <div class="coverPhotoBox">
+        <img src="https://files.catbox.moe/f9pbqf.jpg" alt="Foto pasangan">
+      </div>
+
+      <p class="kicker2">The Wedding Of</p>
+      <h1 class="names2" id="coverTitle">Nasrul &amp; Naya</h1>
+      <p class="date2" id="coverDate">07 Februari 2026</p>
+
+      <div class="to2">Kepada yth:</div>
+      <div class="toName2" id="toName">Tamu Undangan</div>
+
+      <div style="margin-top:18px">
+        <button class="btn" id="openBtn" type="button">
+          <svg class="mailIcon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M4 7.5v9A2.5 2.5 0 0 0 6.5 19h11A2.5 2.5 0 0 0 20 16.5v-9A2.5 2.5 0 0 0 17.5 5h-11A2.5 2.5 0 0 0 4 7.5Z" stroke="white" stroke-width="1.8"/>
+            <path d="m5.5 7 6.1 5a1 1 0 0 0 1.3 0l6.1-5" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          Buka Undangan
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- AUDIO -->
+  <audio id="bgm" preload="auto" loop>
+    <source src="https://files.catbox.moe/50pmp7.mp4" type="audio/mpeg" />
+  </audio>
+
+  <main>
+    <section class="section mainHero" id="home">
+      <div class="container">
+        <div class="monogram"><strong>N &amp; N</strong></div>
+        <h2 id="mainTitle" style="margin-bottom:6px">Nasrul &amp; Naya</h2>
+        <p class="muted" id="mainDate">07 Februari 2026</p>
+
+        <!-- COUNTDOWN DI AWAL -->
+        <div class="countWrap2" aria-label="Hitung mundur">
+          <div class="count2">
+            <div class="countTile"><b id="d">0</b><small>Hari</small></div>
+            <div class="countTile"><b id="h">00</b><small>Jam</small></div>
+            <div class="countTile"><b id="m">00</b><small>Menit</small></div>
+            <div class="countTile"><b id="s">00</b><small>Detik</small></div>
+          </div>
+        </div>
+
+        <div class="quote">
+          <p style="margin:0 0 6px; font-weight:700">
+            “Dan di antara tanda-tanda (kebesaran)-Nya ialah Dia menciptakan pasangan-pasangan untukmu…”
+          </p>
+          <p class="muted" style="margin:0">QS. Ar-Rum: 21</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="mempelai">
+      <div class="container">
+        <h2>Mempelai</h2>
+        <p class="muted">Dengan memohon rahmat dan ridha Allah SWT, kami bermaksud menyelenggarakan pernikahan kami.</p>
+
+        <div class="grid two" style="margin-top:16px">
+          <div class="card person">
+            <div class="avatar"><img src="https://files.catbox.moe/093w9i.jpg" alt="Nasrul" /></div>
+            <div class="meta">
+              <h3 style="margin-bottom:6px">Mempelai Pria</h3>
+              <p style="font-weight:800; margin:0">Nasrul</p>
+              <small>Putra dari Bapak … &amp; Ibu …</small>
+            </div>
+          </div>
+
+          <div class="card person">
+            <div class="avatar"><img src="https://files.catbox.moe/093w9i.jpg" alt="Naya" /></div>
+            <div class="meta">
+              <h3 style="margin-bottom:6px">Mempelai Wanita</h3>
+              <p style="font-weight:800; margin:0">Naya</p>
+              <small>Putri dari Bapak … &amp; Ibu …</small>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="acara">
+      <div class="container">
+        <h2>Akad &amp; Resepsi</h2>
+        <p class="muted">InsyaAllah akan dilaksanakan pada:</p>
+
+        <div class="grid two" style="margin-top:16px">
+          <div class="card eventCard">
+            <div class="tag">Akad Nikah</div>
+            <h3 style="margin-top:12px">Sabtu, 07 Februari 2026</h3>
+            <div class="timeLine">09.00 WIB</div>
+            <p class="muted" style="margin-top:6px">Masjid / Aula / Rumah • (Isi lokasi)</p>
+            <div class="eventActions">
+              <a class="btn ghost" target="_blank" rel="noopener" href="https://maps.app.goo.gl/">Buka Maps</a>
+              <button class="btn ghost" type="button" data-copy="Alamat akad (isi di sini)">Salin Alamat</button>
+            </div>
+          </div>
+
+          <div class="card eventCard">
+            <div class="tag">Resepsi</div>
+            <h3 style="margin-top:12px">Sabtu, 07 Februari 2026</h3>
+            <div class="timeLine">11.00 WIB - Selesai</div>
+            <p class="muted" style="margin-top:6px">Gedung / Rumah • (Isi lokasi)</p>
+            <div class="eventActions">
+              <a class="btn ghost" target="_blank" rel="noopener" href="https://maps.app.goo.gl/">Buka Maps</a>
+              <button class="btn ghost" type="button" data-copy="Alamat resepsi (isi di sini)">Salin Alamat</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="quote" style="margin-top:18px">
+          <p style="margin:0 0 6px; font-weight:700">
+            “Semoga Allah memberkahimu ketika bahagia dan ketika susah, serta mengumpulkan kalian berdua dalam kebaikan.”
+          </p>
+          <p class="muted" style="margin:0">Doa pernikahan (barakallahu lakuma…)</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="rsvp">
+      <div class="container">
+        <h2>RSVP</h2>
+        <p class="muted">Konfirmasi kehadiran ya. Nanti otomatis kebuka WhatsApp buat ngirim pesannya.</p>
+
+        <div class="grid two" style="margin-top:16px">
+          <div class="card" style="padding:18px">
+            <form id="rsvpForm">
+              <label>
+                <div class="muted" style="margin:0 0 6px">Nama</div>
+                <input name="name" placeholder="Nama kamu" required minlength="2" />
+              </label>
+
+              <label>
+                <div class="muted" style="margin:0 0 6px">Status Kehadiran</div>
+                <select name="status" required>
+                  <option value="Hadir">Hadir</option>
+                  <option value="Tidak hadir">Tidak hadir</option>
+                  <option value="Masih ragu">Masih ragu</option>
+                </select>
+              </label>
+
+              <label>
+                <div class="muted" style="margin:0 0 6px">Jumlah yang hadir</div>
+                <select name="qty" required>
+                  <option>1</option><option>2</option><option>3</option><option>4</option><option>5</option>
+                </select>
+              </label>
+
+              <button class="btn" type="submit">Kirim via WhatsApp</button>
+              <div class="muted" style="font-size:13px">
+                *Pastikan nomor WA tujuan udah bener di CONFIG.
+              </div>
+            </form>
+          </div>
+
+          <div class="card" style="padding:18px">
+            <h3 style="margin-bottom:8px">Ucapan &amp; Doa</h3>
+            <p class="muted">Ucapan tersimpan di browser (local).</p>
+
+            <form id="wishForm">
+              <input name="wName" placeholder="Nama" required minlength="2" />
+              <textarea name="wish" placeholder="Ucapan..." required minlength="2"></textarea>
+              <button class="btn ghost" type="submit">Kirim Ucapan</button>
+            </form>
+
+            <div style="height:1px;background: rgba(185,144,82,.25); margin:18px 0;"></div>
+            <div id="wishList" class="grid" style="gap:10px"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="gallery">
+      <div class="container">
+        <h2>Galeri</h2>
+        <p class="muted">Ganti foto sesuka lu.</p>
+
+        <div class="gallery" style="margin-top:16px">
+          <div class="ph"><img alt="Foto 1" src="https://files.catbox.moe/093w9i.jpg"></div>
+          <div class="ph"><img alt="Foto 2" src="https://files.catbox.moe/093w9i.jpg"></div>
+          <div class="ph"><img alt="Foto 3" src="https://files.catbox.moe/093w9i.jpg"></div>
+          <div class="ph"><img alt="Foto 4" src="https://files.catbox.moe/093w9i.jpg"></div>
+          <div class="ph"><img alt="Foto 5" src="https://files.catbox.moe/093w9i.jpg"></div>
+          <div class="ph"><img alt="Foto 6" src="https://files.catbox.moe/093w9i.jpg"></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="footer">
+      <div class="container">
+        <h2 style="margin-bottom:6px">Terima kasih</h2>
+        <p class="muted" style="margin:0">
+          Merupakan kehormatan dan kebahagiaan bagi kami apabila Bapak/Ibu/Saudara/i berkenan hadir dan memberikan doa restu.
+        </p>
+        <div style="height:1px;background: rgba(185,144,82,.25); margin:18px 0;"></div>
+        <p style="margin:0; font-weight:800; color:var(--ink2)">Nasrul &amp; Naya</p>
+        <p class="muted" style="margin:10px 0 0; font-size:13px">Barakallahu fiikum</p>
+      </div>
+    </section>
+  </main>
+
+  <div class="toast" id="toast">Tersalin ✅</div>
+
+  <script>
+    // =========================
+    // CONFIG (EDIT INI)
+    // =========================
+    const CONFIG = {
+      couple: "Nasrul & Naya",
+      dateLabel: "07 Februari 2026",
+      // Countdown ke jam akad (WIB +07:00)
+      countdownTo: "2026-02-07T09:00:00+07:00",
+      // Nomor WA penerima RSVP (tanpa +)
+      waNumber: "62895326859614",
+    };
+
+    // =========================
+    // Helpers
+    // =========================
+    const $ = (q, el=document) => el.querySelector(q);
+    const $$ = (q, el=document) => [...el.querySelectorAll(q)];
+    const toast = (msg="Tersalin ✅") => {
+      const t = $("#toast");
+      t.textContent = msg;
+      t.classList.add("show");
+      setTimeout(()=>t.classList.remove("show"), 1400);
+    };
+
+    // =========================
+    // Personalization via ?to=
+    // =========================
+    const params = new URLSearchParams(location.search);
+    const to = params.get("to") ? decodeURIComponent(params.get("to")).replace(/\+/g," ") : "";
+    const toText = to?.trim() || "Tamu Undangan";
+    $("#toName").textContent = toText;
+    $("#topTo").textContent = "Untuk: " + toText;
+
+    // Titles
+    $("#coverTitle").innerHTML = CONFIG.couple.replace("&","&amp;");
+    $("#mainTitle").innerHTML = CONFIG.couple.replace("&","&amp;");
+    $("#coverDate").textContent = CONFIG.dateLabel;
+    $("#mainDate").textContent = CONFIG.dateLabel;
+
+    // =========================
+    // Cover open + autoplay music (user gesture)
+    // =========================
+    const cover = $("#cover");
+    const bgm = $("#bgm");
+    const musicBtn = $("#musicBtn");
+
+    $("#openBtn").addEventListener("click", async () => {
+      cover.classList.add("hide");
+      document.body.classList.add("opened");
+
+      // start music (allowed after click)
+      try {
+        await bgm.play();
+        musicBtn.textContent = "❚❚ Musik";
+        toast("Musik ON ♫");
+      } catch(e){
+        // kalau diblok, user bisa pencet tombol musik
+      }
+
+      // scroll to top of content
+      window.scrollTo({top:0, behavior:"smooth"});
+    });
+
+    // =========================
+    // Music toggle
+    // =========================
+    musicBtn.addEventListener("click", async () => {
+      if (bgm.paused){
+        try { await bgm.play(); musicBtn.textContent = "❚❚ Musik"; toast("Musik ON ♫"); }
+        catch(e){ toast("Browser nolak autoplay 😅"); }
+      } else {
+        bgm.pause();
+        musicBtn.textContent = "♫ Musik";
+        toast("Musik OFF");
+      }
+    });
+
+    // =========================
+    // Countdown
+    // =========================
+    const ids = { d: $("#d"), h: $("#h"), m: $("#m"), s: $("#s") };
+    const target = new Date(CONFIG.countdownTo).getTime();
+    function tick(){
+      const now = Date.now();
+      let diff = Math.max(0, target - now);
+
+      const days = Math.floor(diff / (1000*60*60*24));
+      diff -= days * (1000*60*60*24);
+      const hours = Math.floor(diff / (1000*60*60));
+      diff -= hours * (1000*60*60);
+      const mins = Math.floor(diff / (1000*60));
+      diff -= mins * (1000*60);
+      const secs = Math.floor(diff / 1000);
+
+      ids.d.textContent = days;
+      ids.h.textContent = String(hours).padStart(2,"0");
+      ids.m.textContent = String(mins).padStart(2,"0");
+      ids.s.textContent = String(secs).padStart(2,"0");
+    }
+    tick();
+    setInterval(tick, 1000);
+
+    // =========================
+    // Copy buttons
+    // =========================
+    $$("[data-copy]").forEach(btn => {
+      btn.addEventListener("click", async () => {
+        const text = btn.getAttribute("data-copy");
+        try {
+          await navigator.clipboard.writeText(text);
+          toast("Tersalin ✅");
+        } catch(e){
+          const ta = document.createElement("textarea");
+          ta.value = text;
+          document.body.appendChild(ta);
+          ta.select();
+          document.execCommand("copy");
+          ta.remove();
+          toast("Tersalin ✅");
+        }
+      });
+    });
+
+    // =========================
+    // RSVP -> WhatsApp
+    // =========================
+    const rsvpForm = $("#rsvpForm");
+    rsvpForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const fd = new FormData(rsvpForm);
+      const name = String(fd.get("name")||"").trim();
+      const status = String(fd.get("status")||"").trim();
+      const qty = String(fd.get("qty")||"").trim();
+      if (name.length < 2) return;
+
+      const msg =
+`RSVP Undangan Pernikahan (${CONFIG.couple})
+Untuk: ${toText}
+Nama: ${name}
+Status: ${status}
+Jumlah: ${qty}
+
+Terima kasih.`;
+
+      const wa = String(CONFIG.waNumber || "").replace(/\D/g, "");
+      if (!wa){
+        toast("Nomor WA belum di-set");
+        return;
+      }
+      const url = "https://wa.me/" + wa + "?text=" + encodeURIComponent(msg);
+      window.open(url, "_blank", "noopener");
+      toast("Membuka WhatsApp…");
+      rsvpForm.reset();
+    });
+
+    // =========================
+    // Wishes (localStorage)
+    // =========================
+    const wishKey = "wishes:list";
+    const wishList = $("#wishList");
+    const wishForm = $("#wishForm");
+
+    function escapeHtml(s){
+      return String(s)
+        .replaceAll("&","&amp;")
+        .replaceAll("<","&lt;")
+        .replaceAll(">","&gt;")
+        .replaceAll('"',"&quot;")
+        .replaceAll("'","&#039;");
+    }
+
+    function loadWishes(){
+      const items = JSON.parse(localStorage.getItem(wishKey) || "[]");
+      wishList.innerHTML = "";
+      if (!items.length){
+        wishList.innerHTML = `<p class="muted" style="margin:0">Belum ada ucapan. Jadi yang pertama ya 😄</p>`;
+        return;
+      }
+      items.slice().reverse().forEach(it => {
+        const el = document.createElement("div");
+        el.className = "card";
+        el.style.padding = "14px";
+        el.style.borderRadius = "18px";
+        el.style.background = "rgba(255,255,255,.82)";
+        el.style.border = "1px solid rgba(185,144,82,.25)";
+        el.style.boxShadow = "0 10px 24px rgba(0,0,0,.08)";
+        const dt = new Date(it.ts || Date.now());
+        el.innerHTML = `
+          <div style="display:flex; justify-content:space-between; gap:10px; align-items:baseline">
+            <b style="font-size:14px; color: var(--ink2)">${escapeHtml(it.name)}</b>
+            <small class="muted">${dt.toLocaleString("id-ID")}</small>
+          </div>
+          <div style="margin-top:8px; color: var(--ink)">${escapeHtml(it.text)}</div>
+        `;
+        wishList.appendChild(el);
+      });
+    }
+
+    wishForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const fd = new FormData(wishForm);
+      const name = String(fd.get("wName")||"").trim();
+      const text = String(fd.get("wish")||"").trim();
+      if (name.length < 2 || text.length < 2) return;
+
+      const items = JSON.parse(localStorage.getItem(wishKey) || "[]");
+      items.push({ name, text, ts: Date.now() });
+      localStorage.setItem(wishKey, JSON.stringify(items));
+
+      toast("Ucapan terkirim ✅");
+      wishForm.reset();
+      loadWishes();
+    });
+
+    loadWishes();
+  </script>
+</body>
+</html>
