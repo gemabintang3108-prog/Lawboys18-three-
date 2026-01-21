@@ -211,11 +211,13 @@
 
     /* EVENT */
     .eventCard{padding:18px}
-    .tag{
-  background: rgba(185,144,82,.18);
-  border: 1px solid rgba(185,144,82,.45);
-  color: #5a3e1e;
-  font-weight: 600;
+    .tag::after{
+  content:"";
+  display:block;
+  width:48px;
+  height:2px;
+  background:#b89052;
+  margin-top:6px;
 }
     .timeLine{margin-top:10px; color:rgba(226,232,240,.92)}
     .eventActions{margin-top:14px; display:flex; gap:10px; flex-wrap:wrap}
