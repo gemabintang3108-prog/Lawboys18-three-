@@ -303,6 +303,9 @@
     .toast.show{opacity:1; transform:translateX(-50%) translateY(-4px)}
     .footer{padding:52px 0 72px; text-align:center; color: rgba(226,232,240,.80);}
     code{font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;}
+    body.video-bg{
+  background: transparent;
+    }
   </style>
 </head>
 <body>
@@ -572,14 +575,32 @@
     $("#mainDate").textContent = CONFIG.dateLabel;
 
     // =========================
-    // Cover open
-    // =========================
-    const cover = $("#cover");
-    $("#openBtn").addEventListener("click", async () => {
-      cover.classList.add("hide");
-      try { await $("#bgm").play(); $("#musicBtn").textContent = "❚❚ Musik"; } catch(e){}
-      window.scrollTo({top:0, behavior:"smooth"});
-    });
+// Cover open
+// =========================
+const cover = $("#cover");
+const bgVideoWrap = document.getElementById("bgVideoWrap");
+const bgVideo = document.getElementById("bg-video");
+
+$("#openBtn").addEventListener("click", async () => {
+  cover.classList.add("hide");
+
+  // tampilkan video background
+  if (bgVideoWrap) bgVideoWrap.classList.add("show");
+  if (bgVideo){
+    try { await bgVideo.play(); } catch(e){}
+  }
+
+  // hilangkan background body
+  document.body.classList.add("video-bg");
+
+  // play musik
+  try {
+    await $("#bgm").play();
+    $("#musicBtn").textContent = "❚❚ Musik";
+  } catch(e){}
+
+  window.scrollTo({top:0, behavior:"smooth"});
+});
 
     // =========================
     // Music toggle
