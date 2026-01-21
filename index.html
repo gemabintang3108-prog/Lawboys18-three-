@@ -305,12 +305,17 @@
     </div>
   </div>
 
-  <!-- COVER -->
-  <div class="cover" id="cover">
-  <video id="bg-video" autoplay muted loop playsinline>
+  <!-- VIDEO BACKGROUND (muncul setelah buka undangan) -->
+<div class="bgVideo" id="bgVideoWrap" aria-hidden="true">
+  <video id="bg-video" muted loop playsinline preload="metadata">
     <source src="https://files.catbox.moe/fih3lc.mp4" type="video/mp4">
   </video>
+  <div class="bgVideoOverlay"></div>
+</div>
 
+  <!-- COVER -->
+  <div class="cover" id="cover" style="--cover-url:url('https://files.catbox.moe/093w9i.jpg');">
+  <div class="coverPhoto"></div>
   <div class="coverOverlay"></div>
 
   <div class="coverInner">
