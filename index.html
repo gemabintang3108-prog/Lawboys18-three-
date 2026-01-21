@@ -222,42 +222,69 @@
     .timeLine{margin-top:10px; color:rgba(226,232,240,.92)}
     .eventActions{margin-top:14px; display:flex; gap:10px; flex-wrap:wrap}
 
-    /* COUNTDOWN */
-    .countWrap{padding:18px}
-    /* COUNTDOWN BALIK KE KOTAK 2x2 */
-.count{
+    /* COUNTDOWN MODEL "SAVE THE DATE" */
+.countWrap2{
+  margin: 18px auto 0;
+  width: min(520px, 92vw);
+}
+.count2{
   display:grid;
-  grid-template-columns: repeat(2, minmax(0,1fr)); /* 2 kolom */
-  gap:12px;
+  grid-template-columns: repeat(4, minmax(0,1fr));
+  gap: 10px;
 }
-
-@media (min-width: 560px){
-  .count{
-    grid-template-columns: repeat(4, minmax(0,1fr)); /* layar gede 4 kolom */
-  }
-}
-
-.countBox{
-  padding:14px;
-  border-radius:18px;
-  background: rgba(255,248,235,.92); /* krem */
-  border: 1px solid rgba(185,144,82,.45);
+.countTile{
+  background: rgba(155,128,90,.95);
+  border: 1px solid rgba(120,86,54,.25);
+  border-radius: 16px;
+  padding: 12px 10px;
   text-align:center;
-  box-shadow: 0 10px 24px rgba(0,0,0,.10);
+  box-shadow: 0 12px 26px rgba(0,0,0,.12);
 }
-
-.countBox b{
-  font-size: 30px;
+.countTile b{
   display:block;
-  color:#3b2f24; /* coklat tua */
-  font-weight: 800;
+  font-size: 22px;
+  line-height: 1.1;
+  color: #fff;
+}
+.countTile small{
+  display:block;
+  margin-top: 4px;
+  color: rgba(255,255,255,.92);
+  letter-spacing:.02em;
 }
 
-.countBox small{
-  color:#6b5a48;
-  font-weight:600;
+@media (max-width: 520px){
+  .count2{ grid-template-columns: repeat(2, minmax(0,1fr)); }
+}
+    /* ANIMASI MASUK SETELAH BUKA UNDANGAN */
+main{
+  opacity: 0;
+  transform: translateY(22px);
+  transition: opacity .45s ease, transform .45s ease;
+}
+body.opened main{
+  opacity: 1;
+  transform: translateY(0);
 }
 
+/* Biar section muncul bertahap */
+.section{
+  opacity: 0;
+  transform: translateY(18px);
+  transition: opacity .55s ease, transform .55s ease;
+}
+body.opened .section{
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Delay biar kaya overlay smooth */
+body.opened .mainHero{ transition-delay: .05s; }
+body.opened #mempelai{ transition-delay: .12s; }
+body.opened #acara{ transition-delay: .18s; }
+body.opened #rsvp{ transition-delay: .24s; }
+body.opened #gallery{ transition-delay: .30s; }
+    
     /* FORM */
     form{display:grid; gap:10px}
     input, select, textarea{
@@ -590,19 +617,26 @@ h1, h2, h3{
 
   <main>
     <section class="section mainHero">
-      <div class="container">
-        <div class="monogram"><strong>N &amp; N</strong></div>
-        <h2 id="mainTitle">Nasrul &amp; Naya</h2>
-        <p class="muted" id="mainDate">07 Februari 2026</p>
+  <div class="container">
+    <div class="monogram"><strong>N &amp; N</strong></div>
+    <h2 id="mainTitle">Nasrul &amp; Naya</h2>
+    <p class="muted" id="mainDate">07 Februari 2026</p>
 
-        <div class="quote card" style="margin-top:22px; padding:20px">
-          <p style="margin:0 0 6px; font-weight:700">
-            “Dan di antara tanda-tanda (kebesaran)-Nya ialah Dia menciptakan pasangan-pasangan untukmu…”
-          </p>
-          <p class="muted" style="margin:0">QS. Ar-Rum: 21</p>
-        </div>
+    <!-- COUNTDOWN DI AWAL -->
+    <div class="countWrap2" id="countdownTop">
+      <div class="count2">
+        <div class="countTile"><b id="d">0</b><small>Hari</small></div>
+        <div class="countTile"><b id="h">00</b><small>Jam</small></div>
+        <div class="countTile"><b id="m">00</b><small>Menit</small></div>
+        <div class="countTile"><b id="s">00</b><small>Detik</small></div>
       </div>
-    </section>
+    </div>
+
+    <div class="quote card" style="margin-top:22px; padding:20px">
+      ...
+    </div>
+  </div>
+</section>
 
     <section class="section" id="mempelai">
       <div class="container">
@@ -663,17 +697,6 @@ h1, h2, h3{
               <button class="btn ghost" type="button" data-copy="Alamat resepsi (isi di sini)">Salin Alamat</button>
             </div>
           </div>
-        </div>
-
-        <div class="card countWrap" style="margin-top:18px">
-          <h3 style="margin-bottom:12px">Hitung Mundur</h3>
-          <div class="count" id="countdown">
-            <div class="countBox"><b id="d">0</b><small>Hari</small></div>
-            <div class="countBox"><b id="h">0</b><small>Jam</small></div>
-            <div class="countBox"><b id="m">0</b><small>Menit</small></div>
-            <div class="countBox"><b id="s">0</b><small>Detik</small></div>
-          </div>
-          <p class="muted" style="margin:12px 0 0">Tanggal countdown udah di-set ke 07 Feb 2026 jam 09.00 WIB.</p>
         </div>
 
         <div class="quote card" style="margin-top:18px; padding:20px">
