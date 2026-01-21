@@ -297,6 +297,29 @@
 
     .footer{ padding:52px 0 72px; text-align:center; color: var(--muted); }
 
+    .musicFloat{
+  position: fixed;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 90;
+
+  width: 42px;
+  height: 42px;
+  border-radius: 999px;
+
+  border: 1px solid rgba(185,144,82,.45);
+  background: rgba(255,255,255,.70);
+  color: var(--ink2);
+
+  display: grid;
+  place-items: center;
+
+  box-shadow: 0 12px 26px rgba(0,0,0,.12);
+  cursor: pointer;
+}
+.musicFloat:active{ transform: translateY(-50%) scale(.97); }
+    
   </style>
 </head>
 <body>
@@ -574,18 +597,28 @@
     });
 
     // =========================
-    // Music toggle
-    // =========================
-    musicBtn.addEventListener("click", async () => {
-      if (bgm.paused){
-        try { await bgm.play(); musicBtn.textContent = "❚❚ Musik"; toast("Musik ON ♫"); }
-        catch(e){ toast("Browser nolak autoplay 😅"); }
-      } else {
-        bgm.pause();
-        musicBtn.textContent = "♫ Musik";
-        toast("Musik OFF");
+// Music toggle (SAFE)
+// =========================
+const musicBtn = $("#musicBtn"); // TAMBAH INI
+
+if (musicBtn){
+  musicBtn.addEventListener("click", async () => {
+    if (bgm.paused){
+      try { 
+        await bgm.play(); 
+        musicBtn.textContent = "❚❚"; 
+        toast("Musik ON ♫"); 
+      } catch(e){ 
+        toast("Browser nolak autoplay 😅"); 
       }
-    });
+    } else {
+      bgm.pause();
+      musicBtn.textContent = "♫";
+      toast("Musik OFF");
+    }
+  });
+}
+    <button class="musicFloat" id="musicBtn" type="button" aria-label="Musik">♫</button>
 
     // =========================
     // Countdown
