@@ -90,6 +90,31 @@
   background: #000;
   transition: opacity .35s ease, transform .35s ease;
 }
+    /* VIDEO BACKGROUND COVER */
+#bg-video{
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  z-index:0;
+}
+
+/* Overlay biar teks kebaca */
+.coverOverlay{
+  position:absolute;
+  inset:0;
+  z-index:1;
+  background:
+    linear-gradient(180deg, rgba(0,0,0,.35), rgba(0,0,0,.55)),
+    linear-gradient(180deg, transparent 55%, rgba(2,6,23,.85) 100%);
+}
+
+/* Konten cover di atas video */
+.coverInner{
+  position:relative;
+  z-index:2;
+}
 .cover.hide{opacity:0; pointer-events:none; transform: translateY(-10px)}
 
 .coverPhoto{
@@ -300,24 +325,22 @@
   </div>
 
   <!-- COVER -->
-  <div class="cover" id="cover" style="--cover-url:url('https://files.catbox.moe/f9pbqf.jpg');">
-  <div class="coverPhoto"></div>
+  <div class="cover" id="cover">
+
+  <video id="bg-video" autoplay muted loop playsinline>
+    <source src="https://files.catbox.moe/fih3lc.mp4" type="video/mp4">
+  </video>
+
   <div class="coverOverlay"></div>
 
   <div class="coverInner">
     <div class="coverKicker">THE WEDDING OF</div>
-
-    <div class="coverNames" id="coverTitle">Nasrul &amp; Naya</div>
-    <div class="muted" id="coverDate">07 Februari 2026</div>
-
-    <div class="coverTo" id="toName">Bu Yana</div>
-
-    <button class="btn coverBtn" id="openBtn" type="button">Buka Undangan</button>
-
-    <p class="muted" style="margin-top:14px; font-size:13px">
-     ”.
-    </p>
+    <div class="coverNames">Nasrul &amp; Naya</div>
+    <div class="muted">07 Februari 2026</div>
+    <div class="coverTo" id="toName">Tamu Undangan</div>
+    <button class="btn coverBtn" id="openBtn">Buka Undangan</button>
   </div>
+
 </div>
 
   <!-- AUDIO (optional) -->
