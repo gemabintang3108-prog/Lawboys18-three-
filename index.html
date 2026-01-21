@@ -222,20 +222,38 @@
 
     /* COUNTDOWN */
     .countWrap{padding:18px}
-    .count{display:grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap:12px;}
-    @media (max-width: 560px){ .count{grid-template-columns: repeat(2, minmax(0,1fr))} }
-    .countBox{
-  background: rgba(185,144,82,.18);
+    /* COUNTDOWN BALIK KE KOTAK 2x2 */
+.count{
+  display:grid;
+  grid-template-columns: repeat(2, minmax(0,1fr)); /* 2 kolom */
+  gap:12px;
+}
+
+@media (min-width: 560px){
+  .count{
+    grid-template-columns: repeat(4, minmax(0,1fr)); /* layar gede 4 kolom */
+  }
+}
+
+.countBox{
+  padding:14px;
+  border-radius:18px;
+  background: rgba(255,248,235,.92); /* krem */
   border: 1px solid rgba(185,144,82,.45);
-  border-radius: 18px;
+  text-align:center;
+  box-shadow: 0 10px 24px rgba(0,0,0,.10);
 }
 
 .countBox b{
-  color: #3b2f24;
+  font-size: 30px;
+  display:block;
+  color:#3b2f24; /* coklat tua */
+  font-weight: 800;
 }
 
 .countBox small{
-  color: #6b5a48;
+  color:#6b5a48;
+  font-weight:600;
 }
 
     /* FORM */
