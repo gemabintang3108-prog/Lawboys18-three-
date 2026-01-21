@@ -306,6 +306,73 @@
     body.video-bg{
   background: transparent;
     }
+    /* SLIDER GALLERY 1 HERO + THUMBS SWIPE */
+.gWrap{ padding: 18px; border-radius: 24px; }
+
+.gHero{
+  border-radius: 18px;
+  overflow: hidden;
+  border: 1px solid rgba(148,163,184,.18);
+  background: rgba(2,6,23,.35);
+}
+
+.gHero img{
+  width: 100%;
+  height: 62vh;          /* tinggi foto utama */
+  max-height: 520px;
+  object-fit: cover;     /* biar full kaya contoh */
+  display: block;
+}
+
+.gThumbRow{
+  margin-top: 12px;
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 120px; /* lebar tiap thumb */
+  gap: 10px;
+
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: 6px;
+}
+
+.gThumbRow::-webkit-scrollbar{ height: 6px; }
+.gThumbRow::-webkit-scrollbar-thumb{
+  background: rgba(148,163,184,.25);
+  border-radius: 999px;
+}
+
+.gThumb{
+  scroll-snap-align: start;
+  padding: 0;
+  border: 1px solid rgba(148,163,184,.18);
+  border-radius: 14px;
+  overflow: hidden;
+  background: rgba(2,6,23,.35);
+  cursor: pointer;
+  transition: transform .12s ease, box-shadow .12s ease, border-color .12s ease;
+}
+
+.gThumb img{
+  width: 100%;
+  height: 86px;
+  object-fit: cover;
+  display: block;
+}
+
+.gThumb:hover{ transform: translateY(-1px); }
+.gThumb.active{
+  border-color: rgba(252,165,165,.65);
+  box-shadow: 0 0 0 6px rgba(252,165,165,.18);
+}
+
+@media (max-width: 520px){
+  .gHero img{ height: 52vh; max-height: 420px; }
+  .gThumbRow{ grid-auto-columns: 110px; }
+  .gThumb img{ height: 78px; }
+              }
   </style>
 </head>
 <body>
@@ -503,20 +570,39 @@
     </section>
 
     <section class="section" id="gallery">
-      <div class="container">
-        <h2>Galeri</h2>
-        <p class="muted">Ganti foto sesuka lu.</p>
+  <div class="container">
+    <h2>Galeri</h2>
+    <p class="muted">Geser foto bawah, klik untuk ganti foto utama.</p>
 
-        <div class="gallery" style="margin-top:16px">
-  <div class="ph"><img alt="Foto 1" src="https://files.catbox.moe/093w9i.jpg"></div>
-  <div class="ph"><img alt="Foto 2" src="https://files.catbox.moe/093w9i.jpg"></div>
-  <div class="ph"><img alt="Foto 3" src="https://files.catbox.moe/093w9i.jpg"></div>
-  <div class="ph"><img alt="Foto 4" src="https://files.catbox.moe/093w9i.jpg"></div>
-  <div class="ph"><img alt="Foto 5" src="https://files.catbox.moe/093w9i.jpg"></div>
-  <div class="ph"><img alt="Foto 6" src="https://files.catbox.moe/093w9i.jpg"></div>
-</div>
-    </section>
+    <div class="card gWrap">
+      <div class="gHero">
+        <img id="gHeroImg" src="https://files.catbox.moe/093w9i.jpg" alt="Foto utama">
+      </div>
 
+      <div class="gThumbRow" id="gThumbRow" aria-label="Thumbnail gallery">
+        <button class="gThumb active" type="button" data-src="https://files.catbox.moe/093w9i.jpg">
+          <img src="https://files.catbox.moe/093w9i.jpg" alt="Foto 1">
+        </button>
+
+        <button class="gThumb" type="button" data-src="https://files.catbox.moe/093w9i.jpg">
+          <img src="https://files.catbox.moe/093w9i.jpg" alt="Foto 2">
+        </button>
+
+        <button class="gThumb" type="button" data-src="https://files.catbox.moe/093w9i.jpg">
+          <img src="https://files.catbox.moe/093w9i.jpg" alt="Foto 3">
+        </button>
+
+        <button class="gThumb" type="button" data-src="https://files.catbox.moe/093w9i.jpg">
+          <img src="https://files.catbox.moe/093w9i.jpg" alt="Foto 4">
+        </button>
+
+        <button class="gThumb" type="button" data-src="https://files.catbox.moe/093w9i.jpg">
+          <img src="https://files.catbox.moe/093w9i.jpg" alt="Foto 5">
+        </button>
+      </div>
+    </div>
+  </div>
+</section>
     <section class="footer">
       <div class="container">
         <h2 style="margin-bottom:6px">Terima kasih</h2>
@@ -663,6 +749,31 @@ $("#openBtn").addEventListener("click", async () => {
         }
       });
     });
+
+    // =========================
+// Slider gallery thumbs -> hero
+// =========================
+(function(){
+  const hero = document.getElementById("gHeroImg");
+  const row = document.getElementById("gThumbRow");
+  if (!hero || !row) return;
+
+  row.addEventListener("click", (e) => {
+    const btn = e.target.closest(".gThumb");
+    if (!btn) return;
+
+    const src = btn.getAttribute("data-src");
+    if (!src) return;
+
+    hero.src = src;
+
+    row.querySelectorAll(".gThumb").forEach(x => x.classList.remove("active"));
+    btn.classList.add("active");
+
+    // auto scroll biar thumb kepilih ke tengah (enak di HP)
+    btn.scrollIntoView({behavior:"smooth", inline:"center", block:"nearest"});
+  });
+})();
 
     // =========================
     // RSVP -> WhatsApp
