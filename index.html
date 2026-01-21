@@ -545,7 +545,6 @@
     const to = params.get("to") ? decodeURIComponent(params.get("to")).replace(/\+/g," ") : "";
     const toText = to?.trim() || "Tamu Undangan";
     $("#toName").textContent = toText;
-    $("#topTo").textContent = "Untuk: " + toText;
 
     // Titles
     $("#coverTitle").innerHTML = CONFIG.couple.replace("&","&amp;");
