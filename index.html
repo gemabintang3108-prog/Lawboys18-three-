@@ -401,21 +401,24 @@
   position:relative;
   padding: 22px 18px;
   border-radius: 26px;
-  background: rgba(255,255,255,.55);
-  border: 1px solid rgba(148,163,184,.18);
-  backdrop-filter: blur(6px);
-  box-shadow: 0 22px 55px rgba(0,0,0,.12);
-}
 
+  background: transparent;      /* <-- hilangin putih */
+  border: 0;                    /* <-- opsional, biar clean */
+  backdrop-filter: none;        /* <-- opsional */
+  box-shadow: none;             /* <-- opsional */
+}
+/* FOTO DEPAN BULAT */
 .cover.paper .coverPhotoBox{
-  width: 210px;
-  height: 210px;
+  width: 190px;
+  height: 190px;
   margin: 0 auto 16px;
-  border-radius: 26px;
+
+  border-radius: 999px;        /* <-- bikin bulat */
   overflow: hidden;
-  border: 6px solid rgba(255,255,255,.78);
-  box-shadow: 0 18px 40px rgba(0,0,0,.18);
-  background: rgba(0,0,0,.05);
+
+  border: 6px solid rgba(255,255,255,.85);
+  box-shadow: 0 18px 40px rgba(0,0,0,.22);
+  background: rgba(0,0,0,.06);
 }
 
 .cover.paper .coverPhotoBox img{
