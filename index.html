@@ -88,25 +88,6 @@
 .cover{ position:fixed; inset:0; z-index:50; display:grid; place-items:center; background:#000; }
 .cover.hide{opacity:0; pointer-events:none; transform: translateY(-10px)}
 
-/* VIDEO BACKGROUND FULL PAGE */
-.bgVideo{
-  position: fixed;
-  inset: 0;
-  z-index: -1;          /* di belakang konten */
-  opacity: 0;
-  transition: opacity .35s ease;
-  pointer-events: none;
-}
-
-.bgVideo.show{
-  opacity: 1;
-}
-
-#bg-video{
-  width: 100vw;
-  height: 100vh;
-  object-fit: cover;
-}
 .coverOverlay{
   position:absolute; inset:0; z-index:1;
   background:
@@ -480,6 +461,14 @@
 .cover.paper .mailIcon{
   width: 18px; height: 18px; display:inline-block;
 }
+    /* FOTO BACKGROUND SETELAH BUKA UNDANGAN */
+body.video-bg{
+  background-image: url("https://files.catbox.moe/erya9u.jpg"); /* SAMA kayak cover */
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+}
 
   </style>
 </head>
@@ -499,14 +488,6 @@
       <a class="btn ghost" href="#rsvp">RSVP</a>
     </div>
   </div>
-
-  <!-- VIDEO BACKGROUND (muncul setelah buka undangan) -->
-<div class="bgVideo" id="bgVideoWrap" aria-hidden="true">
-  <video id="bg-video" muted loop playsinline preload="metadata">
-    <source src="https://files.catbox.moe/fih3lc.mp4" type="video/mp4">
-  </video>
-  <div class="bgVideoOverlay"></div>
-</div>
 
   <!-- COVER (PAPER) -->
 <div class="cover paper" id="cover"
@@ -797,13 +778,7 @@ const bgVideo = document.getElementById("bg-video");
 $("#openBtn").addEventListener("click", async () => {
   cover.classList.add("hide");
 
-  // tampilkan video background
-  if (bgVideoWrap) bgVideoWrap.classList.add("show");
-  if (bgVideo){
-    try { await bgVideo.play(); } catch(e){}
-  }
-
-  // hilangkan background body
+  // aktifkan background foto
   document.body.classList.add("video-bg");
 
   // play musik
