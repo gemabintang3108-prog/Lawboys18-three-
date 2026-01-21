@@ -861,16 +861,9 @@ const bgVideo = document.getElementById("bg-video");
 
 $("#openBtn").addEventListener("click", async () => {
   cover.classList.add("hide");
+  document.body.classList.add("opened");
 
-  // aktifkan background foto
-  document.body.classList.add("video-bg");
-
-  // play musik
-  try {
-    await $("#bgm").play();
-    $("#musicBtn").textContent = "❚❚ Musik";
-  } catch(e){}
-
+  try { await $("#bgm").play(); $("#musicBtn").textContent = "❚❚ Musik"; } catch(e){}
   window.scrollTo({top:0, behavior:"smooth"});
 });
 
