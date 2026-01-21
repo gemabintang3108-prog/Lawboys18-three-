@@ -212,13 +212,11 @@
     /* EVENT */
     .eventCard{padding:18px}
     .tag{
-      display:inline-flex; align-items:center; gap:8px;
-      padding:8px 12px; border-radius:999px;
-      background: rgba(148,163,184,.10);
-      border:1px solid rgba(148,163,184,.18);
-      color: rgba(226,232,240,.88);
-      font-size: 13px;
-    }
+  background: rgba(185,144,82,.18);
+  border: 1px solid rgba(185,144,82,.45);
+  color: #5a3e1e;
+  font-weight: 600;
+}
     .timeLine{margin-top:10px; color:rgba(226,232,240,.92)}
     .eventActions{margin-top:14px; display:flex; gap:10px; flex-wrap:wrap}
 
@@ -227,13 +225,18 @@
     .count{display:grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap:12px;}
     @media (max-width: 560px){ .count{grid-template-columns: repeat(2, minmax(0,1fr))} }
     .countBox{
-      padding:14px; border-radius:18px;
-      background: rgba(2,6,23,.35);
-      border:1px solid rgba(148,163,184,.18);
-      text-align:center;
-    }
-    .countBox b{font-size: 28px; display:block}
-    .countBox small{color:var(--muted)}
+  background: rgba(185,144,82,.18);
+  border: 1px solid rgba(185,144,82,.45);
+  border-radius: 18px;
+}
+
+.countBox b{
+  color: #3b2f24;
+}
+
+.countBox small{
+  color: #6b5a48;
+}
 
     /* FORM */
     form{display:grid; gap:10px}
@@ -487,6 +490,27 @@ h1, h2, h3{
 .person p{
   color: #3b2f24;
 }
+    /* TEKS ACARA BIAR JELAS */
+.timeLine{
+  color: #3b2f24;   /* coklat tua */
+  font-weight: 600;
+}
+
+.eventCard h3{
+  color: #4a3523;
+}
+
+.eventCard .muted{
+  color: #6b5a48;
+}
+    .btn.ghost{
+  color: #5a3e1e;
+  border: 1px solid rgba(185,144,82,.45);
+  background: rgba(255,255,255,.6);
+    }
+    .section h2{
+  color: #4a3523;
+    }
   </style>
 </head>
 <body>
