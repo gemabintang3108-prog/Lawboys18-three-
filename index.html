@@ -558,7 +558,6 @@
     // =========================
     const cover = $("#cover");
     const bgm = $("#bgm");
-    const musicBtn = $("#musicBtn");
 
     $("#openBtn").addEventListener("click", async () => {
       cover.classList.add("hide");
@@ -567,8 +566,6 @@
       // start music (allowed after click)
       try {
         await bgm.play();
-        musicBtn.textContent = "❚❚ Musik";
-        toast("Musik ON ♫");
       } catch(e){
         // kalau diblok, user bisa pencet tombol musik
       }
