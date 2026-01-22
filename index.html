@@ -319,6 +319,88 @@
   cursor: pointer;
 }
 .musicFloat:active{ transform: translateY(-50%) scale(.97); }
+
+    /* ===== DIGITALVITE MEMPELAI ===== */
+.mempelaiDV{
+  text-align:center;
+  padding-top: 6px;
+}
+
+.dvPerson{
+  margin: 18px auto 0;
+  width: min(520px, 92vw);
+  padding: 18px 16px;
+  background: transparent;       /* biar kaya digitalvite (ga kotak) */
+  box-shadow: none;
+}
+
+.dvPhoto{
+  width: 210px;
+  height: 210px;
+  margin: 0 auto 14px;
+  border-radius: 999px;
+  overflow: hidden;
+  border: 4px solid rgba(185,144,82,.45);
+  box-shadow: 0 14px 34px rgba(0,0,0,.12);
+  background: rgba(255,255,255,.6);
+}
+
+.dvPhoto img{
+  width:100%;
+  height:100%;
+  object-fit: cover;
+  display:block;
+}
+
+.dvName{
+  font-family: "Great Vibes", cursive;
+  font-size: 44px;
+  line-height: 1.05;
+  margin: 8px 0 6px;
+  color: var(--ink2);
+}
+
+.dvLine{
+  font-weight: 700;
+  color: var(--ink2);
+  margin: 4px 0 0;
+}
+
+.dvParent{
+  margin: 6px 0 0;
+  color: var(--ink);
+  font-weight: 700;
+}
+
+.dvAnd{
+  margin: 18px auto 0;
+  font-family: "Great Vibes", cursive;
+  font-size: 52px;
+  color: var(--ink2);
+  opacity: .9;
+}
+
+.dvSocial{
+  margin-top: 12px;
+  display:flex;
+  gap:10px;
+  justify-content:center;
+  flex-wrap:wrap;
+}
+
+.dvIcon{
+  width: 42px;
+  height: 42px;
+  border-radius: 999px;
+  border: 1px solid rgba(185,144,82,.35);
+  background: rgba(255,255,255,.75);
+  display:grid;
+  place-items:center;
+  text-decoration:none;
+  box-shadow: 0 10px 22px rgba(0,0,0,.10);
+}
+
+.dvIcon:active{ transform: scale(.97); }
     
   </style>
 </head>
@@ -387,32 +469,44 @@
       </div>
     </section>
 
-    <section class="section" id="mempelai">
-      <div class="container">
-        <h2>Mempelai</h2>
-        <p class="muted">Dengan memohon rahmat dan ridha Allah SWT, kami bermaksud menyelenggarakan pernikahan kami.</p>
+    <section class="section mempelaiDV" id="mempelai">
+  <div class="container">
+    <h2>Mempelai</h2>
+    <p class="muted">Dengan memohon rahmat dan ridha Allah SWT, kami bermaksud menyelenggarakan pernikahan kami.</p>
 
-        <div class="grid two" style="margin-top:16px">
-          <div class="card person">
-            <div class="avatar"><img src="https://files.catbox.moe/093w9i.jpg" alt="Nasrul" /></div>
-            <div class="meta">
-              <h3 style="margin-bottom:6px">Mempelai Pria</h3>
-              <p style="font-weight:800; margin:0">Nasrul</p>
-              <small>Putra dari Bapak … &amp; Ibu …</small>
-            </div>
-          </div>
-
-          <div class="card person">
-            <div class="avatar"><img src="https://files.catbox.moe/093w9i.jpg" alt="Naya" /></div>
-            <div class="meta">
-              <h3 style="margin-bottom:6px">Mempelai Wanita</h3>
-              <p style="font-weight:800; margin:0">Naya</p>
-              <small>Putri dari Bapak … &amp; Ibu …</small>
-            </div>
-          </div>
-        </div>
+    <!-- MEMPELAI WANITA -->
+    <div class="dvPerson">
+      <div class="dvPhoto">
+        <img src="https://files.catbox.moe/093w9i.jpg" alt="Naya">
       </div>
-    </section>
+      <div class="dvName">Naya</div>
+      <div class="dvLine">Anak Pertama Dari :</div>
+      <div class="dvParent">Bapak ... &amp; Ibu ...</div>
+
+      <div class="dvSocial">
+        <a class="dvIcon" href="https://instagram.com/" target="_blank" rel="noopener" aria-label="Instagram">IG</a>
+      </div>
+    </div>
+
+    <div class="dvAnd">&amp;</div>
+
+    <!-- MEMPELAI PRIA -->
+    <div class="dvPerson">
+      <div class="dvPhoto">
+        <img src="https://files.catbox.moe/093w9i.jpg" alt="Nasrul">
+      </div>
+      <div class="dvName">Nasrul</div>
+      <div class="dvLine">Anak Pertama Dari :</div>
+      <div class="dvParent">Bapak ... &amp; Ibu ...</div>
+
+      <div class="dvSocial">
+        <a class="dvIcon" href="https://instagram.com/" target="_blank" rel="noopener" aria-label="Instagram">IG</a>
+        <a class="dvIcon" href="https://tiktok.com/" target="_blank" rel="noopener" aria-label="Tiktok">TT</a>
+      </div>
+    </div>
+
+  </div>
+</section>
 
     <section class="section" id="acara">
       <div class="container">
