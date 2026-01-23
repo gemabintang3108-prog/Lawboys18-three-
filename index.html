@@ -562,11 +562,20 @@
 
 .giftRow{ position:relative; display:flex; gap:14px; align-items:center; }
 .giftChip{
-  width: 46px; height: 36px;
-  border-radius: 10px;
-  background: linear-gradient(135deg, rgba(217,194,141,.9), rgba(184,144,82,.75));
-  box-shadow: inset 0 0 0 2px rgba(255,255,255,.35);
-  flex:0 0 auto;
+  width: 48px;
+  height: 36px;
+  display: grid;
+  place-items: center;
+  border-radius: 8px;
+  background: linear-gradient(
+    135deg,
+    #f3dfb0,
+    #d6b36a,
+    #b89052
+  );
+  box-shadow:
+    inset 0 0 0 1px rgba(255,255,255,.6),
+    0 4px 10px rgba(0,0,0,.15);
 }
 .giftBank{
   margin-left:auto;
@@ -650,7 +659,7 @@
 
     <div class="coverInner">
       <div class="coverPhotoBox">
-        <img src="https://files.catbox.moe/f9pbqf.jpg" alt="Foto pasangan">
+        <img src="https://files.catbox.moe/1ij0hx.jpg" alt="Foto pasangan">
       </div>
 
       <p class="kicker2">The Wedding Of</p>
@@ -681,7 +690,7 @@
     <section class="section mainHero reveal" id="home">
       <div class="container">
         <div class="monogram"><strong>N &amp; A</strong></div>
-        <h2 id="mainTitle" style="margin-bottom:6px">Naya &amp; Asrul</h2>
+        <h2 id="mainTitle" style="margin-bottom:6px">Asrul &amp; Naya</h2>
         <p class="muted" id="mainDate">07 Februari 2026</p>
 
         <!-- COUNTDOWN DI AWAL -->
@@ -903,7 +912,14 @@
         <!-- KARTU 2 -->
         <div class="giftCard">
           <div class="giftRow">
-            <div class="giftChip" aria-hidden="true"></div>
+            <div class="giftChip" aria-hidden="true">
+  <svg viewBox="0 0 64 48" width="42" height="32">
+    <rect x="1" y="1" width="62" height="46" rx="6"
+      fill="#e6c88f" stroke="#b89052" stroke-width="2"/>
+    <path d="M8 16h48M8 24h48M8 32h48" stroke="#b89052" stroke-width="2"/>
+    <path d="M20 8v32M32 8v32M44 8v32" stroke="#b89052" stroke-width="2"/>
+  </svg>
+</div>
             <div class="giftBank">BCA</div>
           </div>
 
