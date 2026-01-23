@@ -320,83 +320,114 @@
 }
 .musicFloat:active{ transform: translateY(-50%) scale(.97); }
 
-    /* ===== GALLERY MEWAH (Hero + Thumbs) ===== */
-.gWrap{ padding: 16px; border-radius: 26px; }
-
-.gHero{
-  border-radius: 20px;
-  overflow: hidden;
-  border: 1px solid rgba(185,144,82,.25);
+    /* ===== Gallery ala contoh (hero swipe + thumbs sync) ===== */
+.dvGal{
+  margin-top: 16px;
   background: rgba(255,255,255,.72);
-  box-shadow: 0 18px 45px rgba(0,0,0,.14);
+  border: 1px solid rgba(185,144,82,.22);
+  border-radius: 22px;
+  box-shadow: 0 18px 45px rgba(0,0,0,.10);
+  padding: 14px;
+}
+
+.dvHero{
   position: relative;
+  overflow: hidden;
+  border-radius: 18px;
+  border: 1px solid rgba(185,144,82,.25);
+  background: rgba(0,0,0,.06);
+  touch-action: pan-y;
 }
 
-/* efek “glow” halus di atas */
-.gHero::after{
-  content:"";
-  position:absolute; inset:-30% -30% auto -30%;
-  height: 65%;
-  background: radial-gradient(closest-side, rgba(255,255,255,.55), transparent 70%);
-  pointer-events:none;
+.dvTrack{
+  display: flex;
+  transition: transform .35s ease;
+  will-change: transform;
 }
 
-.gHero img{
+.dvSlide{
+  min-width: 100%;
+  height: 62vh;
+  max-height: 520px;
+}
+
+.dvSlide img{
   width: 100%;
-  height: min(62vh, 520px);
+  height: 100%;
   object-fit: cover;
-  display:block;
-  transform: scale(1.01);
+  display: block;
 }
 
-.gThumbRow{
-  margin-top: 14px;
+.dvNav{
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 40px;
+  height: 40px;
+  border-radius: 999px;
+  border: 1px solid rgba(185,144,82,.45);
+  background: rgba(255,255,255,.70);
+  color: var(--ink2);
+  box-shadow: 0 10px 24px rgba(0,0,0,.12);
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+}
+.dvNav.prev{ left: 10px; }
+.dvNav.next{ right: 10px; }
+.dvNav:active{ transform: translateY(-50%) scale(.98); }
+
+@media (max-width: 860px){
+  .dvNav{ display:none; } /* di HP cukup swipe */
+  .dvSlide{ height: 54vh; max-height: 440px; }
+}
+
+.dvThumbs{
+  margin-top: 12px;
   display: grid;
   grid-auto-flow: column;
-  grid-auto-columns: 118px;
+  grid-auto-columns: 120px;
   gap: 10px;
 
   overflow-x: auto;
-  scroll-snap-type: x mandatory;
   -webkit-overflow-scrolling: touch;
-  padding: 6px 2px 10px;
+  scroll-snap-type: x mandatory;
+  padding-bottom: 6px;
 }
 
-.gThumbRow::-webkit-scrollbar{ height: 7px; }
-.gThumbRow::-webkit-scrollbar-thumb{
-  background: rgba(185,144,82,.35);
+.dvThumbs::-webkit-scrollbar{ height: 6px; }
+.dvThumbs::-webkit-scrollbar-thumb{
+  background: rgba(185,144,82,.25);
   border-radius: 999px;
 }
 
-.gThumb{
-  scroll-snap-align: start;
+.dvThumb{
+  scroll-snap-align: center;
   border: 1px solid rgba(185,144,82,.22);
-  border-radius: 16px;
+  border-radius: 14px;
   overflow: hidden;
-  background: rgba(255,255,255,.75);
-  box-shadow: 0 12px 26px rgba(0,0,0,.10);
-  cursor: pointer;
   padding: 0;
-  transition: transform .14s ease, box-shadow .14s ease, border-color .14s ease;
+  background: rgba(255,255,255,.65);
+  cursor: pointer;
+  transition: transform .12s ease, box-shadow .12s ease, border-color .12s ease;
 }
 
-.gThumb img{
+.dvThumb img{
   width: 100%;
   height: 86px;
   object-fit: cover;
-  display:block;
+  display: block;
 }
 
-.gThumb:hover{ transform: translateY(-2px); }
-.gThumb.active{
-  border-color: rgba(155,128,90,.85);
-  box-shadow: 0 0 0 6px rgba(184,144,82,.18), 0 14px 28px rgba(0,0,0,.12);
+.dvThumb:hover{ transform: translateY(-1px); }
+.dvThumb.active{
+  border-color: rgba(184,144,82,.85);
+  box-shadow: 0 0 0 6px rgba(184,144,82,.18);
 }
 
 @media (max-width: 520px){
-  .gHero img{ height: 52vh; }
-  .gThumbRow{ grid-auto-columns: 110px; }
-  .gThumb img{ height: 78px; }
+  .dvThumbs{ grid-auto-columns: 110px; }
+  .dvThumb img{ height: 78px; }
 }
     
     /* ===== DIGITALVITE MEMPELAI ===== */
@@ -859,37 +890,43 @@
       </div>
     </section>
 
-    <section class="section" id="gallery">
+    <section class="section reveal" id="gallery">
   <div class="container">
-    <h2 class="reveal">Galeri</h2>
-    <p class="muted reveal">Momen bahagia kami.</p>
+    <h2>Galeri</h2>
+    <p class="muted">Geser foto besar / geser thumbnail.</p>
 
-    <div class="gWrap card reveal">
-      <!-- FOTO UTAMA -->
-      <div class="gHero">
-        <img id="gHeroImg" src="https://files.catbox.moe/1ij0hx.jpg" alt="Foto utama">
+    <div class="dvGal">
+      <!-- HERO (swipe) -->
+      <div class="dvHero" id="dvHero" aria-label="Galeri utama">
+        <div class="dvTrack" id="dvTrack">
+          <div class="dvSlide"><img src="https://files.catbox.moe/1ij0hx.jpg" alt="Foto 1"></div>
+          <div class="dvSlide"><img src="https://files.catbox.moe/x79cmf.jpg" alt="Foto 2"></div>
+          <div class="dvSlide"><img src="https://files.catbox.moe/khghgq.jpg" alt="Foto 3"></div>
+          <div class="dvSlide"><img src="https://files.catbox.moe/ahdjsu.jpg" alt="Foto 4"></div>
+          <div class="dvSlide"><img src="https://files.catbox.moe/qzfai8.jpg" alt="Foto 5"></div>
+        </div>
+
+        <!-- optional tombol (desktop enak) -->
+        <button class="dvNav prev" type="button" aria-label="Sebelumnya">‹</button>
+        <button class="dvNav next" type="button" aria-label="Berikutnya">›</button>
       </div>
 
-      <!-- THUMBNAILS -->
-      <div class="gThumbRow" id="gThumbRow">
-        <button class="gThumb active" type="button" data-src="https://files.catbox.moe/1ij0hx.jpg">
-          <img src="https://files.catbox.moe/1ij0hx.jpg" alt="Foto 1">
+      <!-- THUMBS (scroll horizontal) -->
+      <div class="dvThumbs" id="dvThumbs" aria-label="Thumbnail galeri">
+        <button class="dvThumb active" type="button">
+          <img src="https://files.catbox.moe/1ij0hx.jpg" alt="Thumb 1">
         </button>
-
-        <button class="gThumb" type="button" data-src="https://files.catbox.moe/x79cmf.jpg">
-          <img src="https://files.catbox.moe/x79cmf.jpg" alt="Foto 2">
+        <button class="dvThumb" type="button">
+          <img src="https://files.catbox.moe/x79cmf.jpg" alt="Thumb 2">
         </button>
-
-        <button class="gThumb" type="button" data-src="https://files.catbox.moe/khghgq.jpg">
-          <img src="https://files.catbox.moe/khghgq.jpg" alt="Foto 3">
+        <button class="dvThumb" type="button">
+          <img src="https://files.catbox.moe/khghgq.jpg" alt="Thumb 3">
         </button>
-
-        <button class="gThumb" type="button" data-src="https://files.catbox.moe/ahdjsu.jpg">
-          <img src="https://files.catbox.moe/ahdjsu.jpg" alt="Foto 4">
+        <button class="dvThumb" type="button">
+          <img src="https://files.catbox.moe/ahdjsu.jpg" alt="Thumb 4">
         </button>
-
-        <button class="gThumb" type="button" data-src="https://files.catbox.moe/qzfai8.jpg">
-          <img src="https://files.catbox.moe/qzfai8.jpg" alt="Foto 5">
+        <button class="dvThumb" type="button">
+          <img src="https://files.catbox.moe/qzfai8.jpg" alt="Thumb 5">
         </button>
       </div>
     </div>
@@ -1006,24 +1043,87 @@
       setTimeout(()=>t.classList.remove("show"), 1400);
     };
 
-    // ===== Gallery hero switch =====
-(() => {
-  const hero = document.querySelector("#gHeroImg");
-  const row = document.querySelector("#gThumbRow");
-  if (!hero || !row) return;
+    // =========================
+// Gallery slider + thumbs sync
+// =========================
+(function(){
+  const hero = document.getElementById("dvHero");
+  const track = document.getElementById("dvTrack");
+  const thumbsWrap = document.getElementById("dvThumbs");
+  const thumbs = thumbsWrap ? [...thumbsWrap.querySelectorAll(".dvThumb")] : [];
+  const slides = track ? [...track.querySelectorAll(".dvSlide")] : [];
 
-  row.addEventListener("click", (e) => {
-    const btn = e.target.closest(".gThumb");
-    if (!btn) return;
+  if (!hero || !track || !thumbs.length || !slides.length) return;
 
-    const src = btn.getAttribute("data-src");
-    if (!src) return;
+  let index = 0;
+  let startX = 0;
+  let dx = 0;
+  let dragging = false;
 
-    hero.src = src;
+  const setActive = (i, smooth=true) => {
+    index = Math.max(0, Math.min(slides.length - 1, i));
+    track.style.transition = smooth ? "transform .35s ease" : "none";
+    track.style.transform = `translateX(${-index * 100}%)`;
 
-    row.querySelectorAll(".gThumb").forEach(x => x.classList.remove("active"));
-    btn.classList.add("active");
+    thumbs.forEach((b, k) => b.classList.toggle("active", k === index));
+
+    // auto-center thumbnail aktif
+    const active = thumbs[index];
+    if (active && active.scrollIntoView){
+      active.scrollIntoView({behavior: "smooth", inline: "center", block: "nearest"});
+    }
+  };
+
+  // klik thumb
+  thumbs.forEach((btn, i) => {
+    btn.addEventListener("click", () => setActive(i, true));
   });
+
+  // tombol prev/next (desktop)
+  const prevBtn = hero.querySelector(".dvNav.prev");
+  const nextBtn = hero.querySelector(".dvNav.next");
+  prevBtn && prevBtn.addEventListener("click", ()=> setActive(index-1, true));
+  nextBtn && nextBtn.addEventListener("click", ()=> setActive(index+1, true));
+
+  // swipe hero (touch + mouse)
+  const onDown = (clientX) => {
+    dragging = true;
+    startX = clientX;
+    dx = 0;
+    track.style.transition = "none";
+  };
+
+  const onMove = (clientX) => {
+    if (!dragging) return;
+    dx = clientX - startX;
+    const w = hero.clientWidth || 1;
+    const pct = (dx / w) * 100;
+    track.style.transform = `translateX(${(-index * 100) + pct}%)`;
+  };
+
+  const onUp = () => {
+    if (!dragging) return;
+    dragging = false;
+
+    const w = hero.clientWidth || 1;
+    const threshold = Math.min(80, w * 0.18); // sensitif tapi aman
+    if (dx > threshold) setActive(index - 1, true);
+    else if (dx < -threshold) setActive(index + 1, true);
+    else setActive(index, true);
+  };
+
+  // touch
+  hero.addEventListener("touchstart", (e)=> onDown(e.touches[0].clientX), {passive:true});
+  hero.addEventListener("touchmove", (e)=> onMove(e.touches[0].clientX), {passive:true});
+  hero.addEventListener("touchend", onUp);
+
+  // mouse (optional)
+  hero.addEventListener("mousedown", (e)=> onDown(e.clientX));
+  window.addEventListener("mousemove", (e)=> onMove(e.clientX));
+  window.addEventListener("mouseup", onUp);
+
+  // init
+  setActive(0, false);
 })();
 
     // =========================
