@@ -691,6 +691,42 @@
   .giftTitle{ font-size: 46px; }
   .giftCopy{ right: 12px; }
 }
+
+    .monogram.photo{
+  width: 110px;
+  height: 110px;
+  border-radius: 26px;
+  overflow: hidden;
+
+  background: #fff;
+  border: 2px solid rgba(185,144,82,.35);
+  box-shadow: 0 16px 34px rgba(0,0,0,.15);
+
+  margin: 0 auto 16px;
+}
+
+.monogram.photo img{
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+    .monogram.photo{
+  animation: zoomIn .6s ease both;
+}
+
+@keyframes zoomIn{
+  from{
+    transform: scale(.85);
+    opacity: 0;
+  }
+  to{
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+    
     
   </style>
 </head>
@@ -736,7 +772,9 @@
   <main>
     <section class="section mainHero reveal" id="home">
       <div class="container">
-        <div class="monogram"><strong>N &amp; A</strong></div>
+        <div class="monogram photo">
+  <img src="https://files.catbox.moe/f9pbqf.jpg" alt="Foto pasangan">
+</div>
         <h2 id="mainTitle" style="margin-bottom:6px">Naya &amp; Asrul</h2>
         <p class="muted" id="mainDate">07 Februari 2026</p>
 
@@ -769,7 +807,7 @@
       <div class="dvPhoto">
         <img src="https://files.catbox.moe/w6owoj.jpg" alt="Naya">
       </div>
-      <div class="dvName">Naya Ramadhanti</div>
+      <div class="dvName">Naiya Ramadhanti</div>
       <div class="dvLine">Anak Kedua Dari :</div>
       <div class="dvParent">Bapak Chairon &amp; Ibu Nur Halimah</div>
 
@@ -1039,7 +1077,7 @@
     // CONFIG (EDIT INI)
     // =========================
     const CONFIG = {
-      couple: "Asrul & Naya",
+      couple: "Naya & Asrul",
       dateLabel: "07 Februari 2026",
       // Countdown ke jam akad (WIB +07:00)
       countdownTo: "2026-02-07T09:00:00+07:00",
