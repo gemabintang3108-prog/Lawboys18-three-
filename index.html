@@ -330,6 +330,7 @@
   padding: 14px;
 }
 
+/* HERO: kasih padding biar keliatan slide sebelah */
 .dvHero{
   position: relative;
   overflow: hidden;
@@ -337,18 +338,33 @@
   border: 1px solid rgba(185,144,82,.25);
   background: rgba(0,0,0,.06);
   touch-action: pan-y;
+  padding: 0 18px;           /* INI bikin peek kiri/kanan */
 }
 
+/* track + slide jadi "kartu" */
 .dvTrack{
   display: flex;
+  gap: 12px;                 /* jarak antar foto */
   transition: transform .35s ease;
   will-change: transform;
 }
 
+/* bukan 100% lagi biar ada peek */
 .dvSlide{
-  min-width: 100%;
+  flex: 0 0 88%;             /* lebar slide (kartu) */
   height: 62vh;
   max-height: 520px;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 14px 28px rgba(0,0,0,.12);
+}
+
+@media (max-width: 860px){
+  .dvSlide{ flex-basis: 90%; height: 54vh; max-height: 440px; }
+}
+@media (max-width: 520px){
+  .dvHero{ padding: 0 14px; }
+  .dvSlide{ flex-basis: 92%; }
 }
 
 .dvSlide img{
@@ -868,7 +884,7 @@
 
               <button class="btn" type="submit">Kirim via WhatsApp</button>
               <div class="muted" style="font-size:13px">
-                *Pastikan nomor WA tujuan udah bener di CONFIG.
+              
               </div>
             </form>
           </div>
@@ -1043,49 +1059,98 @@
       setTimeout(()=>t.classList.remove("show"), 1400);
     };
 
-    // =========================
-// Gallery slider + thumbs sync
+// =========================
+// Gallery slider INFINITE + thumbs sync + peek
 // =========================
 (function(){
   const hero = document.getElementById("dvHero");
   const track = document.getElementById("dvTrack");
   const thumbsWrap = document.getElementById("dvThumbs");
   const thumbs = thumbsWrap ? [...thumbsWrap.querySelectorAll(".dvThumb")] : [];
-  const slides = track ? [...track.querySelectorAll(".dvSlide")] : [];
+  let slides = track ? [...track.querySelectorAll(".dvSlide")] : [];
 
   if (!hero || !track || !thumbs.length || !slides.length) return;
 
-  let index = 0;
-  let startX = 0;
-  let dx = 0;
-  let dragging = false;
+  // --- clone untuk infinite
+  const firstClone = slides[0].cloneNode(true);
+  const lastClone  = slides[slides.length - 1].cloneNode(true);
+  firstClone.dataset.clone = "first";
+  lastClone.dataset.clone = "last";
+  track.insertBefore(lastClone, slides[0]);
+  track.appendChild(firstClone);
 
-  const setActive = (i, smooth=true) => {
-    index = Math.max(0, Math.min(slides.length - 1, i));
-    track.style.transition = smooth ? "transform .35s ease" : "none";
-    track.style.transform = `translateX(${-index * 100}%)`;
+  slides = [...track.querySelectorAll(".dvSlide")];
 
-    thumbs.forEach((b, k) => b.classList.toggle("active", k === index));
+  let index = 1;              // start di slide asli pertama (karena ada clone di depan)
+  let realIndex = 0;
 
-    // auto-center thumbnail aktif
-    const active = thumbs[index];
-    if (active && active.scrollIntoView){
-      active.scrollIntoView({behavior: "smooth", inline: "center", block: "nearest"});
-    }
+  let startX = 0, dx = 0, dragging = false;
+
+  const getStep = () => {
+    const gap = parseFloat(getComputedStyle(track).gap || "0");
+    const w = slides[0].getBoundingClientRect().width;
+    return w + gap;
   };
 
-  // klik thumb
-  thumbs.forEach((btn, i) => {
-    btn.addEventListener("click", () => setActive(i, true));
+  const setActiveThumb = (ri) => {
+    thumbs.forEach((b, k) => b.classList.toggle("active", k === ri));
+    const active = thumbs[ri];
+    active && active.scrollIntoView({behavior:"smooth", inline:"center", block:"nearest"});
+  };
+
+  const moveTo = (i, smooth=true) => {
+    index = i;
+    const step = getStep();
+    track.style.transition = smooth ? "transform .35s ease" : "none";
+    track.style.transform = `translateX(${-index * step}px)`;
+  };
+
+  const syncReal = () => {
+    // realIndex = 0..(thumbs.length-1)
+    realIndex = index - 1;
+    if (realIndex < 0) realIndex = thumbs.length - 1;
+    if (realIndex >= thumbs.length) realIndex = 0;
+    setActiveThumb(realIndex);
+  };
+
+  // init posisi (pakai requestAnimationFrame biar ukuran kebaca)
+  requestAnimationFrame(() => {
+    moveTo(1, false);
+    syncReal();
   });
 
-  // tombol prev/next (desktop)
+  // handle infinite jump setelah animasi
+  track.addEventListener("transitionend", () => {
+    const cur = slides[index];
+    if (!cur) return;
+
+    if (cur.dataset.clone === "last") {
+      // lagi di clone last (posisi paling depan) -> lompat ke asli terakhir
+      moveTo(thumbs.length, false);
+      syncReal();
+    }
+    if (cur.dataset.clone === "first") {
+      // lagi di clone first (posisi paling belakang) -> lompat ke asli pertama
+      moveTo(1, false);
+      syncReal();
+    }
+  });
+
+  // klik thumb -> ke index + 1 (karena ada clone di depan)
+  thumbs.forEach((btn, i) => {
+    btn.addEventListener("click", () => {
+      moveTo(i + 1, true);
+      syncReal();
+    });
+  });
+
+  // tombol prev/next (kalau ada)
   const prevBtn = hero.querySelector(".dvNav.prev");
   const nextBtn = hero.querySelector(".dvNav.next");
-  prevBtn && prevBtn.addEventListener("click", ()=> setActive(index-1, true));
-  nextBtn && nextBtn.addEventListener("click", ()=> setActive(index+1, true));
+  prevBtn && prevBtn.addEventListener("click", ()=> { moveTo(index - 1, true); syncReal(); });
+  nextBtn && nextBtn.addEventListener("click", ()=> { moveTo(index + 1, true); syncReal(); });
 
-  // swipe hero (touch + mouse)
+  // swipe
   const onDown = (clientX) => {
     dragging = true;
     startX = clientX;
@@ -1096,34 +1161,34 @@
   const onMove = (clientX) => {
     if (!dragging) return;
     dx = clientX - startX;
-    const w = hero.clientWidth || 1;
-    const pct = (dx / w) * 100;
-    track.style.transform = `translateX(${(-index * 100) + pct}%)`;
+    const step = getStep();
+    track.style.transform = `translateX(${(-index * step) + dx}px)`;
   };
 
   const onUp = () => {
     if (!dragging) return;
     dragging = false;
 
-    const w = hero.clientWidth || 1;
-    const threshold = Math.min(80, w * 0.18); // sensitif tapi aman
-    if (dx > threshold) setActive(index - 1, true);
-    else if (dx < -threshold) setActive(index + 1, true);
-    else setActive(index, true);
+    const threshold = Math.min(90, hero.clientWidth * 0.18);
+    if (dx > threshold) moveTo(index - 1, true);
+    else if (dx < -threshold) moveTo(index + 1, true);
+    else moveTo(index, true);
+
+    syncReal();
   };
 
-  // touch
   hero.addEventListener("touchstart", (e)=> onDown(e.touches[0].clientX), {passive:true});
   hero.addEventListener("touchmove", (e)=> onMove(e.touches[0].clientX), {passive:true});
   hero.addEventListener("touchend", onUp);
 
-  // mouse (optional)
   hero.addEventListener("mousedown", (e)=> onDown(e.clientX));
   window.addEventListener("mousemove", (e)=> onMove(e.clientX));
   window.addEventListener("mouseup", onUp);
 
-  // init
-  setActive(0, false);
+  // resize: tetep bener posisinya
+  window.addEventListener("resize", () => {
+    moveTo(index, false);
+  });
 })();
 
     // =========================
