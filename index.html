@@ -516,6 +516,125 @@
 .card.reveal{
   box-shadow: 0 18px 45px rgba(0,0,0,.14);
 }
+
+    /* ===== WEDDING GIFT ala DigitalVite ===== */
+.giftWrap{
+  background: rgba(155,128,90,.55);
+  padding: 26px 0;
+  border-radius: 28px;
+  box-shadow: 0 18px 45px rgba(0,0,0,.10);
+}
+
+.giftTitle{
+  font-family: "Great Vibes", cursive;
+  font-size: 52px;
+  line-height: 1;
+  text-align:center;
+  color: rgba(255,255,255,.92);
+  margin: 0 0 10px;
+}
+
+.giftDesc{
+  text-align:center;
+  color: rgba(255,255,255,.88);
+  max-width: 520px;
+  margin: 0 auto 18px;
+}
+
+.giftCard{
+  position:relative;
+  background: rgba(255,255,255,.92);
+  border-radius: 26px;
+  padding: 18px 18px 16px;
+  box-shadow: 0 14px 30px rgba(0,0,0,.10);
+  overflow:hidden;
+  border: 1px solid rgba(185,144,82,.25);
+}
+
+.giftCard::before{
+  content:"";
+  position:absolute; inset:0;
+  background:
+    radial-gradient(420px 220px at 20% 20%, rgba(184,144,82,.18), transparent 55%),
+    radial-gradient(420px 220px at 80% 80%, rgba(155,128,90,.16), transparent 55%);
+  pointer-events:none;
+}
+
+.giftRow{ position:relative; display:flex; gap:14px; align-items:center; }
+.giftChip{
+  width: 46px; height: 36px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, rgba(217,194,141,.9), rgba(184,144,82,.75));
+  box-shadow: inset 0 0 0 2px rgba(255,255,255,.35);
+  flex:0 0 auto;
+}
+.giftBank{
+  margin-left:auto;
+  font-weight:900;
+  letter-spacing:.02em;
+  color: rgba(74,53,35,.82);
+  font-size: 18px;
+}
+
+.giftName{
+  position:relative;
+  margin: 12px 0 2px;
+  font-weight:800;
+  color: var(--ink2);
+  font-size: 18px;
+}
+.giftNo{
+  position:relative;
+  font-weight:900;
+  font-size: 20px;
+  letter-spacing:.06em;
+  color: rgba(59,47,36,.92);
+}
+
+.giftCopy{
+  position:absolute;
+  right: 14px;
+  top: 50%;
+  transform: translateY(-10%);
+  display:flex;
+  gap:8px;
+  align-items:center;
+  padding: 10px 12px;
+  border-radius: 14px;
+  border: 1px solid rgba(0,0,0,.10);
+  background: rgba(120,120,120,.18);
+  color: rgba(74,53,35,.92);
+  cursor:pointer;
+  backdrop-filter: blur(6px);
+}
+.giftCopy svg{ width:18px; height:18px; }
+
+.giftStack{ display:grid; gap:14px; margin-top: 14px; }
+
+.giftAddress{
+  margin-top: 16px;
+  padding: 16px;
+  background: rgba(255,255,255,.92);
+  border-radius: 22px;
+  border: 1px solid rgba(185,144,82,.25);
+  box-shadow: 0 14px 30px rgba(0,0,0,.08);
+}
+.giftAddress .iconGift{
+  width: 46px; height: 46px;
+  border-radius: 16px;
+  display:grid;
+  place-items:center;
+  margin: 0 auto 10px;
+  background: rgba(155,128,90,.18);
+  border: 1px solid rgba(185,144,82,.25);
+}
+.giftAddress h3{ text-align:center; margin-bottom:6px; }
+.giftAddress p{ text-align:center; margin:0; color: var(--ink); }
+
+@media (max-width: 520px){
+  .giftTitle{ font-size: 46px; }
+  .giftCopy{ right: 12px; }
+}
     
   </style>
 </head>
@@ -767,6 +886,68 @@
     </div>
   </div>
 </section>
+
+    <section class="section reveal" id="gift">
+  <div class="container">
+
+    <div class="giftWrap">
+      <h2 class="giftTitle">Wedding Gift</h2>
+      <p class="giftDesc">
+        Doa restu Anda merupakan karunia yang sangat berarti bagi kami.
+        Dan jika memberi adalah ungkapan tanda kasih, Anda dapat memberi kado secara cashless.
+      </p>
+
+      <div class="giftStack">
+
+        
+        <!-- KARTU 2 -->
+        <div class="giftCard">
+          <div class="giftRow">
+            <div class="giftChip" aria-hidden="true"></div>
+            <div class="giftBank">BCA</div>
+          </div>
+
+          <div class="giftName" id="giftName2">Naiya Ramadhanti</div>
+          <div class="giftNo" id="giftNo2">4120264694</div>
+
+          <button class="giftCopy" type="button"
+                  data-copy="4120264694"
+                  aria-label="Salin nomor rekening BCA">
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M9 9h10v10H9V9Z" stroke="currentColor" stroke-width="1.8" />
+              <path d="M5 15H4a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v1" stroke="currentColor" stroke-width="1.8"/>
+            </svg>
+            Salin
+          </button>
+        </div>
+
+        <!-- KADO FISIK -->
+        <div class="giftAddress">
+          <div class="iconGift" aria-hidden="true">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none">
+              <path d="M20 12v8a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-8" stroke="currentColor" stroke-width="1.8"/>
+              <path d="M22 7H2v5h20V7Z" stroke="currentColor" stroke-width="1.8"/>
+              <path d="M12 22V7" stroke="currentColor" stroke-width="1.8"/>
+              <path d="M12 7H8.5a2.5 2.5 0 1 1 0-5C11 2 12 7 12 7Z" stroke="currentColor" stroke-width="1.8"/>
+              <path d="M12 7h3.5a2.5 2.5 0 1 0 0-5C13 2 12 7 12 7Z" stroke="currentColor" stroke-width="1.8"/>
+            </svg>
+          </div>
+          <h3>Anda juga bisa mengirim kado fisik ke</h3>
+          <p>
+            Jl.rusunawa pinus elok blok b1 rt.018 rw.009 penggilingan,cakung, jakarta timur
+          </p>
+          <div style="margin-top:12px; text-align:center;">
+            <button class="btn ghost" type="button" data-copy="Jl.rusunawa pinus elok blok b1 rt.018 rw.009 penggilingan,cakung, jakarta timur">
+              Salin Alamat
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+    </section>
 
     <section class="footer">
       <div class="container">
