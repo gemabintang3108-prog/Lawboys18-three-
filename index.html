@@ -1,1 +1,1335 @@
-ardu
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
+<title>Perpustakaan SMAN 12</title>
+<meta name="theme-color" content="#14100d">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Perpus 12">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon-512.png">
+
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+<script src="https://unpkg.com/html5-qrcode"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/xlsx-js-style@1.2.0/dist/xlsx.bundle.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700;9..144,800;9..144,900&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+<style>
+:root{
+    --bg-deep:#14100d;
+    --bg-elevated:#1c1611;
+    --bg-surface:#241c15;
+    --bg-hover:#2a2118;
+    --border-subtle:#2b2318;
+    --border-default:#3a2f21;
+    --text-primary:#f3ead9;
+    --text-secondary:#b8a88f;
+    --text-tertiary:#7d6f5c;
+    --brass:#cf9a3f;
+    --brass-soft:#e0b563;
+    --teal:#3f7d68;
+    --teal-soft:#57a88c;
+    --rose:#c15b4a;
+    --red:#d9534f;
+    --green:#5fb98a;
+    --amber:#e0a542;
+    --shadow-md:0 6px 20px rgba(0,0,0,0.45);
+    --shadow-lg:0 14px 40px rgba(0,0,0,0.55);
+    --glow-brass:0 0 24px rgba(207,154,63,0.18);
+    --radius-sm:8px; --radius-md:12px; --radius-lg:18px; --radius-xl:24px;
+    --safe-bottom:env(safe-area-inset-bottom,16px);
+    --ease:cubic-bezier(.4,0,.2,1);
+    --font-display:'Fraunces',serif;
+    --font-body:'Inter',-apple-system,sans-serif;
+    --font-mono:'JetBrains Mono',monospace;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{
+    font-family:var(--font-body);
+    background:var(--bg-deep);
+    color:var(--text-primary);
+    min-height:100vh; min-height:100dvh;
+    -webkit-user-select:none; user-select:none;
+    -webkit-tap-highlight-color:transparent;
+    overflow:hidden;
+    -webkit-font-smoothing:antialiased;
+    letter-spacing:-0.01em;
+    background-image:
+        radial-gradient(circle at 8% 0%, rgba(207,154,63,0.07), transparent 40%),
+        radial-gradient(circle at 100% 30%, rgba(63,125,104,0.09), transparent 45%);
+}
+
+/* ===== SPLASH ===== */
+#splashScreen{
+    position:fixed; inset:0; z-index:99999; background:var(--bg-deep);
+    display:flex; flex-direction:column; align-items:center; justify-content:center; gap:18px;
+    transition:opacity .5s var(--ease), visibility .5s var(--ease);
+}
+#splashScreen.hide{ opacity:0; visibility:hidden; pointer-events:none; }
+.splash-mark{
+    width:84px; height:84px; border-radius:22px;
+    background:linear-gradient(135deg,var(--brass),var(--brass-soft));
+    display:flex; align-items:center; justify-content:center;
+    font-size:38px; color:#1c1611; box-shadow:var(--glow-brass);
+    animation:splashPop .7s var(--ease);
+}
+@keyframes splashPop{ from{transform:scale(.6) rotate(-8deg); opacity:0;} to{transform:scale(1) rotate(0); opacity:1;} }
+.splash-word{ font-family:var(--font-display); font-weight:800; font-size:22px; letter-spacing:0.01em; }
+.splash-sub{ font-size:10px; color:var(--text-tertiary); font-weight:700; letter-spacing:0.16em; text-transform:uppercase; }
+.splash-bar{ width:140px; height:3px; border-radius:3px; background:var(--border-subtle); overflow:hidden; margin-top:6px; }
+.splash-bar-fill{ height:100%; width:30%; background:linear-gradient(90deg,var(--brass),var(--teal)); border-radius:3px; animation:splashLoad 1.4s ease-in-out infinite; }
+@keyframes splashLoad{ 0%{transform:translateX(-100%);} 100%{transform:translateX(340%);} }
+
+.ambient-bg{position:fixed;inset:0;pointer-events:none;z-index:0;}
+.ambient-orb{position:absolute;border-radius:50%;filter:blur(130px);opacity:0.10;}
+.orb-1{width:520px;height:520px;background:var(--brass);top:-180px;left:-160px;}
+.orb-2{width:460px;height:460px;background:var(--teal);bottom:-160px;right:-140px;}
+
+.app-shell{position:relative; z-index:10; width:100%; height:100vh; height:100dvh; display:flex; flex-direction:column; overflow:hidden;}
+
+.navbar{
+    height:60px; background:rgba(28,22,17,0.88); backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px);
+    border-bottom:1px solid var(--border-subtle); display:flex; align-items:center; padding:0 18px; gap:12px; flex-shrink:0; z-index:100;
+}
+.nav-brand{display:flex; align-items:center; gap:11px;}
+.nav-logo{
+    width:38px;height:38px;border-radius:11px;
+    background:linear-gradient(135deg,var(--brass),var(--brass-soft));
+    display:flex;align-items:center;justify-content:center;font-size:17px;color:#1c1611;box-shadow:var(--glow-brass);
+}
+.nav-title-group{display:flex; flex-direction:column;}
+.nav-title{font-family:var(--font-display); font-size:16px; font-weight:700; line-height:1.1;}
+.nav-subtitle{font-size:9px; color:var(--text-tertiary); font-weight:700; letter-spacing:0.1em; text-transform:uppercase;}
+.nav-spacer{flex:1;}
+.nav-status{
+    display:flex; align-items:center; gap:7px; background:rgba(95,185,138,0.09); border:1px solid rgba(95,185,138,0.25);
+    border-radius:20px; padding:5px 11px; font-size:9px; font-weight:700; color:var(--green); letter-spacing:0.05em; text-transform:uppercase;
+}
+.status-dot{width:6px;height:6px;background:var(--green);border-radius:50%;box-shadow:0 0 8px rgba(95,185,138,0.6);}
+.btn-nav{width:36px;height:36px;border-radius:var(--radius-sm);border:1px solid var(--border-default);background:transparent;color:var(--text-secondary);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px;}
+.btn-nav.danger{color:var(--red);border-color:rgba(217,83,79,0.3);}
+
+.screen-stack{flex:1; position:relative; overflow:hidden;}
+.screen{position:absolute; inset:0; display:flex; flex-direction:column; background:var(--bg-deep); transform:translateX(100%); transition:transform .35s var(--ease); z-index:1; overflow:hidden;}
+.screen.active{transform:translateX(0); z-index:2;}
+.screen-header{height:54px; background:rgba(28,22,17,0.85); backdrop-filter:blur(16px); border-bottom:1px solid var(--border-subtle); display:flex; align-items:center; padding:0 16px; gap:12px; flex-shrink:0;}
+.btn-back{width:36px;height:36px;border-radius:var(--radius-sm);border:1px solid var(--border-default);background:transparent;color:var(--text-secondary);display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;}
+.screen-header-title{font-family:var(--font-display); font-size:16px; font-weight:700; flex:1;}
+.screen-header-accent{width:6px;height:6px;border-radius:50%;flex-shrink:0;}
+.screen-body{flex:1; overflow-y:auto; -webkit-overflow-scrolling:touch; padding:20px 16px; padding-bottom:var(--safe-bottom);}
+
+.hero-section{text-align:center; padding:14px 0 22px;}
+.hero-icon-wrap{display:inline-block; position:relative; margin-bottom:14px;}
+.hero-icon{width:66px;height:66px;background:linear-gradient(135deg,var(--brass),var(--brass-soft));border-radius:20px;display:flex;align-items:center;justify-content:center;font-size:28px;color:#1c1611;box-shadow:0 10px 30px rgba(207,154,63,0.28);}
+.hero-icon-ring{position:absolute; inset:-7px; border-radius:26px; border:1.5px dashed rgba(207,154,63,0.35);}
+.hero-title{font-family:var(--font-display); font-size:25px; font-weight:800; letter-spacing:-0.01em; line-height:1.1;}
+.hero-subtitle{font-size:11px; color:var(--text-tertiary); margin-top:6px; font-weight:600; letter-spacing:0.04em;}
+
+.stats-inline{display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:22px;}
+.stat-card{background:var(--bg-elevated); border:1px solid var(--border-subtle); border-radius:var(--radius-lg); padding:16px; text-align:center; position:relative;}
+.stat-number{font-family:var(--font-mono); font-size:30px; font-weight:700; letter-spacing:-0.02em; line-height:1;}
+.stat-desc{font-size:9px; color:var(--text-tertiary); font-weight:700; text-transform:uppercase; letter-spacing:0.07em; margin-top:6px;}
+
+.menu-grid{display:grid; grid-template-columns:1fr 1fr; gap:10px;}
+.menu-item{background:var(--bg-elevated); border:1px solid var(--border-subtle); border-radius:var(--radius-lg); padding:20px 12px 16px; cursor:pointer; text-align:center; transition:transform .12s var(--ease), border-color .2s;}
+.menu-item:active{transform:scale(0.96);}
+.menu-item-icon{width:42px;height:42px;border-radius:var(--radius-md);display:flex;align-items:center;justify-content:center;font-size:19px;margin:0 auto 10px;}
+.icon-brass{background:rgba(207,154,63,0.12); color:var(--brass-soft);}
+.icon-teal{background:rgba(63,125,104,0.16); color:var(--teal-soft);}
+.icon-rose{background:rgba(193,91,74,0.14); color:var(--rose);}
+.icon-green{background:rgba(95,185,138,0.13); color:var(--green);}
+.menu-item-title{font-size:12.5px; font-weight:700; margin-bottom:3px;}
+.menu-item-desc{font-size:10px; color:var(--text-tertiary); font-weight:500; line-height:1.4;}
+
+.user-tag{display:flex; align-items:center; justify-content:center; gap:8px; margin-top:20px; padding:10px;}
+.user-avatar-circle{width:26px;height:26px;background:var(--brass);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;color:#1c1611;}
+
+.form-group{margin-bottom:13px;}
+.form-label{display:block; font-size:10px; font-weight:700; color:var(--text-tertiary); text-transform:uppercase; letter-spacing:0.06em; margin-bottom:6px;}
+.form-input{width:100%; background:var(--bg-elevated); border:1px solid var(--border-subtle); border-radius:var(--radius-md); color:var(--text-primary); padding:11px 13px; font-size:13px; font-family:var(--font-body); -webkit-appearance:none; appearance:none;}
+.form-input:focus{outline:none; border-color:var(--brass); box-shadow:0 0 0 3px rgba(207,154,63,0.1);}
+.form-input::placeholder{color:var(--text-tertiary);}
+.form-input:read-only{opacity:0.55;}
+select.form-input{cursor:pointer; background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%237d6f5c' d='M6 8L1 3h10z'/%3E%3C/svg%3E"); background-repeat:no-repeat; background-position:right 12px center; padding-right:32px;}
+select.form-input option{background:var(--bg-elevated); color:var(--text-primary);}
+.form-row{display:grid; grid-template-columns:1fr 1fr; gap:10px;}
+
+.btn{display:inline-flex; align-items:center; justify-content:center; gap:7px; padding:12px 18px; border-radius:var(--radius-md); font-size:12px; font-weight:700; cursor:pointer; border:none; width:100%; font-family:var(--font-body); letter-spacing:0.02em;}
+.btn:active{transform:scale(0.97);}
+.btn-primary{background:var(--brass); color:#1c1611; box-shadow:var(--glow-brass);}
+.btn-teal{background:var(--teal); color:#f3ead9;}
+.btn-success{background:var(--green); color:#12241b;}
+.btn-danger{background:var(--red); color:#fff;}
+.btn-warning{background:var(--amber); color:#1c1611;}
+.btn-outline{background:transparent; color:var(--text-secondary); border:1px solid var(--border-default);}
+.btn-sm{padding:9px 14px; font-size:11px;}
+.btn-row{display:flex; gap:8px;}
+.btn-row .btn{flex:1;}
+
+.mode-note{
+    background:var(--bg-elevated); border:1px dashed var(--border-default); border-radius:var(--radius-md);
+    padding:11px 13px; font-size:10.5px; color:var(--text-secondary); font-weight:500; margin-bottom:14px; line-height:1.5;
+}
+.mode-note b{color:var(--brass-soft);}
+
+.camera-wrapper{background:#000; border:1px solid var(--border-default); border-radius:var(--radius-lg); overflow:hidden; position:relative; min-height:270px; flex-shrink:0;}
+.camera-overlay-placeholder{position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; background:var(--bg-deep); z-index:10; gap:10px;}
+.camera-overlay-placeholder i{font-size:38px; color:var(--text-tertiary); opacity:0.25;}
+.camera-overlay-placeholder p{font-size:11px; color:var(--text-tertiary); font-weight:600; letter-spacing:0.03em;}
+
+/* choice / loan modal */
+.choice-modal{position:fixed; inset:0; z-index:500; display:none; align-items:flex-end; justify-content:center; background:rgba(10,8,6,0.72); backdrop-filter:blur(6px);}
+.choice-modal.show{display:flex;}
+.choice-sheet{
+    width:100%; max-width:480px; background:var(--bg-surface); border:1px solid var(--border-default); border-top-left-radius:24px; border-top-right-radius:24px;
+    padding:22px 20px calc(20px + var(--safe-bottom)); animation:sheetUp .35s var(--ease);
+}
+@keyframes sheetUp{ from{transform:translateY(30px); opacity:0;} to{transform:translateY(0); opacity:1;} }
+.sheet-handle{width:38px; height:4px; background:var(--border-default); border-radius:3px; margin:0 auto 16px;}
+.sheet-student{ text-align:center; margin-bottom:18px; }
+.sheet-student-name{font-family:var(--font-display); font-size:19px; font-weight:700;}
+.sheet-student-meta{font-size:11px; color:var(--text-tertiary); margin-top:3px; font-weight:600;}
+.choice-grid{display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:6px;}
+.choice-btn{
+    background:var(--bg-elevated); border:1px solid var(--border-subtle); border-radius:var(--radius-lg); padding:18px 10px; text-align:center; cursor:pointer;
+}
+.choice-btn:active{transform:scale(0.96);}
+.choice-btn i{font-size:22px; display:block; margin-bottom:8px;}
+.choice-btn.c-hadir i{color:var(--green);}
+.choice-btn.c-pinjam i{color:var(--brass-soft);}
+.choice-btn-label{font-size:12px; font-weight:700;}
+#pinjamForm{display:none; margin-top:16px; padding-top:16px; border-top:1px dashed var(--border-default);}
+
+/* catalog / perforated card for loan entries */
+.loan-card{
+    background:var(--bg-elevated); border:1px solid var(--border-subtle); border-radius:var(--radius-md); padding:13px 14px; position:relative; overflow:hidden;
+    border-left:3px solid var(--brass);
+}
+.loan-card.overdue{border-left-color:var(--red);}
+.loan-card.returned{border-left-color:var(--green); opacity:0.7;}
+.loan-title{font-family:var(--font-display); font-size:14px; font-weight:700;}
+.loan-meta{font-size:10px; color:var(--text-tertiary); margin-top:3px; font-weight:600; font-family:var(--font-mono);}
+.loan-chip{font-size:9px; font-weight:700; padding:3px 8px; border-radius:6px; letter-spacing:0.04em; text-transform:uppercase; display:inline-block; margin-top:8px;}
+.chip-dipinjam{background:rgba(224,165,66,0.12); color:var(--amber);}
+.chip-overdue{background:rgba(217,83,79,0.12); color:var(--red);}
+.chip-kembali{background:rgba(95,185,138,0.12); color:var(--green);}
+
+.log-list{display:flex; flex-direction:column; gap:6px;}
+.log-entry{background:var(--bg-elevated); border:1px solid var(--border-subtle); border-radius:var(--radius-md); padding:11px 14px; display:flex; justify-content:space-between; align-items:center; border-left:3px solid var(--teal);}
+.log-entry.entry-pinjam{border-left-color:var(--brass);}
+.log-entry-name{font-size:13px; font-weight:700;}
+.log-entry-detail{font-size:10px; color:var(--text-tertiary); margin-top:2px;}
+.chip{font-size:9px; font-weight:700; padding:3px 8px; border-radius:6px; letter-spacing:0.04em; text-transform:uppercase;}
+.chip-hadir{background:rgba(63,125,104,0.16); color:var(--teal-soft);}
+.chip-pinjam{background:rgba(207,154,63,0.14); color:var(--brass-soft);}
+
+.empty-placeholder{display:flex; flex-direction:column; align-items:center; justify-content:center; padding:36px 20px; text-align:center;}
+.empty-placeholder i{font-size:36px; color:var(--text-tertiary); opacity:0.2; margin-bottom:10px;}
+.empty-placeholder p{font-size:12px; color:var(--text-tertiary); font-weight:500;}
+
+.toast-anchor{position:fixed; bottom:20px; left:50%; transform:translateX(-50%); z-index:9999; display:flex; flex-direction:column; gap:8px; width:calc(100% - 32px); max-width:400px; pointer-events:none;}
+.toast-item{background:var(--bg-surface); border:1px solid var(--border-default); border-radius:var(--radius-md); padding:11px 16px; font-size:12px; font-weight:600; display:flex; align-items:center; gap:10px; animation:toastSlide .35s var(--ease); pointer-events:auto; box-shadow:var(--shadow-lg);}
+.toast-item.error-toast{border-color:rgba(217,83,79,0.4);}
+@keyframes toastSlide{from{transform:translateY(12px);opacity:0;} to{transform:translateY(0);opacity:1;}}
+
+.loading-overlay{position:fixed; inset:0; background:rgba(20,16,13,0.92); z-index:9998; display:none; align-items:center; justify-content:center; flex-direction:column; gap:14px; backdrop-filter:blur(6px);}
+.loading-overlay.show{display:flex;}
+.loader-ring{width:36px;height:36px;border:3px solid var(--border-default); border-top-color:var(--brass); border-radius:50%; animation:spin .7s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg);}}
+.loader-text{font-size:11px; font-weight:700; color:var(--text-secondary); letter-spacing:0.08em; text-transform:uppercase;}
+
+.login-fullscreen{position:fixed; inset:0; background:var(--bg-deep); z-index:9990; display:flex; align-items:center; justify-content:center; padding:20px;}
+.login-dialog{background:var(--bg-elevated); border:1px solid var(--border-default); border-radius:var(--radius-xl); width:100%; max-width:370px; overflow:hidden; box-shadow:var(--shadow-lg);}
+.login-dialog-header{padding:28px 24px 20px; text-align:center; border-bottom:1px solid var(--border-subtle);}
+.login-dialog-icon{width:56px;height:56px;background:linear-gradient(135deg,var(--brass),var(--brass-soft)); border-radius:18px; display:flex;align-items:center;justify-content:center; font-size:24px; color:#1c1611; margin:0 auto 14px; box-shadow:0 8px 26px rgba(207,154,63,0.3);}
+.login-dialog-title{font-family:var(--font-display); font-size:21px; font-weight:800;}
+.login-dialog-sub{font-size:11px; color:var(--text-tertiary); margin-top:4px;}
+.login-dialog-body{padding:18px 24px 24px;}
+.login-camera-box{background:#000; border:1px solid var(--border-subtle); border-radius:var(--radius-md); overflow:hidden; position:relative; min-height:190px; margin-bottom:14px;}
+.login-camera-ph{position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:8px;}
+.login-camera-ph i{font-size:28px; color:var(--text-tertiary); opacity:0.2;}
+.login-camera-ph p{font-size:10px; color:var(--text-tertiary); font-weight:600; letter-spacing:0.04em;}
+.login-error-box{display:none; font-size:11px; color:var(--red); font-weight:700; text-align:center; margin-top:10px; padding:10px; background:rgba(217,83,79,0.07); border:1px solid rgba(217,83,79,0.2); border-radius:var(--radius-sm);}
+.login-dialog-footer{padding:14px; border-top:1px solid var(--border-subtle); text-align:center;}
+.login-dialog-footer p{font-size:10px; color:var(--text-tertiary); letter-spacing:0.03em;}
+
+::-webkit-scrollbar{width:4px;}
+::-webkit-scrollbar-track{background:transparent;}
+::-webkit-scrollbar-thumb{background:var(--border-default); border-radius:4px;}
+
+#reader,#readerLogin{border:none !important;}
+#reader video,#readerLogin video{border-radius:var(--radius-md);}
+</style>
+</head>
+<body>
+
+<div id="splashScreen">
+    <div class="splash-mark"><i class="fas fa-book-open"></i></div>
+    <div class="splash-word">Perpustakaan SMAN 12</div>
+    <div class="splash-sub">Menyiapkan data...</div>
+    <div class="splash-bar"><div class="splash-bar-fill"></div></div>
+</div>
+
+<div class="ambient-bg"><div class="ambient-orb orb-1"></div><div class="ambient-orb orb-2"></div></div>
+
+<div id="loadingOverlay" class="loading-overlay"><div class="loader-ring"></div><div class="loader-text">Memproses...</div></div>
+<div class="toast-anchor" id="toastContainer"></div>
+
+<div id="loginOverlay" class="login-fullscreen">
+    <div class="login-dialog">
+        <div class="login-dialog-header">
+            <div class="login-dialog-icon"><i class="fas fa-book-open"></i></div>
+            <div class="login-dialog-title">PERPUSTAKAAN 12</div>
+            <div class="login-dialog-sub">Sistem Kunjungan &amp; Peminjaman • SMAN 12</div>
+        </div>
+        <div class="login-dialog-body">
+            <div class="login-camera-box">
+                <div id="readerLogin"></div>
+                <div id="loginPlaceholder" class="login-camera-ph"><i class="fas fa-qrcode"></i><p>SCAN QR UNTUK AKSES</p></div>
+            </div>
+            <button onclick="startLoginScan()" id="btnLoginStart" class="btn btn-primary"><i class="fas fa-camera"></i> SCAN QR</button>
+            <button onclick="stopLoginScan()" id="btnLoginStop" class="btn btn-danger" style="display:none;"><i class="fas fa-stop"></i> STOP</button>
+            <div id="loginError" class="login-error-box"><i class="fas fa-exclamation-triangle"></i> QR tidak valid!</div>
+        </div>
+        <div class="login-dialog-footer"><p>© Perpustakaan SMAN 12</p></div>
+    </div>
+</div>
+
+<div class="app-shell">
+    <header class="navbar">
+        <div class="nav-brand">
+            <div class="nav-logo"><i class="fas fa-book-open"></i></div>
+            <div class="nav-title-group">
+                <div class="nav-title">Perpustakaan 12</div>
+                <div class="nav-subtitle">Kunjungan &amp; Peminjaman</div>
+            </div>
+        </div>
+        <div class="nav-spacer"></div>
+        <div class="nav-status"><div class="status-dot"></div>Online</div>
+        <button onclick="logout()" class="btn-nav danger" id="btnLogoutNav" style="display:none;" title="Keluar"><i class="fas fa-sign-out-alt"></i></button>
+    </header>
+
+    <div class="screen-stack">
+
+        <div class="screen active" id="screenHome">
+            <div class="screen-body">
+                <div class="hero-section">
+                    <div class="hero-icon-wrap"><div class="hero-icon-ring"></div><div class="hero-icon"><i class="fas fa-book-open"></i></div></div>
+                    <div class="hero-title">PERPUSTAKAAN SMAN 12</div>
+                    <div class="hero-subtitle">© Gema Bintang</div>
+                </div>
+                <div class="stats-inline">
+                    <div class="stat-card"><div class="stat-number" style="color:var(--teal-soft);" id="homeKunjungan">0</div><div class="stat-desc">Kunjungan Hari Ini</div></div>
+                    <div class="stat-card"><div class="stat-number" style="color:var(--brass-soft);" id="homePinjamAktif">0</div><div class="stat-desc">Buku Dipinjam</div></div>
+                </div>
+                <div class="menu-grid">
+                    <div class="menu-item" onclick="navigateTo('scan')"><div class="menu-item-icon icon-teal"><i class="fas fa-camera"></i></div><div class="menu-item-title">Scan Perpus</div><div class="menu-item-desc">Kunjungan / pinjam buku</div></div>
+                    <div class="menu-item" onclick="navigateTo('pinjaman')"><div class="menu-item-icon icon-brass"><i class="fas fa-bookmark"></i></div><div class="menu-item-title">Buku Dipinjam</div><div class="menu-item-desc">Kelola pengembalian</div></div>
+                    <div class="menu-item" onclick="navigateTo('admin')"><div class="menu-item-icon icon-rose"><i class="fas fa-id-card"></i></div><div class="menu-item-title">Tambah Siswa</div><div class="menu-item-desc">Registrasi &amp; kartu QR</div></div>
+                    <div class="menu-item" onclick="navigateTo('laporan')"><div class="menu-item-icon icon-teal"><i class="fas fa-chart-bar"></i></div><div class="menu-item-title">Data &amp; Laporan</div><div class="menu-item-desc">Statistik perpustakaan</div></div>
+                    <div class="menu-item" onclick="navigateTo('import')"><div class="menu-item-icon icon-green"><i class="fas fa-file-excel"></i></div><div class="menu-item-title">Import Excel</div><div class="menu-item-desc">Registrasi massal</div></div>
+                    <div class="menu-item" onclick="navigateTo('reset')"><div class="menu-item-icon icon-rose"><i class="fas fa-rotate-left"></i></div><div class="menu-item-title">Reset Data</div><div class="menu-item-desc">Reset statistik perpus</div></div>
+                </div>
+                <div class="user-tag"><div class="user-avatar-circle"><i class="fas fa-user"></i></div><span style="font-size:11px; color:var(--text-tertiary); font-weight:600;">Admin</span></div>
+            </div>
+        </div>
+
+        <div class="screen" id="screenScan">
+            <div class="screen-header">
+                <button class="btn-back" onclick="goBackFromScreen()"><i class="fas fa-arrow-left"></i></button>
+                <div class="screen-header-title">Scan Perpustakaan</div>
+                <div class="screen-header-accent" style="background:var(--teal-soft); box-shadow:0 0 8px rgba(87,168,140,0.4);"></div>
+            </div>
+            <div class="screen-body">
+                <div class="mode-note"><i class="fas fa-circle-info"></i> Scan kartu QR siswa, lalu pilih <b>Hadir</b> atau <b>Pinjam Buku</b> setelah data siswa muncul.</div>
+
+                <div class="camera-wrapper" style="margin-bottom:12px;">
+                    <div id="reader"></div>
+                    <div id="cameraPlaceholder" class="camera-overlay-placeholder"><i class="fas fa-camera"></i><p>Kamera belum aktif</p></div>
+                </div>
+                <div class="btn-row" style="margin-bottom:12px;">
+                    <button onclick="startCam()" id="btnStart" class="btn btn-primary btn-sm"><i class="fas fa-play"></i> Aktifkan</button>
+                    <button onclick="flipCam()" id="btnFlip" class="btn btn-outline btn-sm" style="display:none;"><i class="fas fa-sync-alt"></i></button>
+                    <button onclick="stopCam()" id="btnStop" class="btn btn-danger btn-sm" style="display:none;"><i class="fas fa-stop"></i></button>
+                </div>
+
+                <div style="background:var(--bg-elevated); border:1px solid var(--border-subtle); border-radius:var(--radius-lg); padding:14px; margin-bottom:12px;">
+                    <div style="font-size:11px; font-weight:700; color:var(--text-secondary); margin-bottom:10px;"><i class="fas fa-pen" style="color:var(--brass-soft);"></i> Input Manual</div>
+                    <div class="form-row" style="margin-bottom:8px;">
+                        <select id="manualKelas" class="form-input"></select>
+                        <select id="manualAbsen" class="form-input"><option value="">Absen</option></select>
+                    </div>
+                    <input type="text" id="manualNama" readonly class="form-input" placeholder="Nama otomatis" style="margin-bottom:10px;">
+                    <button onclick="bukaChoiceManual()" class="btn btn-teal btn-sm">Buka Pilihan</button>
+                </div>
+
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+                    <span style="font-size:13px; font-weight:700;"><i class="fas fa-list" style="color:var(--teal-soft);"></i> Log Perpustakaan</span>
+                    <span style="font-size:14px; font-weight:800; color:var(--teal-soft);" id="totalKunjungan">0</span>
+                </div>
+                <div class="form-row" style="margin-bottom:10px;">
+                    <select id="pilihBulan" class="form-input" onchange="initTanggalHarian(this.value)"></select>
+                    <select id="tanggalHarian" class="form-input" onchange="gantiTanggalUI()"></select>
+                </div>
+                <button onclick="downloadHarian()" class="btn btn-teal btn-sm" style="margin-bottom:10px;"><i class="fas fa-download"></i> Download</button>
+                <div id="logPresensi" class="log-list"><div class="empty-placeholder"><i class="fas fa-inbox"></i><p>Belum ada aktivitas</p></div></div>
+            </div>
+        </div>
+
+        <div class="screen" id="screenPinjaman">
+            <div class="screen-header">
+                <button class="btn-back" onclick="goBackFromScreen()"><i class="fas fa-arrow-left"></i></button>
+                <div class="screen-header-title">Buku Dipinjam</div>
+                <div class="screen-header-accent" style="background:var(--brass); box-shadow:0 0 8px rgba(207,154,63,0.4);"></div>
+            </div>
+            <div class="screen-body">
+                <div style="display:flex; gap:8px; margin-bottom:12px;">
+                    <div style="flex:1; position:relative;">
+                        <i class="fas fa-search" style="position:absolute; left:12px; top:50%; transform:translateY(-50%); color:var(--text-tertiary); font-size:12px;"></i>
+                        <input type="text" id="searchPinjaman" placeholder="Cari nama / judul buku..." oninput="renderPinjaman()" class="form-input" style="padding-left:32px;">
+                    </div>
+                    <select id="filterStatusPinjaman" onchange="renderPinjaman()" class="form-input" style="width:120px;">
+                        <option value="aktif">Aktif</option>
+                        <option value="telat">Terlambat</option>
+                        <option value="kembali">Sudah Kembali</option>
+                        <option value="">Semua</option>
+                    </select>
+                </div>
+                <div id="listPinjaman" style="display:flex; flex-direction:column; gap:8px;"></div>
+            </div>
+        </div>
+
+        <div class="screen" id="screenAdmin">
+            <div class="screen-header">
+                <button class="btn-back" onclick="goBackFromScreen()"><i class="fas fa-arrow-left"></i></button>
+                <div class="screen-header-title">Tambah Siswa</div>
+                <div class="screen-header-accent" style="background:var(--rose); box-shadow:0 0 8px rgba(193,91,74,0.4);"></div>
+            </div>
+            <div class="screen-body">
+                <div class="mode-note"><i class="fas fa-circle-info"></i> Data &amp; kode QR yang dibuat di sini tersimpan bersama (shared) dengan aplikasi Kerohanian — kartu bisa dipakai di kedua aplikasi.</div>
+                <div style="background:var(--bg-elevated); border:1px solid var(--border-subtle); border-radius:var(--radius-lg); padding:16px;">
+                    <div class="form-group"><label class="form-label">Nama Lengkap</label><input type="text" id="nama" placeholder="Masukkan nama" class="form-input"></div>
+                    <div class="form-row">
+                        <div class="form-group"><label class="form-label">Kelas</label><select id="kelas" class="form-input"></select></div>
+                        <div class="form-group"><label class="form-label">No. Absen</label><input type="number" id="absen" placeholder="01" class="form-input"></div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group"><label class="form-label">Gender</label><select id="jk" class="form-input"><option value="L">Laki-laki</option><option value="P">Perempuan</option></select></div>
+                        <div class="form-group"><label class="form-label">Agama</label>
+                            <select id="agama" class="form-input">
+                                <option value="Islam">Islam</option><option value="Kristen">Kristen</option><option value="Katolik">Katolik</option>
+                                <option value="Hindu">Hindu</option><option value="Buddha">Buddha</option><option value="Konghucu">Konghucu</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group"><label class="form-label">Aksen Kartu</label>
+                        <select id="warnaKartu" class="form-input"><option value="brass">Brass / Kuning Tua</option><option value="teal">Teal / Hijau Buku</option><option value="rose">Rose / Merah Bata</option></select>
+                    </div>
+                    <button onclick="buatQR()" class="btn btn-primary"><i class="fas fa-qrcode"></i> Buat Kartu</button>
+                    <div id="qrArea"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="screen" id="screenLaporan">
+            <div class="screen-header">
+                <button class="btn-back" onclick="goBackFromScreen()"><i class="fas fa-arrow-left"></i></button>
+                <div class="screen-header-title">Data &amp; Laporan</div>
+                <div class="screen-header-accent" style="background:var(--teal-soft); box-shadow:0 0 8px rgba(87,168,140,0.4);"></div>
+            </div>
+            <div class="screen-body">
+                <div class="stats-inline" style="margin-bottom:14px;">
+                    <div class="stat-card"><div class="stat-number" style="color:var(--brass-soft);" id="dashTotalSiswa">0</div><div class="stat-desc">Total Siswa</div></div>
+                    <div class="stat-card"><div class="stat-number" style="color:var(--teal-soft);" id="dashKunjunganHari">0</div><div class="stat-desc">Kunjungan Hari Ini</div></div>
+                </div>
+                <div style="display:flex; gap:8px; margin-bottom:12px;">
+                    <div style="flex:1; position:relative;">
+                        <i class="fas fa-search" style="position:absolute; left:12px; top:50%; transform:translateY(-50%); color:var(--text-tertiary); font-size:12px;"></i>
+                        <input type="text" id="searchSiswa" placeholder="Cari nama..." oninput="filterLaporan()" class="form-input" style="padding-left:32px;">
+                    </div>
+                    <select id="filterKelas" onchange="filterLaporan()" class="form-input" style="width:110px;"><option value="">Semua</option></select>
+                </div>
+                <div id="listLaporan" style="display:flex; flex-direction:column; gap:6px;"></div>
+            </div>
+        </div>
+
+        <div class="screen" id="screenImport">
+            <div class="screen-header">
+                <button class="btn-back" onclick="goBackFromScreen()"><i class="fas fa-arrow-left"></i></button>
+                <div class="screen-header-title">Import Excel</div>
+                <div class="screen-header-accent" style="background:var(--green); box-shadow:0 0 8px rgba(95,185,138,0.4);"></div>
+            </div>
+            <div class="screen-body">
+                <div class="mode-note"><i class="fas fa-circle-info"></i> File Excel di sini adalah daftar khusus perpustakaan. Siswa baru akan didaftarkan ke data bersama (siswa &amp; QR); siswa yang sudah punya kartu (dari Kerohanian) otomatis dilewati.</div>
+                <div style="background:var(--bg-elevated); border:1px solid var(--border-subtle); border-radius:var(--radius-lg); padding:16px;">
+                    <div style="background:var(--bg-deep); border:2px dashed var(--border-default); border-radius:var(--radius-md); padding:20px; text-align:center; margin-bottom:14px;">
+                        <i class="fas fa-cloud-upload-alt" style="font-size:32px; color:var(--text-tertiary); margin-bottom:8px; display:block;"></i>
+                        <input type="file" id="fileExcel" accept=".xlsx,.xls" class="form-input" style="background:transparent; border:none; padding:8px; text-align:center;">
+                        <p style="font-size:10px; color:var(--text-tertiary); margin-top:4px;">Format .xlsx / .xls</p>
+                    </div>
+                    <button onclick="bacaExcel()" id="btnBacaExcel" class="btn btn-success"><i class="fas fa-upload"></i> Baca File</button>
+                    <div id="warnaJenjangArea" style="display:none; margin-top:14px;"></div>
+                    <div id="importProgress" style="display:none; text-align:center; font-size:11px; font-weight:600; color:var(--teal-soft); margin-top:10px;"></div>
+                    <div id="importResult" style="display:none; margin-top:10px;"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="screen" id="screenReset">
+            <div class="screen-header">
+                <button class="btn-back" onclick="goBackFromScreen()"><i class="fas fa-arrow-left"></i></button>
+                <div class="screen-header-title">Reset Data</div>
+                <div class="screen-header-accent" style="background:var(--rose); box-shadow:0 0 8px rgba(193,91,74,0.4);"></div>
+            </div>
+            <div class="screen-body">
+                <div style="background:var(--bg-elevated); border:1px solid rgba(217,83,79,0.2); border-radius:var(--radius-lg); padding:16px;">
+                    <div style="font-size:13px; font-weight:700; color:var(--red); margin-bottom:8px;"><i class="fas fa-exclamation-triangle"></i> Reset Statistik Perpustakaan</div>
+                    <p style="font-size:11px; color:var(--text-tertiary); margin-bottom:12px; line-height:1.6;">
+                        Reset counter kunjungan &amp; peminjaman siswa perpustakaan menjadi 0. Data siswa/QR &amp; data Kerohanian <strong style="color:var(--brass-soft);">tidak ikut terhapus</strong>. Tidak bisa dibatalkan.
+                    </p>
+                    <button onclick="resetStatistikPerpus()" class="btn btn-danger"><i class="fas fa-rotate-left"></i> Reset Statistik</button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<!-- Sheet modal: pilihan Hadir / Pinjam Buku, muncul HANYA setelah QR berhasil discan -->
+<div class="choice-modal" id="choiceModal">
+    <div class="choice-sheet">
+        <div class="sheet-handle"></div>
+        <div class="sheet-student">
+            <div class="sheet-student-name" id="choiceNama">-</div>
+            <div class="sheet-student-meta" id="choiceMeta">-</div>
+        </div>
+        <div class="choice-grid" id="choiceButtons">
+            <div class="choice-btn c-hadir" onclick="pilihHadir()"><i class="fas fa-circle-check"></i><div class="choice-btn-label">Hadir</div></div>
+            <div class="choice-btn c-pinjam" onclick="bukaFormPinjam()"><i class="fas fa-book"></i><div class="choice-btn-label">Pinjam Buku</div></div>
+        </div>
+        <div id="pinjamForm">
+            <div class="form-group"><label class="form-label">Judul Buku</label><input type="text" id="judulBuku" placeholder="Contoh: Laskar Pelangi" class="form-input"></div>
+            <div class="form-row">
+                <div class="form-group"><label class="form-label">Tanggal Pinjam</label><input type="date" id="tglPinjam" class="form-input"></div>
+                <div class="form-group"><label class="form-label">Tanggal Kembali</label><input type="date" id="tglKembali" class="form-input"></div>
+            </div>
+            <div class="btn-row">
+                <button onclick="batalPinjamForm()" class="btn btn-outline btn-sm">Batal</button>
+                <button onclick="simpanPinjaman()" class="btn btn-primary btn-sm"><i class="fas fa-save"></i> Simpan Pinjaman</button>
+            </div>
+        </div>
+        <button onclick="tutupChoiceModal()" class="btn btn-outline btn-sm" id="btnTutupChoice" style="margin-top:14px;">Tutup</button>
+    </div>
+</div>
+
+<script>
+    const firebaseConfig = {
+        apiKey: "AIzaSyBQwKb5BgWywX3bx3gKjNJsugJ1sUBr4X4",
+        authDomain: "absen-dzuhur.firebaseapp.com",
+        databaseURL: "https://absen-dzuhur-default-rtdb.asia-southeast1.firebasedatabase.app",
+        projectId: "absen-dzuhur",
+        storageBucket: "absen-dzuhur.firebasestorage.app",
+        messagingSenderId: "254784143918",
+        appId: "1:254784143918:web:5d9769d58fced6a0b015bf"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+
+    // Data siswa/kodeIndex DIBAGI dengan app Kerohanian (node: siswa, kodeIndex).
+    // Data kehadiran & peminjaman perpustakaan disimpan TERPISAH di bawah node "perpus".
+    const PASSWORD = "pustaka12";
+    const KELAS_LIST = ["X-1","X-2","X-3","X-4","X-5","X-6","XI-1","XI-2","XI-3","XI-4","XI-5","XI-6","XII-1","XII-2","XII-3","XII-4","XII-5","XII-6"];
+    const NAMA_HARI = ['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'];
+    const ACCENTS = { brass:'#cf9a3f', teal:'#3f7d68', rose:'#c15b4a' };
+
+    function todayKey(){ return new Date().toLocaleDateString('id-ID').replace(/\//g,'-'); }
+    function dateToKey(d){ return d.toLocaleDateString('id-ID').replace(/\//g,'-'); }
+    function isoToDMY(iso){ const [y,m,d]=iso.split('-'); return `${d}-${m}-${y}`; }
+    function dmyToDate(dmy){ const [d,m,y]=dmy.split('-').map(Number); return new Date(y,m-1,d); }
+
+    function showToast(msg, type='success') {
+        const c = document.getElementById('toastContainer');
+        const t = document.createElement('div');
+        t.className = 'toast-item' + (type==='error'?' error-toast':'');
+        t.innerHTML = `<span>${type==='success'?'✅':'❌'}</span><span>${msg}</span>`;
+        c.appendChild(t);
+        setTimeout(()=>{t.style.opacity='0';t.style.transition='all 0.2s';setTimeout(()=>t.remove(),200);},2500);
+    }
+    function playBeep(type) {
+        try{
+            const ctx=new (window.AudioContext||window.webkitAudioContext)();
+            const o=ctx.createOscillator(), g=ctx.createGain();
+            o.connect(g); g.connect(ctx.destination);
+            o.type='sine'; o.frequency.value=type==='success'?800:350;
+            g.gain.value=0.12; o.start();
+            g.gain.exponentialRampToValueAtTime(0.00001, ctx.currentTime+0.2);
+            o.stop(ctx.currentTime+0.2);
+        }catch(e){}
+    }
+
+    /* ================= NAVIGASI + TOMBOL BACK HP ================= */
+    let screenStack = ['home'];
+    let currentScreen = 'home';
+    let modalOpen = false;
+
+    function showScreenEl(screen) {
+        const map = { home:'screenHome',scan:'screenScan',pinjaman:'screenPinjaman',admin:'screenAdmin',laporan:'screenLaporan',import:'screenImport',reset:'screenReset' };
+        Object.values(map).forEach(id=>document.getElementById(id)?.classList.remove('active'));
+        const target = document.getElementById(map[screen]);
+        if (target) { target.classList.add('active'); target.querySelector('.screen-body')?.scrollTo(0,0); }
+        currentScreen = screen;
+        if (screen === 'home') updateHomeStats();
+        if (screen === 'laporan') updateDashboard();
+        if (screen === 'scan' && isLogin) listenPresensi();
+        if (screen === 'pinjaman') listenPinjaman();
+    }
+
+    window.navigateTo = function(screen, isBack) {
+        if (!isLogin) { document.getElementById('loginOverlay').style.display=''; return; }
+        if (modalOpen) tutupChoiceModal(true);
+        if (screen !== 'scan') stopCam();
+        showScreenEl(screen);
+        if (!isBack) {
+            screenStack.push(screen);
+            history.pushState({stackLen:screenStack.length}, '', '#'+screen);
+        }
+    };
+
+    window.goBackFromScreen = function() { history.back(); };
+
+    window.addEventListener('popstate', function(){
+        if (modalOpen) { tutupChoiceModal(true); return; }
+        if (screenStack.length > 1) {
+            screenStack.pop();
+            const prev = screenStack[screenStack.length-1];
+            showScreenEl(prev);
+        } else {
+            // sudah di home paling awal — biarkan browser/PWA menangani (biasanya minimize)
+            history.pushState({stackLen:1}, '', '#home');
+        }
+    });
+
+    /* ================= BOOT / SPLASH ================= */
+    let isLogin = false;
+
+    window.addEventListener('load', function(){
+        history.replaceState({stackLen:1}, '', '#home');
+        setTimeout(()=>{
+            document.getElementById('splashScreen').classList.add('hide');
+        }, 1400);
+    });
+
+    /* ================= INIT ================= */
+    window.onload = function() {
+        ['kelas','manualKelas'].forEach(id=>{
+            const el=document.getElementById(id);
+            if (el) KELAS_LIST.forEach(k=>el.innerHTML+=`<option value="${k}">${k}</option>`);
+        });
+        const mk=document.getElementById('manualKelas');
+        if (mk) { mk.addEventListener('change',loadManualAbsenOptions); loadManualAbsenOptions(); }
+        initDropdownBulan(); initTanggalHarian();
+        const tp=document.getElementById('tglPinjam'), tk=document.getElementById('tglKembali');
+        if (tp) tp.value = new Date().toISOString().slice(0,10);
+        if (tk) { const d=new Date(); d.setDate(d.getDate()+3); tk.value=d.toISOString().slice(0,10); }
+        if (localStorage.getItem('loginPerpus')==='true') {
+            isLogin = true;
+            document.getElementById('loginOverlay').style.display='none';
+            document.getElementById('btnLogoutNav').style.display='';
+            listenPresensi(); updateHomeStats(); updateDashboard();
+        }
+    };
+
+    window.startLoginScan = function() {
+        document.getElementById('btnLoginStart').style.display='none';
+        document.getElementById('btnLoginStop').style.display='';
+        document.getElementById('loginPlaceholder').style.display='none';
+        document.getElementById('loginError').style.display='none';
+        window.scannerLogin = new Html5Qrcode("readerLogin");
+        scannerLogin.start({facingMode:"environment"},{fps:10,qrbox:160},
+            text=>{
+                scannerLogin.stop();
+                document.getElementById('btnLoginStop').style.display='none';
+                if (text.trim()===PASSWORD) doLogin();
+                else {
+                    document.getElementById('loginError').style.display='';
+                    document.getElementById('loginPlaceholder').style.display='';
+                    document.getElementById('btnLoginStart').style.display='';
+                    playBeep('error');
+                }
+            },()=>{}
+        ).catch(e=>{
+            showToast('Gagal: '+e,'error');
+            document.getElementById('btnLoginStart').style.display='';
+            document.getElementById('btnLoginStop').style.display='none';
+        });
+    };
+    window.stopLoginScan = function() {
+        try{ if(scannerLogin?.isScanning) scannerLogin.stop(); }catch(e){}
+        document.getElementById('btnLoginStart').style.display='';
+        document.getElementById('btnLoginStop').style.display='none';
+        document.getElementById('loginPlaceholder').style.display='';
+    };
+    function doLogin() {
+        isLogin = true;
+        localStorage.setItem('loginPerpus','true');
+        document.getElementById('loginOverlay').style.display='none';
+        document.getElementById('btnLogoutNav').style.display='';
+        showScreenEl('home');
+        listenPresensi(); updateHomeStats(); updateDashboard();
+        showToast('Login berhasil!','success'); playBeep('success');
+    }
+    window.logout = function(){
+        if (confirm('Yakin keluar?')) { isLogin=false; localStorage.removeItem('loginPerpus'); location.reload(); }
+    };
+
+    /* ================= QR RESOLVE (baca data bersama siswa/kodeIndex) ================= */
+    function normalisasiNamaQR(v){return(v||'').toString().trim().replace(/\s+/g,' ').toUpperCase();}
+    function parseQRPresensi(text) {
+        if(!text?.toString().trim())throw'QR kosong';
+        const raw=text.toString().trim();
+        if(raw.includes('|')){
+            const p=raw.split('|').map(v=>v.trim());
+            if(p.length!==5)throw'Bukan QR presensi';
+            const[nama,kl,al,jk,ag]=p;
+            if(!nama||!kl||!al||!jk||!ag)throw'Data tidak lengkap';
+            return{legacy:true,nama:nama.trim(),kelas:kl.toUpperCase(),absen:al.replace(/\D/g,''),jk:jk.toUpperCase(),agama:ag.trim()};
+        }
+        if(/^KRH-[A-Z0-9]{6,10}$/i.test(raw)) return{legacy:false,kode:raw.toUpperCase()};
+        throw'Format QR tidak dikenal';
+    }
+    async function resolveSiswaDariQR(text) {
+        const parsed = parseQRPresensi(text);
+        if (!parsed.legacy) {
+            const idxSnap = await db.ref('kodeIndex/'+parsed.kode).once('value');
+            if (!idxSnap.exists()) throw 'Kode tidak terdaftar';
+            const { kelas, absen } = idxSnap.val();
+            const ss = await db.ref('siswa/'+kelas+'/'+absen).once('value');
+            if (!ss.exists()) throw 'Siswa tidak ditemukan';
+            return { kelas, absen, data: ss.val(), namaQR: ss.val().nama };
+        } else {
+            const ref = db.ref('siswa/'+parsed.kelas+'/'+parsed.absen);
+            const snap = await ref.once('value');
+            if (!snap.exists()) throw 'Siswa tidak ditemukan';
+            return { kelas:parsed.kelas, absen:parsed.absen, data:snap.val(), namaQR:parsed.nama };
+        }
+    }
+    async function cekSlotSudahDipakai(kelas, absen) {
+        const snap = await db.ref('siswa/'+kelas+'/'+absen).once('value');
+        return snap.exists() ? snap.val() : null;
+    }
+    async function cekNamaSudahAda(namaUpper, kecualiKelas, kecualiAbsen) {
+        const snap = await db.ref('siswa').once('value');
+        const data = snap.val() || {};
+        for (let k in data) for (let a in data[k]) {
+            if (k === kecualiKelas && String(a) === String(kecualiAbsen)) continue;
+            if ((data[k][a].nama || '').toUpperCase().trim() === namaUpper) return { kelas: k, absen: a };
+        }
+        return null;
+    }
+    async function generateKodeUnik() {
+        const ALPHA = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+        for (let i=0;i<10;i++) {
+            let rand=''; for (let j=0;j<8;j++) rand += ALPHA[Math.floor(Math.random()*ALPHA.length)];
+            const kode = 'KRH-'+rand;
+            const snap = await db.ref('kodeIndex/'+kode).once('value');
+            if (!snap.exists()) return kode;
+        }
+        return 'KRH-'+Date.now().toString(36).toUpperCase()+Math.floor(Math.random()*99);
+    }
+
+    /* ================= SCAN CAMERA (deteksi -> buka sheet pilihan) ================= */
+    let scanner=null, facingMode='environment';
+    let pendingSiswa=null;
+
+    window.startCam = async function() {
+        document.getElementById('btnStart').style.display='none';
+        document.getElementById('btnFlip').style.display='';document.getElementById('btnStop').style.display='';
+        document.getElementById('cameraPlaceholder').style.display='none';
+        scanner=new Html5Qrcode("reader");
+        try{
+            await scanner.start({facingMode:"environment"},{fps:5,qrbox:{width:240,height:240},aspectRatio:1.333},text=>{scanner.pause();handleScanResult(text);},()=>{});
+            showToast('Kamera aktif','success');
+        }catch(e){
+            showToast('Gagal: '+e,'error');
+            document.getElementById('btnStart').style.display='';document.getElementById('btnFlip').style.display='none';
+            document.getElementById('btnStop').style.display='none';document.getElementById('cameraPlaceholder').style.display='';
+        }
+    };
+    window.flipCam = async function() {
+        try{ if(scanner?.isScanning) await scanner.stop(); }catch(e){}
+        facingMode = facingMode==='environment'?'user':'environment';
+        scanner=new Html5Qrcode("reader");
+        try{ await scanner.start({facingMode},{fps:5,qrbox:{width:240,height:240},aspectRatio:1.333},text=>{scanner.pause();handleScanResult(text);},()=>{}); }catch(e){}
+    };
+    window.stopCam = function() {
+        try{ if(scanner?.isScanning) scanner.stop(); }catch(e){}
+        facingMode='environment';
+        document.getElementById('btnStart').style.display='';document.getElementById('btnFlip').style.display='none';
+        document.getElementById('btnStop').style.display='none';document.getElementById('cameraPlaceholder').style.display='';
+    };
+
+    async function handleScanResult(text) {
+        document.getElementById('loadingOverlay').classList.add('show');
+        try{
+            const resolved = await resolveSiswaDariQR(text);
+            const ds = resolved.data || {};
+            if (ds.nama && resolved.namaQR && normalisasiNamaQR(ds.nama)!==normalisasiNamaQR(resolved.namaQR)) throw 'QR tidak cocok';
+            pendingSiswa = { kelas: resolved.kelas, absen: resolved.absen, nama: ds.nama||resolved.namaQR, jk:(ds.jk||'L').toUpperCase(), agama: ds.agama||'Islam' };
+            document.getElementById('loadingOverlay').classList.remove('show');
+            bukaChoiceModal();
+        }catch(e){
+            document.getElementById('loadingOverlay').classList.remove('show');
+            showToast(e.toString(),'error'); playBeep('error');
+            setTimeout(()=>{try{scanner?.resume();}catch(err){}},1200);
+        }
+    }
+
+    window.bukaChoiceManual = async function() {
+        const kelas=document.getElementById('manualKelas')?.value;
+        const absen=document.getElementById('manualAbsen')?.value;
+        if(!kelas||!absen){ showToast('Pilih kelas & absen dulu!','error'); return; }
+        const snap = await db.ref('siswa/'+kelas+'/'+absen).once('value');
+        if(!snap.exists()){ showToast('Siswa tidak ditemukan','error'); return; }
+        const ds = snap.val();
+        pendingSiswa = { kelas, absen, nama: ds.nama, jk:(ds.jk||'L').toUpperCase(), agama: ds.agama||'Islam' };
+        bukaChoiceModal();
+    };
+
+    function bukaChoiceModal() {
+        document.getElementById('choiceNama').innerText = pendingSiswa.nama;
+        document.getElementById('choiceMeta').innerText = `${pendingSiswa.kelas} • Absen ${pendingSiswa.absen}`;
+        document.getElementById('pinjamForm').style.display='none';
+        document.getElementById('choiceButtons').style.display='grid';
+        document.getElementById('btnTutupChoice').style.display='';
+        document.getElementById('choiceModal').classList.add('show');
+        modalOpen = true;
+        history.pushState({modal:true}, '', location.hash);
+    }
+    window.tutupChoiceModal = function(fromPop) {
+        document.getElementById('choiceModal').classList.remove('show');
+        modalOpen = false;
+        pendingSiswa = null;
+        if (!fromPop) history.back();
+        setTimeout(()=>{try{scanner?.resume();}catch(e){}},300);
+    };
+
+    window.pilihHadir = async function() {
+        if (!pendingSiswa) return;
+        document.getElementById('loadingOverlay').classList.add('show');
+        try{
+            const { kelas, absen, nama, jk, agama } = pendingSiswa;
+            const tgl = todayKey();
+            const key = kelas+'_'+absen;
+            const ref = db.ref('perpus/kunjungan/'+tgl+'/'+key);
+            if ((await ref.once('value')).exists()) { showToast('Sudah tercatat kunjungan hari ini','error'); playBeep('error'); }
+            else {
+                await ref.set({nama,kelas,absen,jk,agama,jam:new Date().toLocaleTimeString('id-ID'),status:'HADIR',timestamp:Date.now()});
+                await db.ref('perpus/stats/'+kelas+'/'+absen+'/totalKunjungan').transaction(v=>(v||0)+1);
+                showToast(`${nama} — Hadir ke perpustakaan`,'success'); playBeep('success');
+            }
+        }catch(e){ showToast('Gagal: '+e.message,'error'); }
+        document.getElementById('loadingOverlay').classList.remove('show');
+        tutupChoiceModal();
+        updateDashboard();
+    };
+
+    window.bukaFormPinjam = function() {
+        document.getElementById('choiceButtons').style.display='none';
+        document.getElementById('btnTutupChoice').style.display='none';
+        document.getElementById('pinjamForm').style.display='block';
+        document.getElementById('judulBuku').value='';
+    };
+    window.batalPinjamForm = function() {
+        document.getElementById('choiceButtons').style.display='grid';
+        document.getElementById('btnTutupChoice').style.display='';
+        document.getElementById('pinjamForm').style.display='none';
+    };
+
+    window.simpanPinjaman = async function() {
+        if (!pendingSiswa) return;
+        const judul = document.getElementById('judulBuku').value.trim();
+        const tglPinjamIso = document.getElementById('tglPinjam').value;
+        const tglKembaliIso = document.getElementById('tglKembali').value;
+        if (!judul || !tglPinjamIso || !tglKembaliIso) { showToast('Lengkapi data peminjaman!','error'); return; }
+        document.getElementById('loadingOverlay').classList.add('show');
+        try{
+            const { kelas, absen, nama, jk, agama } = pendingSiswa;
+            const tglPinjam = isoToDMY(tglPinjamIso), tglKembali = isoToDMY(tglKembaliIso);
+            const pushRef = db.ref('perpus/peminjaman').push();
+            await pushRef.set({ nama,kelas,absen,jk,agama, judulBuku:judul, tglPinjam, tglKembali, tglDikembalikan:null, status:'DIPINJAM', timestamp:Date.now() });
+            await db.ref('perpus/stats/'+kelas+'/'+absen+'/totalPinjam').transaction(v=>(v||0)+1);
+            // catat juga sebagai kunjungan hari ini bila belum
+            const tgl = todayKey(), key = kelas+'_'+absen;
+            const kr = db.ref('perpus/kunjungan/'+tgl+'/'+key);
+            if (!(await kr.once('value')).exists()) {
+                await kr.set({nama,kelas,absen,jk,agama,jam:new Date().toLocaleTimeString('id-ID'),status:'HADIR',timestamp:Date.now()});
+                await db.ref('perpus/stats/'+kelas+'/'+absen+'/totalKunjungan').transaction(v=>(v||0)+1);
+            }
+            showToast(`${nama} — pinjam "${judul}"`,'success'); playBeep('success');
+        }catch(e){ showToast('Gagal: '+e.message,'error'); }
+        document.getElementById('loadingOverlay').classList.remove('show');
+        tutupChoiceModal();
+        updateDashboard();
+    };
+
+    /* ================= LOG KUNJUNGAN HARIAN ================= */
+    let currentPresensiRef = null;
+    window.listenPresensi = function(tk) {
+        if (currentPresensiRef) currentPresensiRef.off();
+        const td = (tk && tk!=='__ALL__') ? tk : todayKey();
+        currentPresensiRef = db.ref('perpus/kunjungan/'+td);
+        currentPresensiRef.on('value', async snap=>{
+            const d = snap.val()||{}, entries = Object.values(d);
+            document.getElementById('totalKunjungan') && (document.getElementById('totalKunjungan').innerText = entries.length);
+            document.getElementById('homeKunjungan') && (document.getElementById('homeKunjungan').innerText = entries.length);
+            document.getElementById('dashKunjunganHari') && (document.getElementById('dashKunjunganHari').innerText = entries.length);
+            const lc = document.getElementById('logPresensi');
+            if (!lc) return;
+            if (entries.length===0) { lc.innerHTML='<div class="empty-placeholder"><i class="fas fa-inbox"></i><p>Belum ada aktivitas</p></div>'; return; }
+            entries.sort((a,b)=>(b.timestamp||0)-(a.timestamp||0));
+            lc.innerHTML = entries.map(e=>`<div class="log-entry"><div><div class="log-entry-name">${e.nama}</div><div class="log-entry-detail">${e.kelas} • ${e.jam}</div></div><div class="chip chip-hadir">Hadir</div></div>`).join('');
+        });
+    };
+    window.gantiTanggalUI = function() { const v=document.getElementById('tanggalHarian')?.value; if (v && v!=='__ALL__') listenPresensi(v); };
+
+    function initDropdownBulan() {
+        const s=document.getElementById('pilihBulan'); if(!s) return;
+        s.innerHTML=''; const now=new Date();
+        for (let i=0;i<12;i++){ const d=new Date(now.getFullYear(),now.getMonth()-i,1); s.innerHTML+=`<option value="${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}">${d.toLocaleDateString('id-ID',{month:'long',year:'numeric'}).toUpperCase()}</option>`; }
+    }
+    window.initTanggalHarian = function(ms) {
+        const sb=document.getElementById('pilihBulan'), sh=document.getElementById('tanggalHarian');
+        if (!sh) return;
+        let td=new Date();
+        if (ms) { const [y,m]=ms.split('-'); td=new Date(y,m-1,1); }
+        else if (sb?.value) { const [y,m]=sb.value.split('-'); td=new Date(y,m-1,1); }
+        const bln=td.getMonth(), thn=td.getFullYear(), jh=new Date(thn,bln+1,0).getDate();
+        sh.innerHTML='';
+        for (let i=1;i<=jh;i++){ const t=new Date(thn,bln,i); if (t.getDay()>=1 && t.getDay()<=5) sh.innerHTML+=`<option value="${dateToKey(t)}">${NAMA_HARI[t.getDay()]}, ${t.toLocaleDateString('id-ID')}</option>`; }
+        const today = todayKey();
+        if (!ms && [...sh.options].some(o=>o.value===today)) sh.value=today;
+        else if (sh.options.length>0) sh.selectedIndex=0;
+        sh.innerHTML += `<option value="__ALL__">📦 Rekap ${td.toLocaleDateString('id-ID',{month:'long',year:'numeric'}).toUpperCase()}</option>`;
+        if (isLogin) gantiTanggalUI();
+    };
+
+    async function loadManualAbsenOptions() {
+        const kelas=document.getElementById('manualKelas')?.value;
+        const ma=document.getElementById('manualAbsen'), mn=document.getElementById('manualNama');
+        if (!ma||!mn) return;
+        ma.innerHTML='<option value="">Pilih</option>'; mn.value='';
+        if (!kelas) return;
+        const snap=await db.ref('siswa/'+kelas).once('value');
+        const d=snap.val()||{};
+        Object.keys(d).map(Number).sort((a,b)=>a-b).forEach(no=>{ ma.innerHTML+=`<option value="${no}">${no} — ${d[no].nama||'-'}</option>`; });
+        ma.onchange=async function(){
+            const a=this.value; if(!a){mn.value='';return;}
+            const s=await db.ref('siswa/'+kelas+'/'+a).once('value');
+            mn.value=s.val()?.nama||'';
+        };
+    }
+
+    /* ================= HOME / DASHBOARD ================= */
+    let allSiswaData = [];
+    async function updateHomeStats() {
+        const today = todayKey();
+        const ps = await db.ref('perpus/kunjungan/'+today).once('value');
+        document.getElementById('homeKunjungan').innerText = Object.keys(ps.val()||{}).length;
+        const pj = await db.ref('perpus/peminjaman').orderByChild('status').equalTo('DIPINJAM').once('value');
+        document.getElementById('homePinjamAktif').innerText = Object.keys(pj.val()||{}).length;
+    }
+    async function updateDashboard() {
+        const ss = await db.ref('siswa').once('value');
+        const d = ss.val()||{}; allSiswaData=[]; let t=0;
+        const fk=document.getElementById('filterKelas');
+        if (fk) {
+            const ex = new Set(Array.from(fk.options).map(o=>o.value).filter(v=>v));
+            for (let k in d) {
+                if (!ex.has(k)) fk.innerHTML+=`<option value="${k}">${k}</option>`;
+                for (let a in d[k]) { t++; allSiswaData.push({...d[k][a], kelas:k, absen:a}); }
+            }
+        }
+        document.getElementById('dashTotalSiswa').innerText = t;
+        updateHomeStats(); filterLaporan();
+    }
+    window.filterLaporan = async function() {
+        const s=(document.getElementById('searchSiswa')?.value||'').toLowerCase();
+        const kf=document.getElementById('filterKelas')?.value||'';
+        let f=allSiswaData.filter(x=>(x.nama||'').toLowerCase().includes(s) && (!kf||x.kelas===kf));
+        f.sort((a,b)=>a.kelas.localeCompare(b.kelas)||parseInt(a.absen)-parseInt(b.absen));
+        const c=document.getElementById('listLaporan');
+        if (!c) return;
+        if (f.length===0) { c.innerHTML='<div class="empty-placeholder"><i class="fas fa-search"></i><p>Tidak ada data</p></div>'; return; }
+        const statsSnap = await db.ref('perpus/stats').once('value');
+        const stats = statsSnap.val()||{};
+        c.innerHTML = f.map(x=>{
+            const st = (stats[x.kelas]||{})[x.absen] || {};
+            return `<div style="background:var(--bg-elevated);border:1px solid var(--border-subtle);border-radius:var(--radius-md);padding:12px 14px;">
+                <div style="display:flex;justify-content:space-between;align-items:flex-start;">
+                    <div>
+                        <div style="font-size:13px;font-weight:700;">${x.nama||'-'}</div>
+                        <div style="font-size:10px;color:var(--text-tertiary);margin-top:2px;">${x.kelas} • Absen ${x.absen} • ${x.jk==='L'?'L':'P'}</div>
+                    </div>
+                    <div style="text-align:right;">
+                        <div style="background:rgba(87,168,140,0.12);color:var(--teal-soft);font-size:11px;font-weight:800;padding:3px 9px;border-radius:6px;">${st.totalKunjungan||0}x kunjungan</div>
+                        <div style="font-size:9px;color:var(--text-tertiary);margin-top:4px;">${st.totalPinjam||0}x pinjam buku</div>
+                    </div>
+                </div>
+            </div>`;
+        }).join('');
+    };
+
+    /* ================= PEMINJAMAN AKTIF ================= */
+    let currentPeminjamanRef = null, allPinjamanData = [];
+    window.listenPinjaman = function() {
+        if (currentPeminjamanRef) currentPeminjamanRef.off();
+        currentPeminjamanRef = db.ref('perpus/peminjaman');
+        currentPeminjamanRef.on('value', snap=>{
+            const d = snap.val()||{};
+            allPinjamanData = Object.entries(d).map(([id,v])=>({id,...v}));
+            renderPinjaman();
+        });
+    };
+    window.renderPinjaman = function() {
+        const c = document.getElementById('listPinjaman'); if (!c) return;
+        const s = (document.getElementById('searchPinjaman')?.value||'').toLowerCase();
+        const filter = document.getElementById('filterStatusPinjaman')?.value||'';
+        const today = new Date(); today.setHours(0,0,0,0);
+        let list = allPinjamanData.filter(p => (p.nama||'').toLowerCase().includes(s) || (p.judulBuku||'').toLowerCase().includes(s));
+        list = list.map(p=>{
+            let over=false;
+            if (p.status==='DIPINJAM' && p.tglKembali) { const dd=dmyToDate(p.tglKembali); if (dd<today) over=true; }
+            return {...p, overdue:over};
+        });
+        if (filter==='aktif') list=list.filter(p=>p.status==='DIPINJAM'&&!p.overdue);
+        else if (filter==='telat') list=list.filter(p=>p.status==='DIPINJAM'&&p.overdue);
+        else if (filter==='kembali') list=list.filter(p=>p.status==='KEMBALI');
+        list.sort((a,b)=>(b.timestamp||0)-(a.timestamp||0));
+        if (list.length===0) { c.innerHTML='<div class="empty-placeholder"><i class="fas fa-book"></i><p>Tidak ada data peminjaman</p></div>'; return; }
+        c.innerHTML = list.map(p=>{
+            const cls = p.status==='KEMBALI' ? 'returned' : (p.overdue ? 'overdue' : '');
+            const chip = p.status==='KEMBALI' ? '<span class="loan-chip chip-kembali">Sudah kembali</span>' : (p.overdue ? '<span class="loan-chip chip-overdue">Terlambat</span>' : '<span class="loan-chip chip-dipinjam">Dipinjam</span>');
+            const btn = p.status==='DIPINJAM' ? `<button onclick="tandaiKembali('${p.id}')" class="btn btn-teal btn-sm" style="margin-top:10px;"><i class="fas fa-check"></i> Tandai Kembali</button>` : '';
+            return `<div class="loan-card ${cls}">
+                <div class="loan-title">${p.judulBuku}</div>
+                <div class="loan-meta">${p.nama} • ${p.kelas} · Pinjam ${p.tglPinjam} → Kembali ${p.tglKembali}</div>
+                ${chip}${btn}
+            </div>`;
+        }).join('');
+    };
+    window.tandaiKembali = async function(id) {
+        document.getElementById('loadingOverlay').classList.add('show');
+        try{
+            await db.ref('perpus/peminjaman/'+id).update({ status:'KEMBALI', tglDikembalikan: dateToKey(new Date()) });
+            showToast('Buku ditandai sudah kembali','success');
+        }catch(e){ showToast('Gagal','error'); }
+        document.getElementById('loadingOverlay').classList.remove('show');
+    };
+
+    /* ================= KARTU QR (canvas sendiri, tanpa aset luar) ================= */
+    function loadImage(src){ return new Promise((res,rej)=>{ const img=new Image(); img.onload=()=>res(img); img.onerror=rej; img.src=src; }); }
+    async function qrDataUrl(text, size) {
+        const div=document.createElement('div'); div.style.cssText='position:absolute;left:-9999px;top:-9999px;';
+        document.body.appendChild(div);
+        new QRCode(div, { text, width:size, height:size, correctLevel: QRCode.CorrectLevel.M });
+        await new Promise(r=>setTimeout(r,150));
+        const el = div.querySelector('img') || div.querySelector('canvas');
+        const url = el.tagName==='CANVAS' ? el.toDataURL('image/png') : el.src;
+        document.body.removeChild(div);
+        return url;
+    }
+    function fillRound(ctx,x,y,w,h,r,color){ ctx.fillStyle=color; ctx.beginPath(); ctx.roundRect(x,y,w,h,r); ctx.fill(); }
+
+    const CARD_W=590, CARD_H=860;
+    async function generateKartuCanvas({ nama, kelas, kode, accentKey }) {
+        const accent = ACCENTS[accentKey] || ACCENTS.brass;
+        const canvas=document.createElement('canvas'); canvas.width=CARD_W; canvas.height=CARD_H;
+        const ctx=canvas.getContext('2d');
+
+        // latar parkamen gelap
+        const grad=ctx.createLinearGradient(0,0,0,CARD_H);
+        grad.addColorStop(0,'#1c1611'); grad.addColorStop(1,'#14100d');
+        ctx.fillStyle=grad; ctx.fillRect(0,0,CARD_W,CARD_H);
+
+        // garis tepi kartu
+        ctx.strokeStyle=accent; ctx.lineWidth=3;
+        ctx.strokeRect(18,18,CARD_W-36,CARD_H-36);
+
+        // perforasi atas ala kartu katalog
+        ctx.fillStyle='rgba(255,255,255,0.12)';
+        for (let x=40;x<CARD_W-40;x+=22) { ctx.beginPath(); ctx.arc(x,52,3,0,Math.PI*2); ctx.fill(); }
+
+        // header
+        ctx.textAlign='center';
+        ctx.fillStyle=accent;
+        ctx.font='700 18px Arial';
+        ctx.fillText('KARTU PERPUSTAKAAN', CARD_W/2, 110);
+        ctx.fillStyle='#f3ead9';
+        ctx.font='900 26px Georgia, serif';
+        ctx.fillText('SMAN 12', CARD_W/2, 145);
+
+        // qr
+        const qrSize=300, qrX=(CARD_W-qrSize)/2, qrY=190;
+        fillRound(ctx, qrX-14, qrY-14, qrSize+28, qrSize+28, 14, '#f3ead9');
+        const qrUrl = await qrDataUrl(kode, 340);
+        const qrImg = await loadImage(qrUrl);
+        ctx.drawImage(qrImg, qrX, qrY, qrSize, qrSize);
+
+        // nama
+        let displayName=(nama||'').toUpperCase();
+        const maxW=CARD_W*0.8;
+        let fontSize=32;
+        ctx.font=`900 ${fontSize}px Arial`;
+        while (ctx.measureText(displayName).width>maxW && fontSize>14) { fontSize-=2; ctx.font=`900 ${fontSize}px Arial`; }
+        ctx.fillStyle='#f3ead9';
+        ctx.fillText(displayName, CARD_W/2, qrY+qrSize+70);
+
+        // kelas + kode
+        ctx.font='600 14px "Courier New", monospace';
+        ctx.fillStyle='rgba(243,234,217,0.6)';
+        ctx.fillText(`${kelas} • ${kode}`, CARD_W/2, qrY+qrSize+100);
+
+        // footer
+        ctx.fillStyle=accent;
+        ctx.font='700 11px Arial';
+        ctx.fillText('BERLAKU UNTUK KEROHANIAN & PERPUSTAKAAN', CARD_W/2, CARD_H-38);
+
+        return canvas;
+    }
+    function canvasToBlob(canvas){ return new Promise(res=>canvas.toBlob(b=>res(b),'image/png',0.92)); }
+
+    const SHEET_COLS=3, SHEET_ROWS=4, SHEET_PER_PAGE=SHEET_COLS*SHEET_ROWS;
+    async function buatHalamanCetak(kartuList) {
+        const PAGE_W=1654, PAGE_H=2339, MARGIN=50, GUTTER=18;
+        const cellW=(PAGE_W-2*MARGIN-(SHEET_COLS-1)*GUTTER)/SHEET_COLS;
+        const cellH=(PAGE_H-2*MARGIN-(SHEET_ROWS-1)*GUTTER)/SHEET_ROWS;
+        let cardW=cellW, cardH=cardW*(CARD_H/CARD_W);
+        if (cardH>cellH) { cardH=cellH; cardW=cardH*(CARD_W/CARD_H); }
+        const page=document.createElement('canvas'); page.width=PAGE_W; page.height=PAGE_H;
+        const ctx=page.getContext('2d');
+        ctx.fillStyle='#ffffff'; ctx.fillRect(0,0,PAGE_W,PAGE_H);
+        ctx.strokeStyle='#dddddd'; ctx.lineWidth=1; ctx.setLineDash([4,4]);
+        kartuList.forEach((item,i)=>{
+            const col=i%SHEET_COLS, row=Math.floor(i/SHEET_COLS);
+            const cellX=MARGIN+col*(cellW+GUTTER), cellY=MARGIN+row*(cellH+GUTTER);
+            const x=cellX+(cellW-cardW)/2, y=cellY+(cellH-cardH)/2;
+            ctx.drawImage(item.canvas, x, y, cardW, cardH);
+            ctx.strokeRect(cellX,cellY,cellW,cellH);
+        });
+        return page;
+    }
+
+    window.downloadDataUrl = function(dataUrl, filename){ const a=document.createElement('a'); a.href=dataUrl; a.download=filename; a.click(); };
+
+    window.buatQR = async function() {
+        const nama=document.getElementById('nama').value.trim(), kelas=document.getElementById('kelas').value;
+        const absen=document.getElementById('absen').value.trim(), jk=document.getElementById('jk').value, agama=document.getElementById('agama').value;
+        const accentKey=document.getElementById('warnaKartu')?.value||'brass';
+        if (!nama||!absen) { showToast('Lengkapi data!','error'); playBeep('error'); return; }
+        document.getElementById('loadingOverlay').classList.add('show');
+        try{
+            const namaUp = nama.toUpperCase();
+            const slotDipakai = await cekSlotSudahDipakai(kelas, absen);
+            if (slotDipakai) throw new Error(`Absen ${absen} di kelas ${kelas} sudah dipakai oleh "${slotDipakai.nama}".`);
+            const namaBentrok = await cekNamaSudahAda(namaUp, null, null);
+            if (namaBentrok) throw new Error(`Nama "${namaUp}" sudah terdaftar di ${namaBentrok.kelas} absen ${namaBentrok.absen}.`);
+            const kode = await generateKodeUnik();
+            await db.ref('siswa/'+kelas+'/'+absen).set({nama:namaUp,kelas,absen,jk,agama,kodeUnik:kode,totalHadir:0,terdaftar:Date.now()});
+            await db.ref('kodeIndex/'+kode).set({kelas,absen});
+            const canvas = await generateKartuCanvas({nama:namaUp,kelas,kode,accentKey});
+            const dataUrl = canvas.toDataURL('image/png');
+            document.getElementById('qrArea').innerHTML = `<div style="background:var(--bg-elevated);border:1px solid var(--border-subtle);border-radius:var(--radius-lg);padding:16px;text-align:center;margin-top:12px;">
+                <img src="${dataUrl}" style="width:100%;max-width:260px;border-radius:10px;box-shadow:var(--shadow-md);">
+                <div style="font-size:10px;color:var(--text-tertiary);margin-top:8px;">${kelas} • Absen ${absen} • Kode ${kode}</div>
+                <button class="btn btn-primary btn-sm" style="margin-top:10px;" onclick="downloadDataUrl('${dataUrl}','KARTU_${namaUp.replace(/\s+/g,'_')}.png')"><i class="fas fa-download"></i> Download Kartu</button>
+            </div>`;
+            showToast('Kartu berhasil dibuat!','success'); playBeep('success');
+            updateDashboard(); loadManualAbsenOptions();
+        }catch(e){ showToast('Gagal: '+e.message,'error'); playBeep('error'); }
+        document.getElementById('loadingOverlay').classList.remove('show');
+    };
+
+    /* ================= DOWNLOAD REKAP KUNJUNGAN ================= */
+    window.downloadHarian = async function() {
+        const key=document.getElementById('tanggalHarian')?.value;
+        if (!key) { showToast('Pilih tanggal','error'); return; }
+        document.getElementById('loadingOverlay').classList.add('show');
+        try{
+            if (key==='__ALL__') { await downloadRekapBulanan(); document.getElementById('loadingOverlay').classList.remove('show'); return; }
+            const [d,m,y]=key.split('-').map(Number), tgl=new Date(y,m-1,d);
+            const header=`${NAMA_HARI[tgl.getDay()]}, ${tgl.toLocaleDateString('id-ID')}`;
+            const snap=await db.ref('perpus/kunjungan/'+key).once('value');
+            const entries = Object.values(snap.val()||{});
+            entries.sort((a,b)=>a.kelas.localeCompare(b.kelas)||a.nama.localeCompare(b.nama));
+            const rows=[['NAMA','KELAS',header,'JAM']];
+            entries.forEach(e=>rows.push([e.nama,e.kelas,'HADIR',e.jam]));
+            const ws=XLSX.utils.aoa_to_sheet(rows);
+            ws['!cols']=[{wch:28},{wch:10},{wch:14},{wch:12}];
+            const wb=XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb,ws,'Kunjungan');
+            XLSX.writeFile(wb, `KUNJUNGAN_PERPUS_${key}.xlsx`);
+            showToast('Download selesai!','success');
+        }catch(e){ showToast('Gagal','error'); }
+        document.getElementById('loadingOverlay').classList.remove('show');
+    };
+    async function downloadRekapBulanan() {
+        const bv=document.getElementById('pilihBulan')?.value;
+        let tgl=new Date(); if (bv) { const [y,m]=bv.split('-'); tgl=new Date(y,m-1,1); }
+        const bln=tgl.getMonth(), thn=tgl.getFullYear();
+        const fh=d=>`${NAMA_HARI[d.getDay()]} ${d.getDate()}/${d.getMonth()+1}`;
+        const st=[]; for (let i=1;i<=new Date(thn,bln+1,0).getDate();i++){ const d=new Date(thn,bln,i); if (d.getDay()>=1&&d.getDay()<=5) st.push(d); }
+        const pb={}; for (let d of st) { pb[dateToKey(d)] = (await db.ref('perpus/kunjungan/'+dateToKey(d)).once('value')).val()||{}; }
+        const namaSet=new Map();
+        st.forEach(d=>{ const data=pb[dateToKey(d)]; for (let k in data) { const e=data[k]; const key=e.kelas+'|'+e.nama; if(!namaSet.has(key)) namaSet.set(key,{nama:e.nama,kelas:e.kelas}); } });
+        const rows=[['NAMA','KELAS',...st.map(fh),'TOTAL']];
+        [...namaSet.values()].sort((a,b)=>a.kelas.localeCompare(b.kelas)||a.nama.localeCompare(b.nama)).forEach(s=>{
+            let t=0; const row=[s.nama,s.kelas];
+            st.forEach(d=>{ const e=(pb[dateToKey(d)]||{})[s.kelas+'_'+Object.keys(pb[dateToKey(d)]||{}).find(k=>pb[dateToKey(d)][k].nama===s.nama)]; });
+            st.forEach(d=>{
+                const data=pb[dateToKey(d)]||{};
+                const hit = Object.values(data).find(e=>e.nama===s.nama&&e.kelas===s.kelas);
+                if (hit) { row.push('HADIR'); t++; } else row.push('');
+            });
+            row.push(t); rows.push(row);
+        });
+        const ws=XLSX.utils.aoa_to_sheet(rows);
+        ws['!cols']=[{wch:28},{wch:10},...st.map(()=>({wch:12})),{wch:8}];
+        const wb=XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb,ws,'Rekap');
+        const nb=tgl.toLocaleDateString('id-ID',{month:'long',year:'numeric'}).replace(/\s/g,'_');
+        XLSX.writeFile(wb, `REKAP_KUNJUNGAN_${nb}.xlsx`);
+        showToast('Download selesai!','success');
+    }
+
+    /* ================= IMPORT EXCEL (khusus perpus, tulis ke data siswa bersama) ================= */
+    function jenjangDariKelas(k){ const s=String(k||'').toUpperCase(); if(s.startsWith('XII'))return'XII'; if(s.startsWith('XI'))return'XI'; if(s.startsWith('X'))return'X'; return s; }
+    let importParsedData=null;
+
+    window.bacaExcel = async function() {
+        const file=document.getElementById('fileExcel')?.files[0];
+        if (!file) { showToast('Pilih file!','error'); return; }
+        document.getElementById('loadingOverlay').classList.add('show');
+        const pg=document.getElementById('importProgress'), rs=document.getElementById('importResult');
+        const wj=document.getElementById('warnaJenjangArea');
+        wj.style.display='none'; wj.innerHTML='';
+        pg.style.display=''; rs.style.display='none'; pg.innerText='Membaca...';
+        try{
+            const wb=XLSX.read(await file.arrayBuffer(),{type:'array'});
+            const semua={};
+            wb.SheetNames.forEach(sn=>{
+                const k=sn.trim().replace(/\./g,'-');
+                if (!/^X/.test(k)) return;
+                const ws=wb.Sheets[sn], rows=XLSX.utils.sheet_to_json(ws,{header:1,defval:''});
+                let hi=-1;
+                for (let i=0;i<rows.length;i++) { const r=rows[i].map(c=>String(c).toLowerCase()); if (r.some(c=>c.includes('nama')) && r.some(c=>c==='no'||c.includes('no'))) { hi=i; break; } }
+                if (hi===-1) return;
+                const hdr=rows[hi].map(c=>String(c).toLowerCase().trim());
+                const iNo=hdr.findIndex(h=>h==='no'||h==='no.');
+                const iNama=hdr.findIndex(h=>h.includes('nama'));
+                const iJK=hdr.findIndex(h=>h==='jk'||h==='l/p'||h.includes('jenis'));
+                const iAgama=hdr.findIndex(h=>h.includes('agama'));
+                if (iNama===-1) return;
+                const sw=[];
+                for (let i=hi+1;i<rows.length;i++) {
+                    const row=rows[i]||[], nama=String(row[iNama]||'').trim();
+                    if (!nama || nama.toLowerCase().includes('jumlah')) break;
+                    sw.push({ no:iNo!==-1?String(row[iNo]||'').trim():String(i-hi), nama:nama.toUpperCase(), jk:iJK!==-1?String(row[iJK]||'L').trim().toUpperCase():'L', agama:iAgama!==-1?String(row[iAgama]||'Islam').trim():'Islam' });
+                }
+                if (sw.length>0) semua[k]=sw;
+            });
+            const kl=Object.keys(semua);
+            if (kl.length===0) throw new Error('Tidak ada data terbaca dari file');
+            importParsedData = semua;
+            const jenjangSet=[...new Set(kl.map(jenjangDariKelas))].sort();
+            const totalSiswa = kl.reduce((a,k)=>a+semua[k].length,0);
+            const optsHtml = Object.keys(ACCENTS).map(k=>`<option value="${k}">${k.charAt(0).toUpperCase()+k.slice(1)}</option>`).join('');
+            wj.innerHTML = `<div style="background:var(--bg-elevated);border:1px solid var(--border-subtle);border-radius:var(--radius-lg);padding:14px;">
+                <div style="font-size:12px;font-weight:700;margin-bottom:2px;"><i class="fas fa-palette" style="color:var(--green);"></i> Pilih Aksen Kartu per Jenjang</div>
+                <div style="font-size:10px;color:var(--text-tertiary);margin-bottom:12px;">${totalSiswa} siswa terbaca dari ${kl.length} kelas (${kl.join(', ')}). Siswa yang sudah punya kartu akan dilewati otomatis.</div>
+                ${jenjangSet.map(j=>`<div class="form-group"><label class="form-label">Jenjang ${j}</label><select id="warnaJenjang_${j}" class="form-input">${optsHtml}</select></div>`).join('')}
+                <button onclick="lanjutkanImportExcel()" class="btn btn-success"><i class="fas fa-check"></i> Buat Kartu &amp; Simpan</button>
+            </div>`;
+            wj.style.display=''; pg.style.display='none';
+            showToast('File terbaca, pilih aksen kartu','success');
+        }catch(e){ showToast('Gagal: '+e.message,'error'); pg.innerText='❌ '+e.message; }
+        document.getElementById('loadingOverlay').classList.remove('show');
+    };
+
+    window.lanjutkanImportExcel = async function() {
+        if (!importParsedData) { showToast('Baca file dulu','error'); return; }
+        const semua=importParsedData, kl=Object.keys(semua);
+        const accentPerJenjang={};
+        [...new Set(kl.map(jenjangDariKelas))].forEach(j=>{ accentPerJenjang[j]=document.getElementById('warnaJenjang_'+j)?.value||'brass'; });
+        document.getElementById('loadingOverlay').classList.add('show');
+        const pg=document.getElementById('importProgress'), rs=document.getElementById('importResult');
+        pg.style.display=''; rs.style.display='none'; pg.innerText='Menyimpan & membuat kartu...';
+        try{
+            const zip=new JSZip(); let t=0; const dilewati=[];
+            for (let k of kl) {
+                const accentKey = accentPerJenjang[jenjangDariKelas(k)] || 'brass';
+                const folderKartu=zip.folder('Kartu/'+k);
+                const kartuCanvasList=[];
+                for (let s of semua[k]) {
+                    const slotDipakai = await cekSlotSudahDipakai(k, s.no);
+                    if (slotDipakai) { dilewati.push(`${k} #${s.no} — slot sudah dipakai oleh "${slotDipakai.nama}"`); continue; }
+                    const namaBentrok = await cekNamaSudahAda(s.nama, null, null);
+                    if (namaBentrok) { dilewati.push(`${s.nama} — sudah ada di ${namaBentrok.kelas} #${namaBentrok.absen}`); continue; }
+                    const kode = await generateKodeUnik();
+                    await db.ref('siswa/'+k+'/'+s.no).set({nama:s.nama,kelas:k,absen:s.no,jk:s.jk==='P'?'P':'L',agama:s.agama,kodeUnik:kode,totalHadir:0,terdaftar:Date.now()});
+                    await db.ref('kodeIndex/'+kode).set({kelas:k,absen:s.no});
+                    const canvas = await generateKartuCanvas({nama:s.nama,kelas:k,kode,accentKey});
+                    const blob = await canvasToBlob(canvas);
+                    folderKartu.file(`${s.no}_${s.nama.replace(/\s+/g,'_')}.png`, blob);
+                    kartuCanvasList.push({canvas}); t++;
+                    pg.innerText=`Buat kartu: ${t} siswa...`;
+                }
+                if (kartuCanvasList.length>0) {
+                    const folderCetak=zip.folder('Cetak_SiapPrint/'+k);
+                    for (let i=0;i<kartuCanvasList.length;i+=SHEET_PER_PAGE) {
+                        const chunk=kartuCanvasList.slice(i,i+SHEET_PER_PAGE);
+                        const page=await buatHalamanCetak(chunk);
+                        const pageBlob=await canvasToBlob(page);
+                        folderCetak.file(`Halaman_${Math.floor(i/SHEET_PER_PAGE)+1}.png`, pageBlob);
+                    }
+                }
+            }
+            if (t>0) { const blob=await zip.generateAsync({type:'blob'}); const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=`KARTU_PERPUS_${todayKey()}.zip`; a.click(); }
+            let hasilHtml = `<div style="background:rgba(95,185,138,0.08);border:1px solid rgba(95,185,138,0.25);border-radius:var(--radius-sm);padding:10px;font-size:11px;color:var(--green);text-align:center;">✅ ${t} kartu dari ${kl.length} kelas dibuat</div>`;
+            if (dilewati.length>0) hasilHtml += `<div style="background:rgba(217,83,79,0.08);border:1px solid rgba(217,83,79,0.25);border-radius:var(--radius-sm);padding:10px;font-size:10px;color:var(--red);margin-top:8px;max-height:180px;overflow-y:auto;"><strong>⚠️ ${dilewati.length} dilewati (sudah punya kartu):</strong><br>${dilewati.map(x=>'• '+x).join('<br>')}</div>`;
+            rs.style.display=''; rs.innerHTML=hasilHtml; pg.style.display='none';
+            showToast(t>0?`${t} kartu berhasil dibuat!`:'Tidak ada kartu baru (semua sudah terdaftar)', t>0?'success':'error');
+            document.getElementById('warnaJenjangArea').style.display='none'; importParsedData=null;
+            updateDashboard(); loadManualAbsenOptions();
+        }catch(e){ showToast('Gagal: '+e.message,'error'); pg.innerText='❌ '+e.message; }
+        document.getElementById('loadingOverlay').classList.remove('show');
+    };
+
+    /* ================= RESET STATISTIK PERPUS ================= */
+    window.resetStatistikPerpus = async function() {
+        if (!confirm('Reset semua statistik kunjungan & peminjaman perpustakaan? Tidak bisa dibatalkan!')) return;
+        document.getElementById('loadingOverlay').classList.add('show');
+        try{
+            await db.ref('perpus/stats').remove();
+            showToast('Statistik perpustakaan berhasil direset!','success'); updateDashboard();
+        }catch(e){ showToast('Gagal','error'); }
+        document.getElementById('loadingOverlay').classList.remove('show');
+    };
+
+    /* ================= PWA SERVICE WORKER ================= */
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', ()=>{ navigator.serviceWorker.register('sw.js').catch(()=>{}); });
+    }
+</script>
+</body>
+</html>
