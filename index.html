@@ -439,11 +439,14 @@ select.form-input option{background:var(--bg-elevated); color:var(--text-primary
                 <div class="screen-header-accent" style="background:var(--rose); box-shadow:0 0 8px rgba(193,91,74,0.4);"></div>
             </div>
             <div class="screen-body">
-                <div class="mode-note"><i class="fas fa-circle-info"></i> Judul &amp; jenis buku yang ditambahkan di sini akan muncul sebagai pilihan dropdown saat mencatat peminjaman buku.</div>
+                <div class="mode-note"><i class="fas fa-circle-info"></i> Judul &amp; jenis buku yang ditambahkan di sini akan muncul sebagai pilihan dropdown saat mencatat peminjaman buku. Bisa masukin banyak judul sekaligus, satu baris = satu buku (tidak digabung jadi satu data).</div>
                 <div style="background:var(--bg-elevated); border:1px solid var(--border-subtle); border-radius:var(--radius-lg); padding:16px; margin-bottom:16px;">
-                    <div class="form-group"><label class="form-label">Judul Buku</label><input type="text" id="katalogJudul" placeholder="Contoh: Laskar Pelangi" class="form-input"></div>
-                    <div class="form-group"><label class="form-label">Jenis Buku</label><input type="text" id="katalogJenis" placeholder="Contoh: Novel, Pelajaran, Komik" class="form-input"></div>
-                    <button onclick="tambahKatalogBuku()" class="btn btn-primary"><i class="fas fa-plus"></i> Tambah Buku</button>
+                    <div class="form-group">
+                        <label class="form-label">Daftar Judul Buku (1 baris = 1 buku)</label>
+                        <textarea id="katalogJudulBulk" rows="5" placeholder="Laskar Pelangi - Novel&#10;Sang Pemimpi - Novel&#10;Matematika Kelas X - Pelajaran&#10;(kalau jenis tidak ditulis, pakai Jenis Default di bawah)" class="form-input" style="resize:vertical; font-family:var(--font-mono); font-size:12px; line-height:1.6;"></textarea>
+                    </div>
+                    <div class="form-group"><label class="form-label">Jenis Default (dipakai kalau baris di atas tidak ada " - jenis")</label><input type="text" id="katalogJenisDefault" placeholder="Contoh: Novel, Pelajaran, Komik" class="form-input"></div>
+                    <button onclick="tambahKatalogBuku()" class="btn btn-primary"><i class="fas fa-plus"></i> Tambah Semua Buku</button>
                 </div>
                 <div style="font-size:12px; font-weight:700; margin-bottom:8px;"><i class="fas fa-layer-group" style="color:var(--rose);"></i> Daftar Buku</div>
                 <div id="listKatalogBuku" style="display:flex; flex-direction:column; gap:7px;"></div>
@@ -1054,14 +1057,23 @@ select.form-input option{background:var(--bg-elevated); color:var(--text-primary
         }
     }
     window.tambahKatalogBuku = async function() {
-        const judul = document.getElementById('katalogJudul').value.trim();
-        const jenis = document.getElementById('katalogJenis').value.trim();
-        if (!judul) { showToast('Isi judul buku!','error'); return; }
+        const raw = document.getElementById('katalogJudulBulk').value;
+        const jenisDefault = document.getElementById('katalogJenisDefault').value.trim();
+        const lines = raw.split('\n').map(l=>l.trim()).filter(l=>l.length>0);
+        if (lines.length===0) { showToast('Isi minimal 1 judul buku!','error'); return; }
         try{
-            await db.ref('perpus/katalogBuku').push({judul, jenis});
-            document.getElementById('katalogJudul').value='';
-            document.getElementById('katalogJenis').value='';
-            showToast('Buku ditambahkan','success');
+            const updates = {};
+            lines.forEach(line=>{
+                let judul = line, jenis = jenisDefault;
+                const idx = line.lastIndexOf(' - ');
+                if (idx !== -1) { judul = line.slice(0, idx).trim(); jenis = line.slice(idx+3).trim(); }
+                const newKey = db.ref('perpus/katalogBuku').push().key;
+                updates[newKey] = { judul, jenis };
+            });
+            await db.ref('perpus/katalogBuku').update(updates);
+            document.getElementById('katalogJudulBulk').value='';
+            document.getElementById('katalogJenisDefault').value='';
+            showToast(`${lines.length} buku ditambahkan`,'success');
         }catch(e){ showToast('Gagal: '+e.message,'error'); }
     };
     window.hapusKatalogBuku = async function(id) {
@@ -1122,22 +1134,26 @@ select.form-input option{background:var(--bg-elevated); color:var(--text-primary
     window.exportKehadiran = async function() {
         document.getElementById('loadingOverlay').classList.add('show');
         try{
-            const statsSnap = await db.ref('perpus/stats').once('value');
-            const stats = statsSnap.val()||{};
-            const ss = await db.ref('siswa').once('value');
-            const siswaData = ss.val()||{};
-            let list = [];
-            for (let k in siswaData) for (let a in siswaData[k]) {
-                const st = (stats[k]||{})[a] || {};
-                const total = st.totalKunjungan||0;
-                if (total>0) list.push({ nama: siswaData[k][a].nama, kelas:k, absen:a, total });
-            }
+            // Rekap dihitung langsung dari catatan kunjungan asli (perpus/kunjungan/*),
+            // BUKAN dari perpus/stats — jadi export ini tetap ada datanya walaupun
+            // menu "Reset Data" sudah dipakai (reset cuma menghapus counter di stats).
+            const kunjunganSnap = await db.ref('perpus/kunjungan').once('value');
+            const kunjunganAll = kunjunganSnap.val()||{};
+            const rekap = {};
+            Object.values(kunjunganAll).forEach(hariData=>{
+                Object.values(hariData||{}).forEach(e=>{
+                    const key = e.kelas+'_'+e.absen;
+                    if (!rekap[key]) rekap[key] = { nama:e.nama, kelas:e.kelas, absen:e.absen, total:0 };
+                    rekap[key].total++;
+                });
+            });
+            let list = Object.values(rekap);
             if (list.length===0) { showToast('Belum ada data kehadiran','error'); document.getElementById('loadingOverlay').classList.remove('show'); return; }
             list.sort((a,b)=>a.kelas.localeCompare(b.kelas)||parseInt(a.absen)-parseInt(b.absen));
-            const rows=[['NO','NAMA','TOTAL HADIR']];
-            list.forEach((s,i)=>rows.push([i+1, s.nama, s.total]));
+            const rows=[['NO','NAMA','KELAS','TOTAL HADIR']];
+            list.forEach((s,i)=>rows.push([i+1, s.nama, s.kelas, s.total]));
             const ws=XLSX.utils.aoa_to_sheet(rows);
-            ws['!cols']=[{wch:6},{wch:28},{wch:14}];
+            ws['!cols']=[{wch:6},{wch:28},{wch:10},{wch:14}];
             const wb=XLSX.utils.book_new();
             XLSX.utils.book_append_sheet(wb,ws,'Kehadiran');
             XLSX.writeFile(wb, `KEHADIRAN_PERPUS_${todayKey()}.xlsx`);
@@ -1149,29 +1165,21 @@ select.form-input option{background:var(--bg-elevated); color:var(--text-primary
     window.exportPeminjaman = async function() {
         document.getElementById('loadingOverlay').classList.add('show');
         try{
+            // Diambil langsung dari perpus/peminjaman (bukan dari stats), jadi tetap
+            // ada datanya walaupun sudah pernah Reset Data. Tiap transaksi pinjam
+            // jadi 1 baris sendiri — kalau siswa pinjam judul yang sama berkali-kali,
+            // baris judul itu akan muncul berulang ke bawah, bukan digabung jadi satu.
             const pjSnap = await db.ref('perpus/peminjaman').once('value');
             const pjAll = Object.values(pjSnap.val()||{});
             if (pjAll.length===0) { showToast('Belum ada data peminjaman','error'); document.getElementById('loadingOverlay').classList.remove('show'); return; }
-            const grouped = {};
-            pjAll.forEach(p=>{
-                const key = p.kelas+'_'+p.absen;
-                if (!grouped[key]) grouped[key]={ nama:p.nama, kelas:p.kelas, absen:p.absen, judul:[], tanggal:[] };
-                const statusTxt = p.status==='KEMBALI' ? `(kembali ${p.tglDikembalikan})` : '(masih dipakai)';
-                grouped[key].judul.push(p.judulBuku+' '+statusTxt);
-                grouped[key].tanggal.push(p.tglPinjam);
+            pjAll.sort((a,b)=> (a.kelas||'').localeCompare(b.kelas||'') || (parseInt(a.absen)-parseInt(b.absen)) || ((a.timestamp||0)-(b.timestamp||0)) );
+            const rows=[['NO','NAMA','KELAS','JUDUL BUKU','TANGGAL PINJAM','TANGGAL KEMBALI','STATUS']];
+            pjAll.forEach((p,i)=>{
+                const statusTxt = p.status==='KEMBALI' ? `Kembali (${p.tglDikembalikan})` : 'Masih Dipinjam';
+                rows.push([i+1, p.nama, p.kelas, p.judulBuku, p.tglPinjam, p.tglKembali, statusTxt]);
             });
-            let list = Object.values(grouped);
-            list.sort((a,b)=>a.kelas.localeCompare(b.kelas)||parseInt(a.absen)-parseInt(b.absen));
-            const rows=[['NO','NAMA','JUDUL BUKU','TANGGAL PINJAM','TOTAL PINJAM']];
-            list.forEach((s,i)=>rows.push([i+1, s.nama, s.judul.join('\n'), s.tanggal.join('\n'), s.judul.length]));
             const ws=XLSX.utils.aoa_to_sheet(rows);
-            ws['!cols']=[{wch:6},{wch:26},{wch:34},{wch:16},{wch:13}];
-            for (let r=2;r<=rows.length;r++) {
-                ['C','D'].forEach(col=>{
-                    const ref = col+r;
-                    if (ws[ref]) ws[ref].s = { alignment:{ wrapText:true, vertical:'top' } };
-                });
-            }
+            ws['!cols']=[{wch:6},{wch:26},{wch:10},{wch:28},{wch:14},{wch:14},{wch:18}];
             const wb=XLSX.utils.book_new();
             XLSX.utils.book_append_sheet(wb,ws,'Peminjaman');
             XLSX.writeFile(wb, `PEMINJAMAN_PERPUS_${todayKey()}.xlsx`);
