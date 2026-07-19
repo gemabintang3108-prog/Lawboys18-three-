@@ -362,7 +362,7 @@ select.form-input option{background:var(--bg-elevated); color:var(--text-primary
                     </div>
                     <div class="menu-item" onclick="navigateTo('katalog')"><div class="menu-item-icon icon-rose"><i class="fas fa-layer-group"></i></div><div class="menu-item-title">Data Buku</div><div class="menu-item-desc">Judul &amp; jenis buku</div></div>
                     <div class="menu-item" onclick="navigateTo('laporan')"><div class="menu-item-icon icon-teal"><i class="fas fa-chart-bar"></i></div><div class="menu-item-title">Data &amp; Laporan</div><div class="menu-item-desc">Statistik &amp; export Excel</div></div>
-                    <div class="menu-item" onclick="navigateTo('reset')"><div class="menu-item-icon icon-rose"><i class="fas fa-rotate-left"></i></div><div class="menu-item-title">Reset Data</div><div class="menu-item-desc">Reset statistik perpus</div></div>
+                    <div class="menu-item" onclick="navigateTo('reset')"><div class="menu-item-icon icon-rose"><i class="fas fa-rotate-left"></i></div><div class="menu-item-title">Reset Data</div><div class="menu-item-desc">Reset semua data perpus</div></div>
                 </div>
                 <div class="user-tag"><div class="user-avatar-circle"><i class="fas fa-user"></i></div><span style="font-size:11px; color:var(--text-tertiary); font-weight:600;">Petugas Perpustakaan</span></div>
             </div>
@@ -439,17 +439,31 @@ select.form-input option{background:var(--bg-elevated); color:var(--text-primary
                 <div class="screen-header-accent" style="background:var(--rose); box-shadow:0 0 8px rgba(193,91,74,0.4);"></div>
             </div>
             <div class="screen-body">
-                <div class="mode-note"><i class="fas fa-circle-info"></i> Judul &amp; jenis buku yang ditambahkan di sini akan muncul sebagai pilihan dropdown saat mencatat peminjaman buku. Bisa masukin banyak judul sekaligus, satu baris = satu buku (tidak digabung jadi satu data).</div>
+                <div class="mode-note"><i class="fas fa-circle-info"></i> Judul Buku dan Jenis Buku dikelola terpisah. Bisa nambah banyak judul sekaligus tanpa isi jenis, atau nambah banyak jenis sekaligus tanpa isi judul.</div>
+
                 <div style="background:var(--bg-elevated); border:1px solid var(--border-subtle); border-radius:var(--radius-lg); padding:16px; margin-bottom:16px;">
+                    <div style="font-size:11px; font-weight:700; color:var(--text-secondary); margin-bottom:10px;"><i class="fas fa-book" style="color:var(--brass-soft);"></i> Tambah Judul Buku</div>
                     <div class="form-group">
-                        <label class="form-label">Daftar Judul Buku (1 baris = 1 buku)</label>
-                        <textarea id="katalogJudulBulk" rows="5" placeholder="Laskar Pelangi - Novel&#10;Sang Pemimpi - Novel&#10;Matematika Kelas X - Pelajaran&#10;(kalau jenis tidak ditulis, pakai Jenis Default di bawah)" class="form-input" style="resize:vertical; font-family:var(--font-mono); font-size:12px; line-height:1.6;"></textarea>
+                        <label class="form-label">Daftar Judul (1 baris = 1 judul)</label>
+                        <textarea id="judulBulkInput" rows="4" placeholder="Laskar Pelangi&#10;Sang Pemimpi&#10;Edensor" class="form-input" style="resize:vertical; font-family:var(--font-mono); font-size:12px; line-height:1.6;"></textarea>
                     </div>
-                    <div class="form-group"><label class="form-label">Jenis Default (dipakai kalau baris di atas tidak ada " - jenis")</label><input type="text" id="katalogJenisDefault" placeholder="Contoh: Novel, Pelajaran, Komik" class="form-input"></div>
-                    <button onclick="tambahKatalogBuku()" class="btn btn-primary"><i class="fas fa-plus"></i> Tambah Semua Buku</button>
+                    <button onclick="tambahJudulBuku()" class="btn btn-primary"><i class="fas fa-plus"></i> Tambah Semua Judul</button>
                 </div>
-                <div style="font-size:12px; font-weight:700; margin-bottom:8px;"><i class="fas fa-layer-group" style="color:var(--rose);"></i> Daftar Buku</div>
-                <div id="listKatalogBuku" style="display:flex; flex-direction:column; gap:7px;"></div>
+
+                <div style="background:var(--bg-elevated); border:1px solid var(--border-subtle); border-radius:var(--radius-lg); padding:16px; margin-bottom:16px;">
+                    <div style="font-size:11px; font-weight:700; color:var(--text-secondary); margin-bottom:10px;"><i class="fas fa-tags" style="color:var(--rose);"></i> Tambah Jenis Buku</div>
+                    <div class="form-group">
+                        <label class="form-label">Daftar Jenis (1 baris = 1 jenis)</label>
+                        <textarea id="jenisBulkInput" rows="3" placeholder="Novel&#10;Pelajaran&#10;Komik" class="form-input" style="resize:vertical; font-family:var(--font-mono); font-size:12px; line-height:1.6;"></textarea>
+                    </div>
+                    <button onclick="tambahJenisBuku()" class="btn btn-teal"><i class="fas fa-plus"></i> Tambah Semua Jenis</button>
+                </div>
+
+                <div style="font-size:12px; font-weight:700; margin-bottom:8px;"><i class="fas fa-book" style="color:var(--brass-soft);"></i> Daftar Judul Buku</div>
+                <div id="listKatalogJudul" style="display:flex; flex-direction:column; gap:7px; margin-bottom:18px;"></div>
+
+                <div style="font-size:12px; font-weight:700; margin-bottom:8px;"><i class="fas fa-tags" style="color:var(--rose);"></i> Daftar Jenis Buku</div>
+                <div id="listKatalogJenis" style="display:flex; flex-direction:column; gap:7px;"></div>
             </div>
         </div>
 
@@ -492,11 +506,11 @@ select.form-input option{background:var(--bg-elevated); color:var(--text-primary
             </div>
             <div class="screen-body">
                 <div style="background:var(--bg-elevated); border:1px solid rgba(217,83,79,0.2); border-radius:var(--radius-lg); padding:16px;">
-                    <div style="font-size:13px; font-weight:700; color:var(--red); margin-bottom:8px;"><i class="fas fa-exclamation-triangle"></i> Reset Statistik Perpustakaan</div>
+                    <div style="font-size:13px; font-weight:700; color:var(--red); margin-bottom:8px;"><i class="fas fa-exclamation-triangle"></i> Reset Data Perpustakaan</div>
                     <p style="font-size:11px; color:var(--text-tertiary); margin-bottom:12px; line-height:1.6;">
-                        Reset counter kunjungan &amp; peminjaman siswa perpustakaan menjadi 0. Data siswa/QR &amp; data Kerohanian <strong style="color:var(--brass-soft);">tidak ikut terhapus</strong>. Tidak bisa dibatalkan.
+                        Reset TOTAL: semua data kunjungan, data peminjaman, dan statistik perpustakaan akan dihapus habis (jadi Excel kehadiran/peminjaman juga ikut kosong setelah ini). Data siswa/QR, data Kerohanian, dan daftar Judul/Jenis buku <strong style="color:var(--brass-soft);">tidak ikut terhapus</strong>. Tidak bisa dibatalkan.
                     </p>
-                    <button onclick="resetStatistikPerpus()" class="btn btn-danger"><i class="fas fa-rotate-left"></i> Reset Statistik</button>
+                    <button onclick="resetStatistikPerpus()" class="btn btn-danger"><i class="fas fa-rotate-left"></i> Reset Semua Data</button>
                 </div>
             </div>
         </div>
@@ -519,11 +533,11 @@ select.form-input option{background:var(--bg-elevated); color:var(--text-primary
         <div id="pinjamForm">
             <div class="form-group">
                 <label class="form-label">Judul Buku</label>
-                <select id="judulBukuSelect" class="form-input" onchange="autoJenisDariJudul()"><option value="">Pilih judul buku</option></select>
+                <select id="judulBukuSelect" class="form-input"><option value="">Pilih judul buku</option></select>
             </div>
             <div class="form-group">
                 <label class="form-label">Jenis Buku</label>
-                <select id="jenisBukuSelect" class="form-input"><option value="">Pilih jenis buku</option></select>
+                <select id="jenisBukuSelect" class="form-input"><option value="">Pilih jenis buku (opsional)</option></select>
             </div>
             <div class="form-group"><label class="form-label">Nomor Telepon Peminjam</label><input type="tel" id="teleponPeminjam" placeholder="08xxxxxxxxxx" class="form-input"></div>
             <div class="form-group"><label class="form-label">Tanggal Pinjam</label><input type="date" id="tglPinjam" class="form-input" onchange="updateTglKembaliOtomatis()"></div>
@@ -836,7 +850,7 @@ select.form-input option{background:var(--bg-elevated); color:var(--text-primary
     };
 
     window.bukaFormPinjam = function() {
-        if (katalogBukuData.length===0) { showToast('Tambahkan data buku dulu di menu Data Buku','error'); return; }
+        if (katalogJudulData.length===0) { showToast('Tambahkan judul buku dulu di menu Data Buku','error'); return; }
         document.getElementById('choiceButtons').style.display='none';
         document.getElementById('btnTutupChoice').style.display='none';
         document.getElementById('pinjamForm').style.display='block';
@@ -1026,59 +1040,89 @@ select.form-input option{background:var(--bg-elevated); color:var(--text-primary
         }).join('');
     };
 
-    /* ================= KATALOG BUKU ================= */
-    let katalogBukuData = [];
+    /* ================= KATALOG BUKU (Judul & Jenis terpisah/independen) ================= */
+    let katalogJudulData = [];
+    let katalogJenisData = [];
+
     function listenKatalogBuku() {
-        db.ref('perpus/katalogBuku').on('value', snap=>{
+        db.ref('perpus/katalogJudul').on('value', snap=>{
             const d = snap.val()||{};
-            katalogBukuData = Object.entries(d).map(([id,v])=>({id,...v}));
-            katalogBukuData.sort((a,b)=>(a.judul||'').localeCompare(b.judul||''));
-            renderKatalogBuku();
+            katalogJudulData = Object.entries(d).map(([id,v])=>({id,...v}));
+            katalogJudulData.sort((a,b)=>(a.judul||'').localeCompare(b.judul||''));
+            renderKatalogJudul();
+            isiDropdownBuku();
+        });
+        db.ref('perpus/katalogJenis').on('value', snap=>{
+            const d = snap.val()||{};
+            katalogJenisData = Object.entries(d).map(([id,v])=>({id,...v}));
+            katalogJenisData.sort((a,b)=>(a.jenis||'').localeCompare(b.jenis||''));
+            renderKatalogJenis();
             isiDropdownBuku();
         });
     }
-    function renderKatalogBuku() {
-        const c = document.getElementById('listKatalogBuku'); if (!c) return;
-        if (katalogBukuData.length===0) { c.innerHTML = '<div class="empty-placeholder"><i class="fas fa-book"></i><p>Belum ada data buku</p></div>'; return; }
-        c.innerHTML = katalogBukuData.map(b=>`
+    function renderKatalogJudul() {
+        const c = document.getElementById('listKatalogJudul'); if (!c) return;
+        if (katalogJudulData.length===0) { c.innerHTML = '<div class="empty-placeholder"><i class="fas fa-book"></i><p>Belum ada judul buku</p></div>'; return; }
+        c.innerHTML = katalogJudulData.map(b=>`
             <div class="katalog-item">
-                <div><div class="katalog-item-title">${b.judul}</div><div class="katalog-item-jenis">${b.jenis||'-'}</div></div>
-                <button onclick="hapusKatalogBuku('${b.id}')" class="btn-nav danger" style="width:28px;height:28px;font-size:11px;"><i class="fas fa-trash"></i></button>
+                <div class="katalog-item-title">${b.judul}</div>
+                <button onclick="hapusJudulBuku('${b.id}')" class="btn-nav danger" style="width:28px;height:28px;font-size:11px;"><i class="fas fa-trash"></i></button>
+            </div>
+        `).join('');
+    }
+    function renderKatalogJenis() {
+        const c = document.getElementById('listKatalogJenis'); if (!c) return;
+        if (katalogJenisData.length===0) { c.innerHTML = '<div class="empty-placeholder"><i class="fas fa-tags"></i><p>Belum ada jenis buku</p></div>'; return; }
+        c.innerHTML = katalogJenisData.map(b=>`
+            <div class="katalog-item">
+                <div class="katalog-item-title">${b.jenis}</div>
+                <button onclick="hapusJenisBuku('${b.id}')" class="btn-nav danger" style="width:28px;height:28px;font-size:11px;"><i class="fas fa-trash"></i></button>
             </div>
         `).join('');
     }
     function isiDropdownBuku() {
         const sel = document.getElementById('judulBukuSelect');
-        if (sel) sel.innerHTML = '<option value="">Pilih judul buku</option>' + katalogBukuData.map(b=>`<option value="${b.judul}" data-jenis="${(b.jenis||'').replace(/"/g,'')}">${b.judul}</option>`).join('');
+        if (sel) sel.innerHTML = '<option value="">Pilih judul buku</option>' + katalogJudulData.map(b=>`<option value="${b.judul}">${b.judul}</option>`).join('');
         const jenisSel = document.getElementById('jenisBukuSelect');
-        if (jenisSel) {
-            const jenisUnik = [...new Set(katalogBukuData.map(b=>b.jenis).filter(Boolean))];
-            jenisSel.innerHTML = '<option value="">Pilih jenis buku</option>' + jenisUnik.map(j=>`<option value="${j}">${j}</option>`).join('');
-        }
+        if (jenisSel) jenisSel.innerHTML = '<option value="">Pilih jenis buku (opsional)</option>' + katalogJenisData.map(b=>`<option value="${b.jenis}">${b.jenis}</option>`).join('');
     }
-    window.tambahKatalogBuku = async function() {
-        const raw = document.getElementById('katalogJudulBulk').value;
-        const jenisDefault = document.getElementById('katalogJenisDefault').value.trim();
-        const lines = raw.split('\n').map(l=>l.trim()).filter(l=>l.length>0);
+    window.tambahJudulBuku = async function() {
+        const raw = document.getElementById('judulBulkInput').value;
+        const lines = [...new Set(raw.split('\n').map(l=>l.trim()).filter(l=>l.length>0))];
         if (lines.length===0) { showToast('Isi minimal 1 judul buku!','error'); return; }
         try{
             const updates = {};
-            lines.forEach(line=>{
-                let judul = line, jenis = jenisDefault;
-                const idx = line.lastIndexOf(' - ');
-                if (idx !== -1) { judul = line.slice(0, idx).trim(); jenis = line.slice(idx+3).trim(); }
-                const newKey = db.ref('perpus/katalogBuku').push().key;
-                updates[newKey] = { judul, jenis };
+            lines.forEach(judul=>{
+                const newKey = db.ref('perpus/katalogJudul').push().key;
+                updates[newKey] = { judul };
             });
-            await db.ref('perpus/katalogBuku').update(updates);
-            document.getElementById('katalogJudulBulk').value='';
-            document.getElementById('katalogJenisDefault').value='';
-            showToast(`${lines.length} buku ditambahkan`,'success');
+            await db.ref('perpus/katalogJudul').update(updates);
+            document.getElementById('judulBulkInput').value='';
+            showToast(`${lines.length} judul buku ditambahkan`,'success');
         }catch(e){ showToast('Gagal: '+e.message,'error'); }
     };
-    window.hapusKatalogBuku = async function(id) {
-        if (!confirm('Hapus buku ini dari daftar?')) return;
-        try{ await db.ref('perpus/katalogBuku/'+id).remove(); showToast('Buku dihapus','success'); }catch(e){ showToast('Gagal','error'); }
+    window.tambahJenisBuku = async function() {
+        const raw = document.getElementById('jenisBulkInput').value;
+        const lines = [...new Set(raw.split('\n').map(l=>l.trim()).filter(l=>l.length>0))];
+        if (lines.length===0) { showToast('Isi minimal 1 jenis buku!','error'); return; }
+        try{
+            const updates = {};
+            lines.forEach(jenis=>{
+                const newKey = db.ref('perpus/katalogJenis').push().key;
+                updates[newKey] = { jenis };
+            });
+            await db.ref('perpus/katalogJenis').update(updates);
+            document.getElementById('jenisBulkInput').value='';
+            showToast(`${lines.length} jenis buku ditambahkan`,'success');
+        }catch(e){ showToast('Gagal: '+e.message,'error'); }
+    };
+    window.hapusJudulBuku = async function(id) {
+        if (!confirm('Hapus judul buku ini?')) return;
+        try{ await db.ref('perpus/katalogJudul/'+id).remove(); showToast('Judul dihapus','success'); }catch(e){ showToast('Gagal','error'); }
+    };
+    window.hapusJenisBuku = async function(id) {
+        if (!confirm('Hapus jenis buku ini?')) return;
+        try{ await db.ref('perpus/katalogJenis/'+id).remove(); showToast('Jenis dihapus','success'); }catch(e){ showToast('Gagal','error'); }
     };
 
     /* ================= PEMINJAMAN AKTIF ================= */
@@ -1190,11 +1234,15 @@ select.form-input option{background:var(--bg-elevated); color:var(--text-primary
 
     /* ================= RESET STATISTIK PERPUS ================= */
     window.resetStatistikPerpus = async function() {
-        if (!confirm('Reset semua statistik kunjungan & peminjaman perpustakaan? Tidak bisa dibatalkan!')) return;
+        if (!confirm('Reset SEMUA data perpustakaan (kunjungan, peminjaman, & statistik)? Data Excel juga akan ikut kosong. Tidak bisa dibatalkan!')) return;
         document.getElementById('loadingOverlay').classList.add('show');
         try{
-            await db.ref('perpus/stats').remove();
-            showToast('Statistik perpustakaan berhasil direset!','success'); updateDashboard();
+            await Promise.all([
+                db.ref('perpus/stats').remove(),
+                db.ref('perpus/kunjungan').remove(),
+                db.ref('perpus/peminjaman').remove()
+            ]);
+            showToast('Semua data perpustakaan berhasil direset!','success'); updateDashboard();
         }catch(e){ showToast('Gagal','error'); }
         document.getElementById('loadingOverlay').classList.remove('show');
     };
