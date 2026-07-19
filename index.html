@@ -968,7 +968,7 @@ select.form-input option{background:var(--bg-elevated); color:var(--text-primary
         const snap = await db.ref('perpus/peminjaman').orderByChild('status').equalTo('DIPINJAM').once('value');
         const d = snap.val()||{};
         const today = new Date(); today.setHours(0,0,0,0);
-        return Object.values(d).filter(p=>p.tglKembali && dmyToDate(p.tglKembali) < today);
+        return Object.values(d).filter(p=>p.tglKembali && dmyToDate(p.tglKembali) <= today);
     }
 
     async function updateHomeStats() {
@@ -1145,7 +1145,7 @@ select.form-input option{background:var(--bg-elevated); color:var(--text-primary
         let list = allPinjamanData.filter(p => (p.nama||'').toLowerCase().includes(s) || (p.judulBuku||'').toLowerCase().includes(s));
         list = list.map(p=>{
             let over=false;
-            if (p.status==='DIPINJAM' && p.tglKembali) { const dd=dmyToDate(p.tglKembali); if (dd<today) over=true; }
+            if (p.status==='DIPINJAM' && p.tglKembali) { const dd=dmyToDate(p.tglKembali); if (dd<=today) over=true; }
             return {...p, overdue:over};
         });
         if (filter==='aktif') list=list.filter(p=>p.status==='DIPINJAM'&&!p.overdue);
@@ -1209,21 +1209,34 @@ select.form-input option{background:var(--bg-elevated); color:var(--text-primary
     window.exportPeminjaman = async function() {
         document.getElementById('loadingOverlay').classList.add('show');
         try{
-            // Diambil langsung dari perpus/peminjaman (bukan dari stats), jadi tetap
-            // ada datanya walaupun sudah pernah Reset Data. Tiap transaksi pinjam
-            // jadi 1 baris sendiri — kalau siswa pinjam judul yang sama berkali-kali,
-            // baris judul itu akan muncul berulang ke bawah, bukan digabung jadi satu.
+            // Diambil langsung dari perpus/peminjaman. 1 baris = 1 siswa; kalau siswa
+            // pinjam beberapa buku, judul/tanggal/statusnya di-enter ke bawah dalam
+            // cell yang sama, urut sesuai urutan dia minjam (bukan digabung jadi teks).
             const pjSnap = await db.ref('perpus/peminjaman').once('value');
             const pjAll = Object.values(pjSnap.val()||{});
             if (pjAll.length===0) { showToast('Belum ada data peminjaman','error'); document.getElementById('loadingOverlay').classList.remove('show'); return; }
-            pjAll.sort((a,b)=> (a.kelas||'').localeCompare(b.kelas||'') || (parseInt(a.absen)-parseInt(b.absen)) || ((a.timestamp||0)-(b.timestamp||0)) );
-            const rows=[['NO','NAMA','KELAS','JUDUL BUKU','TANGGAL PINJAM','TANGGAL KEMBALI','STATUS']];
-            pjAll.forEach((p,i)=>{
-                const statusTxt = p.status==='KEMBALI' ? `Kembali (${p.tglDikembalikan})` : 'Masih Dipinjam';
-                rows.push([i+1, p.nama, p.kelas, p.judulBuku, p.tglPinjam, p.tglKembali, statusTxt]);
+            pjAll.sort((a,b)=>(a.timestamp||0)-(b.timestamp||0));
+            const grouped = {};
+            pjAll.forEach(p=>{
+                const key = p.kelas+'_'+p.absen;
+                if (!grouped[key]) grouped[key] = { nama:p.nama, kelas:p.kelas, absen:p.absen, judul:[], tglPinjam:[], tglKembali:[], status:[] };
+                grouped[key].judul.push(p.judulBuku||'-');
+                grouped[key].tglPinjam.push(p.tglPinjam||'-');
+                grouped[key].tglKembali.push(p.tglKembali||'-');
+                grouped[key].status.push(p.status==='KEMBALI' ? `Kembali (${p.tglDikembalikan})` : 'Masih Dipinjam');
             });
+            let list = Object.values(grouped);
+            list.sort((a,b)=> (a.kelas||'').localeCompare(b.kelas||'') || (parseInt(a.absen)-parseInt(b.absen)) );
+            const rows=[['NO','NAMA','KELAS','JUDUL BUKU','TANGGAL PINJAM','TANGGAL KEMBALI','STATUS','TOTAL PINJAM']];
+            list.forEach((s,i)=>rows.push([i+1, s.nama, s.kelas, s.judul.join('\n'), s.tglPinjam.join('\n'), s.tglKembali.join('\n'), s.status.join('\n'), s.judul.length]));
             const ws=XLSX.utils.aoa_to_sheet(rows);
-            ws['!cols']=[{wch:6},{wch:26},{wch:10},{wch:28},{wch:14},{wch:14},{wch:18}];
+            ws['!cols']=[{wch:6},{wch:24},{wch:10},{wch:26},{wch:14},{wch:14},{wch:18},{wch:12}];
+            for (let r=2;r<=rows.length;r++) {
+                ['D','E','F','G'].forEach(col=>{
+                    const ref = col+r;
+                    if (ws[ref]) ws[ref].s = { alignment:{ wrapText:true, vertical:'top' } };
+                });
+            }
             const wb=XLSX.utils.book_new();
             XLSX.utils.book_append_sheet(wb,ws,'Peminjaman');
             XLSX.writeFile(wb, `PEMINJAMAN_PERPUS_${todayKey()}.xlsx`);
