@@ -868,7 +868,7 @@ select.form-input option{background:var(--bg-elevated); color:var(--text-primary
     window.updateTglKembaliOtomatis = function() {
         const tp = document.getElementById('tglPinjam').value;
         if (!tp) return;
-        const d = new Date(tp); d.setDate(d.getDate()+7);
+        const d = new Date(tp); d.setDate(d.getDate()+14);
         document.getElementById('tglKembali').value = d.toISOString().slice(0,10);
     };
     window.autoJenisDariJudul = function() {
