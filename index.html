@@ -1231,12 +1231,16 @@ select.form-input option{background:var(--bg-elevated); color:var(--text-primary
             list.forEach((s,i)=>rows.push([i+1, s.nama, s.kelas, s.judul.join('\n'), s.tglPinjam.join('\n'), s.tglKembali.join('\n'), s.status.join('\n'), s.judul.length]));
             const ws=XLSX.utils.aoa_to_sheet(rows);
             ws['!cols']=[{wch:6},{wch:24},{wch:10},{wch:26},{wch:14},{wch:14},{wch:18},{wch:12}];
+            const rowHeights=[{hpx:20}];
             for (let r=2;r<=rows.length;r++) {
                 ['D','E','F','G'].forEach(col=>{
                     const ref = col+r;
                     if (ws[ref]) ws[ref].s = { alignment:{ wrapText:true, vertical:'top' } };
                 });
+                const jumlahBaris = list[r-2].judul.length;
+                rowHeights.push({hpx: Math.max(20, jumlahBaris*15)});
             }
+            ws['!rows']=rowHeights;
             const wb=XLSX.utils.book_new();
             XLSX.utils.book_append_sheet(wb,ws,'Peminjaman');
             XLSX.writeFile(wb, `PEMINJAMAN_PERPUS_${todayKey()}.xlsx`);
