@@ -281,6 +281,21 @@ select.form-input option{background:var(--bg-elevated); color:var(--text-primary
 
 #reader,#readerLogin{border:none !important;}
 #reader video,#readerLogin video{border-radius:var(--radius-md);}
+
+.book-search-box{position:relative;}
+.book-search-input{width:100%; background:var(--bg-elevated); border:1px solid var(--border-subtle); border-radius:var(--radius-md); color:var(--text-primary); padding:11px 13px 11px 34px; font-size:13px; font-family:var(--font-body);}
+.book-search-input:focus{outline:none; border-color:var(--brass); box-shadow:0 0 0 3px rgba(207,154,63,0.1);}
+.book-search-icon{position:absolute; left:12px; top:50%; transform:translateY(-50%); color:var(--text-tertiary); font-size:12px; pointer-events:none;}
+.book-search-results{margin-top:8px; max-height:220px; overflow-y:auto; -webkit-overflow-scrolling:touch; border:1px solid var(--border-subtle); border-radius:var(--radius-md); background:var(--bg-elevated); display:none;}
+.book-search-results.show{display:block;}
+.book-search-result-item{padding:11px 13px; font-size:12.5px; font-weight:600; cursor:pointer; border-bottom:1px solid var(--border-subtle);}
+.book-search-result-item:last-child{border-bottom:none;}
+.book-search-result-item:active{background:var(--bg-hover);}
+.book-search-empty{padding:14px 13px; font-size:11.5px; color:var(--text-tertiary); text-align:center;}
+.book-selected-box{display:none; align-items:center; justify-content:space-between; gap:10px; background:rgba(207,154,63,0.08); border:1px solid rgba(207,154,63,0.3); border-radius:var(--radius-md); padding:11px 13px; margin-top:8px;}
+.book-selected-box.show{display:flex;}
+.book-selected-text{font-size:12.5px; font-weight:700; color:var(--brass-soft);}
+.book-selected-clear{width:26px;height:26px;border-radius:8px;border:1px solid var(--border-default); background:transparent; color:var(--text-secondary); display:flex;align-items:center;justify-content:center; flex-shrink:0;}
 </style>
 </head>
 <body>
@@ -444,8 +459,9 @@ select.form-input option{background:var(--bg-elevated); color:var(--text-primary
                 <div style="background:var(--bg-elevated); border:1px solid var(--border-subtle); border-radius:var(--radius-lg); padding:16px; margin-bottom:16px;">
                     <div style="font-size:11px; font-weight:700; color:var(--text-secondary); margin-bottom:10px;"><i class="fas fa-book" style="color:var(--brass-soft);"></i> Tambah Judul Buku</div>
                     <div class="form-group">
-                        <label class="form-label">Daftar Judul (1 baris = 1 judul)</label>
-                        <textarea id="judulBulkInput" rows="4" placeholder="Laskar Pelangi&#10;Sang Pemimpi&#10;Edensor" class="form-input" style="resize:vertical; font-family:var(--font-mono); font-size:12px; line-height:1.6;"></textarea>
+                        <label class="form-label">Daftar Judul (1 baris = 1 judul, format: Judul - Pengarang)</label>
+                        <textarea id="judulBulkInput" rows="4" placeholder="Laskar Pelangi - Andrea Hirata&#10;Bulan Matahari - Gema&#10;Sang Pemimpi - Andrea Hirata" class="form-input" style="resize:vertical; font-family:var(--font-mono); font-size:12px; line-height:1.6;"></textarea>
+                        <div class="auto-note" style="margin-top:6px;">Format: <b style="color:var(--brass-soft);">Judul - Pengarang</b>. Kalau tidak ada tanda " - ", nama pengarang boleh dikosongkan.</div>
                     </div>
                     <button onclick="tambahJudulBuku()" class="btn btn-primary"><i class="fas fa-plus"></i> Tambah Semua Judul</button>
                 </div>
@@ -459,8 +475,15 @@ select.form-input option{background:var(--bg-elevated); color:var(--text-primary
                     <button onclick="tambahJenisBuku()" class="btn btn-teal"><i class="fas fa-plus"></i> Tambah Semua Jenis</button>
                 </div>
 
-                <div style="font-size:12px; font-weight:700; margin-bottom:8px;"><i class="fas fa-book" style="color:var(--brass-soft);"></i> Daftar Judul Buku</div>
-                <div id="listKatalogJudul" style="display:flex; flex-direction:column; gap:7px; margin-bottom:18px;"></div>
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+                    <span style="font-size:12px; font-weight:700;"><i class="fas fa-book" style="color:var(--brass-soft);"></i> Daftar Judul Buku</span>
+                    <span style="font-size:11px; font-weight:700; color:var(--text-tertiary);" id="countJudulBuku">0</span>
+                </div>
+                <div style="position:relative; margin-bottom:10px;">
+                    <i class="fas fa-search" style="position:absolute; left:12px; top:50%; transform:translateY(-50%); color:var(--text-tertiary); font-size:12px;"></i>
+                    <input type="text" id="searchKatalogJudul" placeholder="Cari judul / pengarang..." oninput="renderKatalogJudul()" class="form-input" style="padding-left:32px;">
+                </div>
+                <div id="listKatalogJudul" style="display:flex; flex-direction:column; gap:7px; margin-bottom:18px; max-height:340px; overflow-y:auto;"></div>
 
                 <div style="font-size:12px; font-weight:700; margin-bottom:8px;"><i class="fas fa-tags" style="color:var(--rose);"></i> Daftar Jenis Buku</div>
                 <div id="listKatalogJenis" style="display:flex; flex-direction:column; gap:7px;"></div>
@@ -532,8 +555,16 @@ select.form-input option{background:var(--bg-elevated); color:var(--text-primary
         </div>
         <div id="pinjamForm">
             <div class="form-group">
-                <label class="form-label">Judul Buku</label>
-                <select id="judulBukuSelect" class="form-input"><option value="">Pilih judul buku</option></select>
+                <label class="form-label">Cari Judul Buku</label>
+                <div class="book-search-box">
+                    <i class="fas fa-search book-search-icon"></i>
+                    <input type="text" id="judulBukuSearch" class="book-search-input" placeholder="Ketik judul atau nama pengarang..." oninput="cariBukuPinjam(this.value)" onfocus="cariBukuPinjam(this.value)" autocomplete="off">
+                    <div class="book-search-results" id="judulBukuResults"></div>
+                </div>
+                <div class="book-selected-box" id="bukuSelectedBox">
+                    <div class="book-selected-text" id="bukuSelectedText">-</div>
+                    <button type="button" class="book-selected-clear" onclick="clearBukuTerpilih()"><i class="fas fa-xmark"></i></button>
+                </div>
             </div>
             <div class="form-group">
                 <label class="form-label">Jenis Buku</label>
@@ -854,7 +885,7 @@ select.form-input option{background:var(--bg-elevated); color:var(--text-primary
         document.getElementById('choiceButtons').style.display='none';
         document.getElementById('btnTutupChoice').style.display='none';
         document.getElementById('pinjamForm').style.display='block';
-        document.getElementById('judulBukuSelect').value='';
+        clearBukuTerpilih();
         document.getElementById('jenisBukuSelect').value='';
         document.getElementById('teleponPeminjam').value='';
         document.getElementById('tglPinjam').value = new Date().toISOString().slice(0,10);
@@ -871,27 +902,65 @@ select.form-input option{background:var(--bg-elevated); color:var(--text-primary
         const d = new Date(tp); d.setDate(d.getDate()+14);
         document.getElementById('tglKembali').value = d.toISOString().slice(0,10);
     };
-    window.autoJenisDariJudul = function() {
-        const sel = document.getElementById('judulBukuSelect');
-        const opt = sel.options[sel.selectedIndex];
-        const jenis = opt ? opt.getAttribute('data-jenis') : '';
-        if (jenis) document.getElementById('jenisBukuSelect').value = jenis;
+
+    /* ---- Cari & pilih buku (pengganti dropdown panjang) ---- */
+    let bukuTerpilih = null; // {judul, pengarang}
+
+    window.cariBukuPinjam = function(q) {
+        const box = document.getElementById('judulBukuResults');
+        const query = (q||'').trim().toLowerCase();
+        let hasil = katalogJudulData;
+        if (query) {
+            hasil = katalogJudulData.filter(b =>
+                (b.judul||'').toLowerCase().includes(query) || (b.pengarang||'').toLowerCase().includes(query)
+            );
+        }
+        hasil = hasil.slice(0, 30);
+        if (hasil.length===0) {
+            box.innerHTML = `<div class="book-search-empty">Tidak ada buku ditemukan</div>`;
+        } else {
+            box.innerHTML = hasil.map(b=>{
+                const label = b.pengarang ? `${b.judul} - ${b.pengarang}` : b.judul;
+                return `<div class="book-search-result-item" onclick='pilihBukuPinjam(${JSON.stringify(b.judul)}, ${JSON.stringify(b.pengarang||"")})'>${label}</div>`;
+            }).join('');
+        }
+        box.classList.add('show');
     };
+    window.pilihBukuPinjam = function(judul, pengarang) {
+        bukuTerpilih = { judul, pengarang: pengarang||'' };
+        document.getElementById('bukuSelectedText').innerText = pengarang ? `${judul} - ${pengarang}` : judul;
+        document.getElementById('bukuSelectedBox').classList.add('show');
+        document.getElementById('judulBukuSearch').value = '';
+        document.getElementById('judulBukuResults').classList.remove('show');
+        document.getElementById('judulBukuResults').innerHTML = '';
+    };
+    window.clearBukuTerpilih = function() {
+        bukuTerpilih = null;
+        document.getElementById('bukuSelectedBox').classList.remove('show');
+        document.getElementById('bukuSelectedText').innerText = '-';
+        document.getElementById('judulBukuSearch').value = '';
+    };
+    document.addEventListener('click', function(e){
+        const box = document.getElementById('judulBukuResults');
+        const input = document.getElementById('judulBukuSearch');
+        if (!box || !input) return;
+        if (e.target!==input && !box.contains(e.target)) box.classList.remove('show');
+    });
 
     window.simpanPinjaman = async function() {
         if (!pendingSiswa) return;
-        const judul = document.getElementById('judulBukuSelect').value;
         const jenis = document.getElementById('jenisBukuSelect').value;
         const telepon = document.getElementById('teleponPeminjam').value.trim();
         const tglPinjamIso = document.getElementById('tglPinjam').value;
         const tglKembaliIso = document.getElementById('tglKembali').value;
-        if (!judul || !tglPinjamIso || !tglKembaliIso) { showToast('Lengkapi data peminjaman!','error'); return; }
+        if (!bukuTerpilih || !tglPinjamIso || !tglKembaliIso) { showToast('Lengkapi data peminjaman! Pilih judul buku dulu.','error'); return; }
         document.getElementById('loadingOverlay').classList.add('show');
         try{
             const { kelas, absen, nama, jk, agama } = pendingSiswa;
             const tglPinjam = isoToDMY(tglPinjamIso), tglKembali = isoToDMY(tglKembaliIso);
+            const judulBukuFull = bukuTerpilih.pengarang ? `${bukuTerpilih.judul} - ${bukuTerpilih.pengarang}` : bukuTerpilih.judul;
             const pushRef = db.ref('perpus/peminjaman').push();
-            await pushRef.set({ nama,kelas,absen,jk,agama, judulBuku:judul, jenisBuku:jenis, telepon, tglPinjam, tglKembali, tglDikembalikan:null, status:'DIPINJAM', timestamp:Date.now() });
+            await pushRef.set({ nama,kelas,absen,jk,agama, judulBuku:judulBukuFull, jenisBuku:jenis, telepon, tglPinjam, tglKembali, tglDikembalikan:null, status:'DIPINJAM', timestamp:Date.now() });
             await db.ref('perpus/stats/'+kelas+'/'+absen+'/totalPinjam').transaction(v=>(v||0)+1);
             const tgl = todayKey(), key = kelas+'_'+absen;
             const kr = db.ref('perpus/kunjungan/'+tgl+'/'+key);
@@ -899,7 +968,7 @@ select.form-input option{background:var(--bg-elevated); color:var(--text-primary
                 await kr.set({nama,kelas,absen,jk,agama,jam:new Date().toLocaleTimeString('id-ID'),status:'HADIR',timestamp:Date.now()});
                 await db.ref('perpus/stats/'+kelas+'/'+absen+'/totalKunjungan').transaction(v=>(v||0)+1);
             }
-            showToast(`${nama} — pinjam "${judul}"`,'success'); playBeep('success');
+            showToast(`${nama} — pinjam "${judulBukuFull}"`,'success'); playBeep('success');
         }catch(e){ showToast('Gagal: '+e.message,'error'); }
         document.getElementById('loadingOverlay').classList.remove('show');
         tutupChoiceModal();
@@ -1050,26 +1119,33 @@ select.form-input option{background:var(--bg-elevated); color:var(--text-primary
             katalogJudulData = Object.entries(d).map(([id,v])=>({id,...v}));
             katalogJudulData.sort((a,b)=>(a.judul||'').localeCompare(b.judul||''));
             renderKatalogJudul();
-            isiDropdownBuku();
         });
         db.ref('perpus/katalogJenis').on('value', snap=>{
             const d = snap.val()||{};
             katalogJenisData = Object.entries(d).map(([id,v])=>({id,...v}));
             katalogJenisData.sort((a,b)=>(a.jenis||'').localeCompare(b.jenis||''));
             renderKatalogJenis();
-            isiDropdownBuku();
+            isiDropdownJenis();
         });
     }
-    function renderKatalogJudul() {
+    window.renderKatalogJudul = function() {
         const c = document.getElementById('listKatalogJudul'); if (!c) return;
-        if (katalogJudulData.length===0) { c.innerHTML = '<div class="empty-placeholder"><i class="fas fa-book"></i><p>Belum ada judul buku</p></div>'; return; }
-        c.innerHTML = katalogJudulData.map(b=>`
+        const q = (document.getElementById('searchKatalogJudul')?.value||'').trim().toLowerCase();
+        let list = katalogJudulData;
+        if (q) list = list.filter(b=>(b.judul||'').toLowerCase().includes(q) || (b.pengarang||'').toLowerCase().includes(q));
+        const countEl = document.getElementById('countJudulBuku');
+        if (countEl) countEl.innerText = katalogJudulData.length;
+        if (list.length===0) { c.innerHTML = `<div class="empty-placeholder"><i class="fas fa-book"></i><p>${katalogJudulData.length===0?'Belum ada judul buku':'Tidak ditemukan'}</p></div>`; return; }
+        c.innerHTML = list.map(b=>{
+            const label = b.pengarang ? `${b.judul} - ${b.pengarang}` : b.judul;
+            return `
             <div class="katalog-item">
-                <div class="katalog-item-title">${b.judul}</div>
-                <button onclick="hapusJudulBuku('${b.id}')" class="btn-nav danger" style="width:28px;height:28px;font-size:11px;"><i class="fas fa-trash"></i></button>
+                <div class="katalog-item-title">${label}</div>
+                <button onclick="hapusJudulBuku('${b.id}')" class="btn-nav danger" style="width:28px;height:28px;font-size:11px;flex-shrink:0;"><i class="fas fa-trash"></i></button>
             </div>
-        `).join('');
-    }
+        `;
+        }).join('');
+    };
     function renderKatalogJenis() {
         const c = document.getElementById('listKatalogJenis'); if (!c) return;
         if (katalogJenisData.length===0) { c.innerHTML = '<div class="empty-placeholder"><i class="fas fa-tags"></i><p>Belum ada jenis buku</p></div>'; return; }
@@ -1080,9 +1156,7 @@ select.form-input option{background:var(--bg-elevated); color:var(--text-primary
             </div>
         `).join('');
     }
-    function isiDropdownBuku() {
-        const sel = document.getElementById('judulBukuSelect');
-        if (sel) sel.innerHTML = '<option value="">Pilih judul buku</option>' + katalogJudulData.map(b=>`<option value="${b.judul}">${b.judul}</option>`).join('');
+    function isiDropdownJenis() {
         const jenisSel = document.getElementById('jenisBukuSelect');
         if (jenisSel) jenisSel.innerHTML = '<option value="">Pilih jenis buku (opsional)</option>' + katalogJenisData.map(b=>`<option value="${b.jenis}">${b.jenis}</option>`).join('');
     }
@@ -1092,9 +1166,12 @@ select.form-input option{background:var(--bg-elevated); color:var(--text-primary
         if (lines.length===0) { showToast('Isi minimal 1 judul buku!','error'); return; }
         try{
             const updates = {};
-            lines.forEach(judul=>{
+            lines.forEach(line=>{
+                let judul = line, pengarang = '';
+                const idx = line.indexOf(' - ');
+                if (idx !== -1) { judul = line.slice(0, idx).trim(); pengarang = line.slice(idx+3).trim(); }
                 const newKey = db.ref('perpus/katalogJudul').push().key;
-                updates[newKey] = { judul };
+                updates[newKey] = { judul, pengarang };
             });
             await db.ref('perpus/katalogJudul').update(updates);
             document.getElementById('judulBulkInput').value='';
