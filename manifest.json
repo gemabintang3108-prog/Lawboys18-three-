@@ -1,0 +1,19 @@
+{
+  "name": "Perpustakaan SMAN 12",
+  "short_name": "Perpus 12",
+  "description": "Aplikasi kunjungan & peminjaman buku Perpustakaan SMAN 12",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#14100d",
+  "theme_color": "#14100d",
+  "icons": [
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
